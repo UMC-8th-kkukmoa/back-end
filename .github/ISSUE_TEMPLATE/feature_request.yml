@@ -1,0 +1,51 @@
+name: "\u2728 기능 요청"
+description: 새로운 기능 또는 개선 사항을 제안합니다.
+title: "\u2728 기능 요청: "
+labels: ["feature", "needs-triage"]
+assignees: []
+
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: "🙋 어떤 기능이 필요하신가요?"
+      description: 구현하고자 하는 기능이나 개선점을 간단히 설명해주세요.
+      placeholder: 예) 카카오 소셜 로그인 기능과 기본 프로젝트 세팅이 필요합니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "🧩 어떤 문제를 해결하고 싶나요?"
+      description: 이 기능이 해결하고자 하는 문제나 배경을 설명해주세요.
+      placeholder: 예) 인증 구조가 없고, Swagger가 없어 API 테스트가 어려움
+    validations:
+      required: false
+
+  - type: textarea
+    id: related
+    attributes:
+      label: "🗂 관련 화면 / API"
+      description: 이 기능과 관련된 UI 화면 또는 API 경로가 있다면 작성해주세요.
+      placeholder: 예) /oauth/kakao, 로그인 페이지, 사용자 정보 페이지 등
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: tasks
+    attributes:
+      label: "🛠 예상 작업 항목"
+      description: 구현을 위해 필요한 작업을 체크박스로 나열해주세요.
+      options:
+        - label: 프로젝트 기본 구조 및 의존성 설정
+        - label: 공통 에러 및 응답 코드 체계 정의
+
+  - type: textarea
+    id: benefit
+    attributes:
+      label: "🎯 기대 효과"
+      description: 이 기능을 통해 기대되는 효과나 해결되는 문제를 작성해주세요.
+      placeholder: 예) 소셜 로그인으로 인증 편의성 증가, API 문서화로 협업 효율 향상
+    validations:
+      required: false
