@@ -2,8 +2,10 @@ package kkukmoa.kkukmoa.apiPayload.code.status;
 
 import kkukmoa.kkukmoa.apiPayload.code.BaseErrorCode;
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -16,7 +18,7 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
-    //사용자 관련 에러
+    // 사용자 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
 
     // 인증 관련 에러
@@ -28,11 +30,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     @Override
     public ErrorReasonDto getReason() {
-        return ErrorReasonDto.builder()
-                .message(message)
-                .code(code)
-                .isSuccess(false)
-                .build();
+        return ErrorReasonDto.builder().message(message).code(code).isSuccess(false).build();
     }
 
     @Override
@@ -42,8 +40,6 @@ public enum ErrorStatus implements BaseErrorCode {
                 .code(code)
                 .isSuccess(false)
                 .httpStatus(httpStatus)
-                .build()
-                ;
+                .build();
     }
 }
-

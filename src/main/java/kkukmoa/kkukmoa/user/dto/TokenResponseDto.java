@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 
 @Getter
