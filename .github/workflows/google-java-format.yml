@@ -1,0 +1,27 @@
+name: google-java-format
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  formatting:
+    if: |
+      github.ref == 'refs/heads/dev' || github.event.pull_request.base.ref == 'dev'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Run Google Java Format
+        uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace --aosp"
+          files: "**/*.java"
+          commit-message: "[STYLE][Github Action]: Application Of Google Java Format"
+          github-token: ${{ secrets.GH_GOOGLE_STYLE_TOKEN }}
+          skip-commit: false
