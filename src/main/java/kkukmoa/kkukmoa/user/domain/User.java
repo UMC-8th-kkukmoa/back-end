@@ -1,10 +1,11 @@
 package kkukmoa.kkukmoa.user.domain;
 
 import jakarta.persistence.*;
+
 import kkukmoa.kkukmoa.common.BaseEntity;
+
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.usertype.UserType;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,7 +38,6 @@ public class User extends BaseEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-
     @Override
     public String getPassword() {
         return null;
@@ -47,8 +47,8 @@ public class User extends BaseEntity implements UserDetails {
     public String getUsername() {
         return String.valueOf(this.id);
     }
+
     public Long getUserId() {
         return id;
     }
 }
-

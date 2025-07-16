@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.apiPayload.code;
 
 import lombok.Builder;
 import lombok.Getter;
+
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -13,9 +14,10 @@ public class ErrorReasonDto {
     private final String code;
     private final String message;
 
+    public boolean getIsSuccess() {
+        return isSuccess;
+    }
 
-
-    public boolean getIsSuccess(){return isSuccess;}
     public static ErrorReasonDto of(HttpStatus status, String code, String message) {
         return new ErrorReasonDto(status, false, code, message);
     }
