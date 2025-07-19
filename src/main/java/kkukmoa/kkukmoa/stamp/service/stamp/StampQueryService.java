@@ -1,4 +1,4 @@
-package kkukmoa.kkukmoa.stamp.service;
+package kkukmoa.kkukmoa.stamp.service.stamp;
 
 import java.util.List;
 import kkukmoa.kkukmoa.stamp.converter.StampConverter;
@@ -28,8 +28,10 @@ public class StampQueryService {
     Store store = storeRepository.findById(1L).orElse(null);
     List<Stamp> stampList = stampRepository.findByStore(store);
 
-    List<StampDto> stampListDto = StampConverter.toStampListDto(stampList, store);
+    // dto -> List<dto>로 변환
+    List<StampDto> stampListDto = StampConverter.toStampDtoList(stampList, store);
 
+    // List<dto> -> 응답 형태로 변환 후 반환
     return StampListDto.builder()
         .stamps(stampListDto)
         .total(stampList.size())

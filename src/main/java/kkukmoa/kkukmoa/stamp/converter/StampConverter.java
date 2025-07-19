@@ -15,7 +15,7 @@ public class StampConverter {
         .build();
   }
 
-  public static List<StampResponseDto.StampDto> toStampListDto(List<Stamp> stampList, Store store) {
+  public static List<StampResponseDto.StampDto> toStampDtoList(List<Stamp> stampList, Store store) {
      return stampList.stream().map(
         stamp -> StampConverter.toStampDto(stamp, store)
     ).toList();
