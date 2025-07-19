@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/home", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs/**", "/users/oauth/kakao").permitAll()
+                        .requestMatchers("/", "/home", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs/**", "/users/oauth/kakao","/v1/payments/prepare").permitAll()
                         .anyRequest().authenticated()
                 )
 //                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, blacklistRepository), UsernamePasswordAuthenticationFilter.class);
@@ -53,6 +53,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedOrigin("http://127.0.0.1:5500");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

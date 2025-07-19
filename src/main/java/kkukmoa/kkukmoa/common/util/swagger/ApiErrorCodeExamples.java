@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApiErrorCodeExample {
+public @interface ApiErrorCodeExamples {
 
-    ErrorStatus value();
+    ErrorStatus[] value();
 }
 

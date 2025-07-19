@@ -1,4 +1,4 @@
-package kkukmoa.kkukmoa.payment.dto;
+package kkukmoa.kkukmoa.payment.dto.response;
 
 import java.io.Serializable;
 

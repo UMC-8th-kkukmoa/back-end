@@ -1,7 +1,10 @@
 package kkukmoa.kkukmoa.apiPayload.exception;
 
-public class PaymentException extends RuntimeException {
-    public PaymentException(String message) {
-        super(message);
+import kkukmoa.kkukmoa.apiPayload.code.BaseErrorCode;
+
+public class PaymentHandler extends GeneralException {
+    public PaymentHandler(BaseErrorCode code) {
+        super(code);
     }
 }
+

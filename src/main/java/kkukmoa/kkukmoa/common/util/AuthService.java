@@ -25,7 +25,7 @@ public class AuthService {
         }
 
         String email = authentication.getName();
-
+        log.info("현재 인증된 사용자 이메일: {}", email);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
