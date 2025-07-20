@@ -7,10 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class GeneralException extends RuntimeException {
 
     private BaseErrorCode code;
+
+    public GeneralException(BaseErrorCode code) {
+        super(code.getMessage());
+        this.code = code;
+    }
 
     public ErrorReasonDto getErrorReason() {
         return this.code.getReason();
