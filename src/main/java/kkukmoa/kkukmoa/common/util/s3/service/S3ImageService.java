@@ -2,11 +2,14 @@ package kkukmoa.kkukmoa.common.util.s3.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -16,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
-
 
 @Service
 @RequiredArgsConstructor
@@ -47,18 +49,17 @@ public class S3ImageService {
         String key = directory + "/" + filename;
 
         try {
-            PutObjectRequest request = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(key)
-                    .contentType(file.getContentType())
-                    .build();
+            PutObjectRequest request =
+                    PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .key(key)
+                            .contentType(file.getContentType())
+                            .build();
 
             s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
 
-            return s3Client.utilities().getUrl(GetUrlRequest.builder()
-                            .bucket(bucket)
-                            .key(key)
-                            .build())
+            return s3Client.utilities()
+                    .getUrl(GetUrlRequest.builder().bucket(bucket).key(key).build())
                     .toExternalForm();
 
         } catch (IOException e) {
@@ -72,10 +73,8 @@ public class S3ImageService {
 
         String key = extractKeyFromUrl(fileUrl);
         try {
-            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(key)
-                    .build();
+            DeleteObjectRequest deleteRequest =
+                    DeleteObjectRequest.builder().bucket(bucket).key(key).build();
 
             s3Client.deleteObject(deleteRequest);
         } catch (S3Exception e) {
@@ -88,21 +87,19 @@ public class S3ImageService {
         String key = extractKeyFromUrl(imageUrl);
         log.info("추출된 key: {}", key);
 
-        HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .build();
+        HeadObjectRequest headObjectRequest =
+                HeadObjectRequest.builder().bucket(bucket).key(key).build();
 
         try {
             s3Client.headObject(headObjectRequest); // 존재 여부 확인
-            return s3Client.utilities().getUrl(builder ->
-                    builder.bucket(bucket).key(key)).toExternalForm();
+            return s3Client.utilities()
+                    .getUrl(builder -> builder.bucket(bucket).key(key))
+                    .toExternalForm();
         } catch (NoSuchKeyException e) {
             log.warn("존재하지 않는 S3 key 요청: {}", key);
             throw new GeneralException(ErrorStatus.IMAGE_NOT_FOUND);
         }
     }
-
 
     // 확장자 검증
     private void validateExtension(String filename) {
@@ -130,5 +127,4 @@ public class S3ImageService {
             throw new GeneralException(ErrorStatus.INVALID_URL_FORMAT);
         }
     }
-
 }

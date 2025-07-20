@@ -3,7 +3,6 @@ package kkukmoa.kkukmoa.apiPayload.exception;
 import kkukmoa.kkukmoa.apiPayload.code.BaseErrorCode;
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
