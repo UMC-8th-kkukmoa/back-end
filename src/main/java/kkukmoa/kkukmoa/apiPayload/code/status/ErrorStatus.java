@@ -22,7 +22,11 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
 
     // 인증 관련 에러
-    AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다.");
+    AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),
+
+    // QR 코드 관련 에러
+    QR_CANNOT_GENERATION(HttpStatus.BAD_REQUEST, "QR400", "QR 코드 생성에 실패했습니다.")
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;

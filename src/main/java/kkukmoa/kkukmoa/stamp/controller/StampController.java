@@ -2,7 +2,10 @@ package kkukmoa.kkukmoa.stamp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Base64;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
+import kkukmoa.kkukmoa.common.enums.QrCodeType;
+import kkukmoa.kkukmoa.common.util.QrCodeUtil;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponListDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto;
@@ -10,6 +13,7 @@ import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampListDto;
 import kkukmoa.kkukmoa.stamp.service.coupon.CouponQueryService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +41,5 @@ public class StampController {
     couponListDto couponListDto = couponQueryService.couponList(storeType);
     return ApiResponse.onSuccess(couponListDto);
   }
-
-
 
 }

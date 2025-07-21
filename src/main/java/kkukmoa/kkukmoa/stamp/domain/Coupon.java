@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.store.domain.Store;
@@ -43,6 +44,10 @@ public class Coupon {
   @Enumerated(EnumType.STRING)
   @Builder.Default
   private CouponStatus status = CouponStatus.UNUSED;
+  
+  @Lob
+  @Column(columnDefinition = "MEDIUMBLOB")
+  private byte[] qrImage;
 
   // 연관관계 매핑
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
