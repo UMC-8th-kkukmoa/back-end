@@ -1,5 +1,6 @@
 package kkukmoa.kkukmoa.stamp.converter;
 
+import java.util.Base64;
 import java.util.List;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
@@ -15,6 +16,7 @@ public class CouponConverter {
         .storeName("storeName")
         .storeType("storeType")
         .couponName(coupon.getName())
+        .couponQrCode(Base64.getEncoder().encodeToString(coupon.getQrImage()))
         .build();
   }
 

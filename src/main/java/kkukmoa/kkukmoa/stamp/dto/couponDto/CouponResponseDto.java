@@ -36,6 +36,8 @@ public class CouponResponseDto {
     String storeType; // TODO ENUM 형태로 바꾸기
     @Schema(description = "쿠폰 이름", example = "리워드 쿠폰")
     String couponName;
+    @Schema(description = "쿠폰 QR 이미지")
+    String couponQrCode;
   }
 
 }
