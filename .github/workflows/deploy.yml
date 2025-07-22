@@ -18,8 +18,17 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: application.yml 파일 만들기
-        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.yml
+      - name: .env 파일 생성
+        run: |
+          echo "RDS_URL=${{ secrets.RDS_URL }}" >> .env
+          echo "RDS_USERNAME=${{ secrets.RDS_USERNAME }}" >> .env
+          echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> .env
+          echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> .env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> .env
+          echo "Client_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
 
       - name: 테스트 및 빌드하기
         run: ./gradlew clean build
@@ -29,7 +38,7 @@ jobs:
           JAR_PATH=$(ls ./build/libs/*.jar | head -n 1)
           mv "$JAR_PATH" ./project.jar
 
-      - name: SCP로 EC2에 빌드된 파일 전송하기
+      - name: project.jar EC2에 전송 (tobe 폴더)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -38,7 +47,16 @@ jobs:
           source: project.jar
           target: /home/ubuntu/kkukmoa-server/tobe
 
-      - name: SSH로 EC2에 접속하기
+      - name: .env 파일 EC2에 전송 (tobe 폴더)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: .env
+          target: /home/ubuntu/kkukmoa-server/tobe
+
+      - name: SSH로 EC2에 접속 후 앱 실행
         uses: appleboy/ssh-action@v1.0.3
         env:
           APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
@@ -52,7 +70,8 @@ jobs:
             rm -rf /home/ubuntu/kkukmoa-server/current
             mkdir /home/ubuntu/kkukmoa-server/current
             mv /home/ubuntu/kkukmoa-server/tobe/project.jar /home/ubuntu/kkukmoa-server/current/project.jar
+            mv /home/ubuntu/kkukmoa-server/tobe/.env /home/ubuntu/kkukmoa-server/current/.env
             cd /home/ubuntu/kkukmoa-server/current
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar project.jar > ./output.log 2>&1 &
+            nohup java -jar project.jar > output.log 2>&1 &
             rm -rf /home/ubuntu/kkukmoa-server/tobe
