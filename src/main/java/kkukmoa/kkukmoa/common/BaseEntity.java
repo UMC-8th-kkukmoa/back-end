@@ -1,4 +1,3 @@
 package kkukmoa.kkukmoa.common;
 
-public class BaseEntity {
-}
+public class BaseEntity {}

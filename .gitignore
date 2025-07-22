@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -19,8 +20,20 @@
 *.tar.gz
 *.rar
 
+# IDE & Environment
+*.iml
+.idea/
+.env
+
+# Cache / Lock / Binary
+*.bin
+*.lock
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
 
-.env
+# Gradle Build Cache
+.gradle/
+build/
+

@@ -1,4 +1,3 @@
 package kkukmoa.kkukmoa.apiPayload.exception;
 
-public class ExceptionAdvice {
-}
+public class ExceptionAdvice {}

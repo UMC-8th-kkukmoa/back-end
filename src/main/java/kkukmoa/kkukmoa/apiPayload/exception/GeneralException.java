@@ -2,20 +2,24 @@ package kkukmoa.kkukmoa.apiPayload.exception;
 
 import kkukmoa.kkukmoa.apiPayload.code.BaseErrorCode;
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class GeneralException extends RuntimeException{
+public class GeneralException extends RuntimeException {
 
     private BaseErrorCode code;
 
-    public ErrorReasonDto getErrorReason(){
+    public GeneralException(BaseErrorCode code) {
+        super(code.getMessage());
+        this.code = code;
+    }
+
+    public ErrorReasonDto getErrorReason() {
         return this.code.getReason();
     }
-    public ErrorReasonDto getErrorReasonHttpStatus(){
+
+    public ErrorReasonDto getErrorReasonHttpStatus() {
         return this.code.getReasonHttpStatus();
     }
 }
-
