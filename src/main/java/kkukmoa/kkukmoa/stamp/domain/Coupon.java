@@ -44,10 +44,13 @@ public class Coupon {
   @Enumerated(EnumType.STRING)
   @Builder.Default
   private CouponStatus status = CouponStatus.UNUSED;
-  
-  @Lob
-  @Column(columnDefinition = "MEDIUMBLOB")
-  private byte[] qrImage;
+
+//  @Lob
+//  @Column(columnDefinition = "MEDIUMBLOB")
+//  private byte[] qrImage;
+
+  @Column(nullable = false, length = 50)
+  private String qrCode;
 
   // 연관관계 매핑
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -57,5 +60,9 @@ public class Coupon {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "store_id")
   private Store store; // Coupon -> Store 단방향 매핑
+
+  public void use() {
+    this.status = CouponStatus.USED;
+  }
 
 }

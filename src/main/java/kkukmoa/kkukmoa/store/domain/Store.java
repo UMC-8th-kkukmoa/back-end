@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import kkukmoa.kkukmoa.user.domain.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +25,10 @@ public class Store {
   private Long id;
 
   // TODO: 필요한 필드 생성
+
+  // 연관관계 매핑
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User owner;
 
 }

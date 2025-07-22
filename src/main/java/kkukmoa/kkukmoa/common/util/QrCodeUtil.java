@@ -8,6 +8,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -30,6 +31,7 @@ public class QrCodeUtil {
    *  다른 계층에서 byte[] -> Base64 전환 후 사용자에게 반환합니다.
    *
    */
+  // 문자열 -> byte[]
   public static byte[] makeQrCode(String qrCodeInfo) {
 
     try {
@@ -60,6 +62,11 @@ public class QrCodeUtil {
     }
 
     return null;
+  }
+
+  // byte[] -> String ( Base64 인코딩 )
+  public static String qrCodeToBase64(byte[] qrCodeBytes) {
+    return Base64.getEncoder().encodeToString(qrCodeBytes);
   }
 
 

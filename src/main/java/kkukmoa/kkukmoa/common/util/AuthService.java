@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.common.util;
 
-import java.nio.file.attribute.UserPrincipal;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.user.domain.User;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import kkukmoa.kkukmoa.common.BaseEntity;
 
+import kkukmoa.kkukmoa.store.domain.Store;
 import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +46,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return String.valueOf(this.id);
+        return String.valueOf(this.email);
     }
 
     public Long getUserId() {
