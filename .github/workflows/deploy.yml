@@ -20,15 +20,15 @@ jobs:
 
       - name: .env 파일 생성
         run: |
-          echo "RDS_URL=${{ secrets.RDS_URL }}" >> .env
-          echo "RDS_USERNAME=${{ secrets.RDS_USERNAME }}" >> .env
-          echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> .env
-          echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> .env
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
-          echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> .env
-          echo "Client_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          printf '%s\n' 'RDS_URL=${{ secrets.RDS_URL }}' >> .env
+          printf '%s\n' 'RDS_USERNAME=${{ secrets.RDS_USERNAME }}' >> .env
+          printf '%s\n' 'RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}' >> .env
+          printf '%s\n' 'JWT_SECRET=${{ secrets.JWT_SECRET }}' >> .env
+          printf '%s\n' 'AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}' >> .env
+          printf '%s\n' 'AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}' >> .env
+          printf '%s\n' 'AWS_REGION=${{ secrets.AWS_REGION }}' >> .env
+          printf '%s\n' 'AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}' >> .env
+          printf '%s\n' 'Client_ID=${{ secrets.KAKAO_CLIENT_ID }}' >> .env
 
       - name: 테스트 및 빌드하기
         run: ./gradlew clean build
