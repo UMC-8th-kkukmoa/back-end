@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.stamp.converter;
 
-import java.util.Base64;
 import java.util.List;
 import kkukmoa.kkukmoa.common.util.QrCodeUtil;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
@@ -17,8 +16,7 @@ public class CouponConverter {
         .storeName("storeName")
         .storeType("storeType")
         .couponName(coupon.getName())
-//        .couponQrCode(Base64.getEncoder().encodeToString(coupon.getQrImage()))
-        .couponQrCode(Base64.getEncoder().encodeToString(QrCodeUtil.makeQrCode(coupon.getQrCode())))
+        .couponQrCode(QrCodeUtil.qrCodeToBase64(coupon.getQrCode()))
         .build();
   }
 

@@ -19,4 +19,13 @@ public class OwnerQrResponseDto {
 
   }
 
+  @Getter
+  @Builder
+  public static class QrDto {
+
+    @JsonProperty(value = "qrcode")
+    private String qrCode;
+
+  }
+
 }

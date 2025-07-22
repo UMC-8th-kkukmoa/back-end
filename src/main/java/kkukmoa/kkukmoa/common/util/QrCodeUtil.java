@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.common.util;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -24,15 +23,14 @@ public class QrCodeUtil {
 
   /**
    *
-   * QR 코드 생성하는 메서드
-   * @param qrCodeInfo 은 변환할 QR코드의 정보
+   * 문자열을 QR 코드 바이트로 변환합니다.
+   *
+   * @param qrSource 은 변환할 QR코드의 source 문자열
    * @return 은 QR 코드에 대한 byte[] 형태로 반환합니다.
-   *  byte[] 형태의 데이터 -> DB 저장하여 관리하고,
-   *  다른 계층에서 byte[] -> Base64 전환 후 사용자에게 반환합니다.
    *
    */
   // 문자열 -> byte[]
-  public static byte[] makeQrCode(String qrCodeInfo) {
+  private static byte[] makeQrCodeByte(String qrSource) {
 
     try {
       // QR코드 생성 옵션 설정
@@ -42,7 +40,7 @@ public class QrCodeUtil {
 
       // QR 코드 생성
       QRCodeWriter qrCodeWriter = new QRCodeWriter();
-      BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeInfo, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HEIGHT, hintMap);
+      BitMatrix bitMatrix = qrCodeWriter.encode(qrSource, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HEIGHT, hintMap);
 
       // QR 코드 이미지 생성
       BufferedImage qrCodeImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
@@ -64,9 +62,18 @@ public class QrCodeUtil {
     return null;
   }
 
+
+  /**
+   *
+   *  문자열을 받아서 Base64로 인코딩된 QR 코드 문자열을 반환하는 메서드입니다.
+   *  문자열을 makeQrCode() 메서드를 통해 byte[] 형태로 받고 -> 본 메서드에서 Base64로 인코딩합니다.
+   *
+   * @param qrSource 은 QR 코드로 변환할 문자열입니다.
+   * @return 인코딩된 QR 정보
+   */
   // byte[] -> String ( Base64 인코딩 )
-  public static String qrCodeToBase64(byte[] qrCodeBytes) {
-    return Base64.getEncoder().encodeToString(qrCodeBytes);
+  public static String qrCodeToBase64(String qrSource) {
+    return Base64.getEncoder().encodeToString(makeQrCodeByte(qrSource));
   }
 
 

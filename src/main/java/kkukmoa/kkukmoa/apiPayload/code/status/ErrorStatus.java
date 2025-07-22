@@ -24,6 +24,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 사장님 관련 에러
     OWNER_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4004", "올바르지 않은 사장님 정보입니다."),
     OWNER_INVALID_SCAN(HttpStatus.BAD_REQUEST, "OWNER4005", "사장님은 스탬프 적립 QR을 스캔할 수 없습니다."),
+    OWNER_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4006", "사장님 소유의 가게가 없습니다."),
 
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),
