@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -17,6 +18,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
 
       - name: .env 파일 생성
         run: |
