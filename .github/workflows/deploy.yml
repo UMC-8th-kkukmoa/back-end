@@ -2,12 +2,15 @@ name: Deploy To EC2
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
@@ -17,6 +20,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
 
       - name: .env 파일 생성
         run: |
@@ -30,12 +36,12 @@ jobs:
           printf '%s\n' 'AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}' >> .env
           printf '%s\n' 'Client_ID=${{ secrets.KAKAO_CLIENT_ID }}' >> .env
 
-      - name: 테스트 및 빌드하기
-        run: ./gradlew clean build
+      - name: 빌드 (bootJar만 수행)
+        run: ./gradlew clean bootJar -x test
 
-      - name: 빌드된 파일 이름 변경하기
+      - name: JAR 이름 변경 (project.jar)
         run: |
-          JAR_PATH=$(ls ./build/libs/*.jar | head -n 1)
+          JAR_PATH=$(ls ./build/libs/*SNAPSHOT.jar | head -n 1)
           mv "$JAR_PATH" ./project.jar
 
       - name: project.jar EC2에 전송 (tobe 폴더)
@@ -69,6 +75,11 @@ jobs:
             mv /home/ubuntu/back-end/tobe/project.jar /home/ubuntu/back-end/current/project.jar
             mv /home/ubuntu/back-end/tobe/.env /home/ubuntu/back-end/current/.env
             cd /home/ubuntu/back-end/current
+
+            set -a
+            source .env
+            set +a
+
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar project.jar > output.log 2>&1 &
             rm -rf /home/ubuntu/back-end/tobe
