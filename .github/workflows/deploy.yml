@@ -10,6 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
@@ -35,13 +36,12 @@ jobs:
           printf '%s\n' 'AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}' >> .env
           printf '%s\n' 'Client_ID=${{ secrets.KAKAO_CLIENT_ID }}' >> .env
 
-      - name: 테스트 및 빌드하기
-        run: ./gradlew clean build -x test
+      - name: 빌드 (bootJar만 수행)
+        run: ./gradlew clean bootJar -x test
 
-
-      - name: 빌드된 파일 이름 변경하기
+      - name: JAR 이름 변경 (project.jar)
         run: |
-          JAR_PATH=$(ls ./build/libs/*.jar | head -n 1)
+          JAR_PATH=$(ls ./build/libs/*SNAPSHOT.jar | head -n 1)
           mv "$JAR_PATH" ./project.jar
 
       - name: project.jar EC2에 전송 (tobe 폴더)
@@ -62,7 +62,7 @@ jobs:
           source: .env
           target: /home/ubuntu/back-end/tobe
 
-      - name: SSH로 EC2에 접속 후 앱 실행
+      - name: SSH로 EC2 접속 후 앱 실행
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
