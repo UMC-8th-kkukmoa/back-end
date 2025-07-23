@@ -11,17 +11,18 @@ import java.io.Serializable;
 public class PaymentRequestDto {
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PaymentPrepareRequestDto implements Serializable {
         private String orderId;
         private String orderName;
         private int amount;
+        public static PaymentPrepareRequestDto of(String orderId, String orderName, int amount) {
+            return new PaymentPrepareRequestDto(orderId, orderName, amount);
+        }
     }
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PaymentConfirmRequestDto {

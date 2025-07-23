@@ -32,8 +32,8 @@ import java.util.UUID;
 @Service
 public class PaymentCommandService {
 
-    private final RedisPaymentPrepareRepository redisRepo;
-    private final PaymentRepository paymentRepo;
+    private final RedisPaymentPrepareRepository redisRepository;
+    private final PaymentRepository paymentRepository;
     private final RestTemplate restTemplate;
     private final AuthService authService;
 
@@ -41,30 +41,35 @@ public class PaymentCommandService {
     private String secretKey;
 
     public PaymentPrepareResponseDto prepare(PaymentRequestDto.PaymentPrepareRequestDto request) {
+        // orderId가 비어있으면 새로 생성
         String orderId = request.getOrderId() != null
                 ? request.getOrderId()
                 : UUID.randomUUID().toString().replace("-", "").substring(0, 20);
 
-        PaymentRequestDto.PaymentPrepareRequestDto saveDto = new PaymentRequestDto.PaymentPrepareRequestDto(
-                orderId,
-                request.getOrderName(),
-                request.getAmount()
+        PaymentRequestDto.PaymentPrepareRequestDto saveDto =
+                PaymentRequestDto.PaymentPrepareRequestDto.of(
+                        orderId,
+                        request.getOrderName(),
+                        request.getAmount()
+                );
+        redisRepository.save(saveDto);
+
+        return new PaymentPrepareResponseDto(
+                saveDto.getOrderId(),
+                saveDto.getOrderName(),
+                saveDto.getAmount()
         );
-
-        redisRepo.save(saveDto);
-
-        return new PaymentPrepareResponseDto(orderId, saveDto.getOrderName(), saveDto.getAmount());
     }
 
-    //토스
     public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req) {
-        PaymentRequestDto.PaymentPrepareRequestDto prepare = redisRepo.findByOrderId(req.getOrderId())
+        PaymentRequestDto.PaymentPrepareRequestDto prepare = redisRepository.findByOrderId(req.getOrderId())
                 .orElseThrow(() -> new PaymentHandler(ErrorStatus.PAYMENT_INFO_NOT_FOUND));
 
         if (req.getAmount() != prepare.getAmount()) {
             throw new PaymentHandler(ErrorStatus.PAYMENT_AMOUNT_MISMATCH);
         }
 
+        // Toss 결제 승인 API 호출
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String encodedKey = Base64.getEncoder().encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
@@ -89,14 +94,12 @@ public class PaymentCommandService {
             throw new PaymentHandler(ErrorStatus.PAYMENT_CONFIRM_RESPONSE_NULL);
         }
 
+        // 사용자 정보 및 결제 저장
         User user = authService.getCurrentUser();
         Payment payment = PaymentConverter.toEntity(prepare, user);
-        payment.applyTossApproval(
-                res.getPaymentKey(),
-                res.getMethod(),
-                OffsetDateTime.parse(res.getApprovedAt()).toLocalDateTime()
-        );
+        payment.updateFromTossResponse(res); // ← Toss 응답 전체 반영 + status 변경까지
 
-        return paymentRepo.save(payment);
+        return paymentRepository.save(payment);
+
     }
 }

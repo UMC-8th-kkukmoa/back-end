@@ -18,10 +18,15 @@ public class Ticket {
     private Long id;
 
     private String name;
-    private String value;
-    private String validDays;
+    private String value; //가격
+    private String validDays; //유효기간
+    private boolean used; // 사용 여부
+
+    private String qrCodeUuid;
+    private String qrCodeImageBase64;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
 }
