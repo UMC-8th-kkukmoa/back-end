@@ -16,20 +16,22 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || authentication.getName() == null) {
+        if (authentication == null || authentication.getPrincipal() == null) {
             throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
         }
 
-        String email = authentication.getName();
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof User user)) {
+            throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
+        }
 
-        return userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        return user;
     }
 
     public Long getCurrentUserId() {
@@ -37,10 +39,6 @@ public class AuthService {
     }
 
     public String getCurrentUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getName() == null) {
-            throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
-        }
-        return authentication.getName();
+        return getCurrentUser().getEmail();
     }
 }
