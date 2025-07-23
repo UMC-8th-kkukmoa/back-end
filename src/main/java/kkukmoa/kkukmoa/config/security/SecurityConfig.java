@@ -49,6 +49,7 @@ public class SecurityConfig {
                                                 "/v3/api-docs/**",
                                                 "/v3/api-docs/**",
                                                 "/users/oauth/kakao",
+                                                "/ws/**",
                                                 "/api/images/**")
                                         .permitAll()
                                         .anyRequest()
