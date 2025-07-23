@@ -46,7 +46,7 @@ public class OwnerController {
             summary = "( 사장님 ) 스탬프 적립 QR 코드 발급·조회 API",
             description =
                     "고객에게 보여줄 스탬프 적립용 QR 코드를 발급 받는 API 입니다.<br>생성한 QR 코드의 유효 시간은 1분입니다. 1분이 지나면 해당"
-                        + " API를 다시 호출하여 새로운 QR 코드를 발급 받으세요.")
+                            + " API를 다시 호출하여 새로운 QR 코드를 발급 받으세요.")
     public ApiResponse<OwnerQrResponseDto.QrDto> getStampQrCode() {
         OwnerQrResponseDto.QrDto stamp = ownerQueryService.getStamp();
         return ApiResponse.onSuccess(stamp);
