@@ -17,6 +17,7 @@ import kkukmoa.kkukmoa.apiPayload.code.ErrorResponseDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.common.util.swagger.ExampleHolder;
+
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,40 +66,46 @@ public class SwaggerConfig {
         openAPI.addExtension("x-swagger-ui-disable-cache", true);
         return openAPI;
     }
+
     @Bean
     public OperationCustomizer customize() {
         return (operation, handlerMethod) -> {
-            ApiErrorCodeExamples errorCodeExamples = handlerMethod.getMethodAnnotation(ApiErrorCodeExamples.class);
+            ApiErrorCodeExamples errorCodeExamples =
+                    handlerMethod.getMethodAnnotation(ApiErrorCodeExamples.class);
             if (errorCodeExamples != null) {
                 generateErrorCodeResponseExample(operation, errorCodeExamples.value());
             }
-
 
             return operation;
         };
     }
 
-    private void generateErrorCodeResponseExample(Operation operation, ErrorStatus[] errorStatuses) {
+    private void generateErrorCodeResponseExample(
+            Operation operation, ErrorStatus[] errorStatuses) {
         ApiResponses responses = operation.getResponses();
 
-        Map<Integer, List<ExampleHolder>> statusWithExampleHolders = Arrays.stream(errorStatuses)
-                .map(errorStatus -> ExampleHolder.builder()
-                        .holder(getSwaggerExample(errorStatus))
-                        .code(errorStatus.getHttpStatus().value())
-                        .name(errorStatus.name())
-                        .build())
-                .collect(Collectors.groupingBy(ExampleHolder::getCode));
+        Map<Integer, List<ExampleHolder>> statusWithExampleHolders =
+                Arrays.stream(errorStatuses)
+                        .map(
+                                errorStatus ->
+                                        ExampleHolder.builder()
+                                                .holder(getSwaggerExample(errorStatus))
+                                                .code(errorStatus.getHttpStatus().value())
+                                                .name(errorStatus.name())
+                                                .build())
+                        .collect(Collectors.groupingBy(ExampleHolder::getCode));
 
         addExamplesToResponses(responses, statusWithExampleHolders);
     }
 
     private void generateErrorCodeResponseExample(Operation operation, ErrorStatus errorStatus) {
         ApiResponses responses = operation.getResponses();
-        ExampleHolder exampleHolder = ExampleHolder.builder()
-                .holder(getSwaggerExample(errorStatus))
-                .name(errorStatus.name())
-                .code(errorStatus.getHttpStatus().value())
-                .build();
+        ExampleHolder exampleHolder =
+                ExampleHolder.builder()
+                        .holder(getSwaggerExample(errorStatus))
+                        .name(errorStatus.name())
+                        .code(errorStatus.getHttpStatus().value())
+                        .build();
         addExamplesToResponses(responses, exampleHolder);
     }
 
@@ -111,18 +118,20 @@ public class SwaggerConfig {
         return example;
     }
 
-    private void addExamplesToResponses(ApiResponses responses,
-                                        Map<Integer, List<ExampleHolder>> statusWithExampleHolders) {
-        statusWithExampleHolders.forEach((status, holders) -> {
-            Content content = new Content();
-            MediaType mediaType = new MediaType();
-            ApiResponse apiResponse = new ApiResponse();
+    private void addExamplesToResponses(
+            ApiResponses responses, Map<Integer, List<ExampleHolder>> statusWithExampleHolders) {
+        statusWithExampleHolders.forEach(
+                (status, holders) -> {
+                    Content content = new Content();
+                    MediaType mediaType = new MediaType();
+                    ApiResponse apiResponse = new ApiResponse();
 
-            holders.forEach(holder -> mediaType.addExamples(holder.getName(), holder.getHolder()));
-            content.addMediaType("application/json", mediaType);
-            apiResponse.setContent(content);
-            responses.addApiResponse(String.valueOf(status), apiResponse);
-        });
+                    holders.forEach(
+                            holder -> mediaType.addExamples(holder.getName(), holder.getHolder()));
+                    content.addMediaType("application/json", mediaType);
+                    apiResponse.setContent(content);
+                    responses.addApiResponse(String.valueOf(status), apiResponse);
+                });
     }
 
     private void addExamplesToResponses(ApiResponses responses, ExampleHolder exampleHolder) {
@@ -135,5 +144,4 @@ public class SwaggerConfig {
         apiResponse.setContent(content);
         responses.addApiResponse(String.valueOf(exampleHolder.getCode()), apiResponse);
     }
-
 }

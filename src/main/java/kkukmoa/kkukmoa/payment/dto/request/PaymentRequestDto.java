@@ -20,13 +20,13 @@ public class PaymentRequestDto {
             return new PaymentPrepareRequestDto(orderId, orderName, amount);
         }
     }
-        @Getter
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class PaymentConfirmRequestDto {
-            private String paymentKey;
-            private String orderId;
-            private int amount;
-        }
 
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PaymentConfirmRequestDto {
+        private String paymentKey;
+        private String orderId;
+        private int amount;
+    }
 }
