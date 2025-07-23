@@ -9,7 +9,10 @@ import kkukmoa.kkukmoa.payment.domain.Payment;
 import kkukmoa.kkukmoa.payment.dto.request.PaymentRequestDto;
 import kkukmoa.kkukmoa.payment.dto.response.PaymentPrepareResponseDto;
 import kkukmoa.kkukmoa.payment.service.PaymentCommandService;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

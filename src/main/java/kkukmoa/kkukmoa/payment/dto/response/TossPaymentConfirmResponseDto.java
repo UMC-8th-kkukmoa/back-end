@@ -11,4 +11,3 @@ public class TossPaymentConfirmResponseDto {
     private String method;
     private String approvedAt;
 }
-

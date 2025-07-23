@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.common.util.swagger;
 
 import io.swagger.v3.oas.models.examples.Example;
+
 import lombok.Builder;
 import lombok.Getter;
 
