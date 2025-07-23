@@ -15,11 +15,11 @@ public class RefreshTokenRepository {
         this.redisTemplate = redisTemplate;
     }
 
-
-
     public void saveToken(Long userId, String refreshToken, long expirationTime) {
         String key = "refreshToken:" + refreshToken; //
-        redisTemplate.opsForValue().set(key, userId.toString(), expirationTime / 1000, TimeUnit.SECONDS);
+        redisTemplate
+                .opsForValue()
+                .set(key, userId.toString(), expirationTime / 1000, TimeUnit.SECONDS);
     }
 
     // Refresh Token으로 userId 가져오기

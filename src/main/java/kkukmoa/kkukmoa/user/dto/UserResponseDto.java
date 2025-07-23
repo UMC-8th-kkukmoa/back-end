@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.user.dto;
 
-import com.nimbusds.oauth2.sdk.TokenResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,4 +16,3 @@ public class UserResponseDto {
         private boolean isNewUser;
     }
 }
-

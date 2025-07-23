@@ -1,11 +1,14 @@
 package kkukmoa.kkukmoa.common.util;
 
+import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,20 +17,22 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-
-        if (authentication == null || authentication.getName() == null) {
+        if (authentication == null || authentication.getPrincipal() == null) {
             throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
         }
 
-        String email = authentication.getName();
-        log.info("현재 인증된 사용자 이메일: {}", email);
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof User user)) {
+            throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
+        }
+
+        return user;
     }
 
     public Long getCurrentUserId() {
@@ -35,10 +40,6 @@ public class AuthService {
     }
 
     public String getCurrentUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getName() == null) {
-            throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
-        }
-        return authentication.getName();
+        return getCurrentUser().getEmail();
     }
 }

@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
+@EnableJpaAuditing
 public class KkukmoaApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KkukmoaApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(KkukmoaApplication.class, args);
+    }
 }

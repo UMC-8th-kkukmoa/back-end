@@ -2,13 +2,12 @@ package kkukmoa.kkukmoa.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.HashMap;
 @Getter
-@NoArgsConstructor //역직렬화를 위한 기본 생성자
+@NoArgsConstructor // 역직렬화를 위한 기본 생성자
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KaKaoUserInfoResponseDto {
 
@@ -39,7 +38,6 @@ public class KaKaoUserInfoResponseDto {
 
             @JsonProperty("profile_image_url")
             private String profileImageUrl;
-
         }
     }
 }
