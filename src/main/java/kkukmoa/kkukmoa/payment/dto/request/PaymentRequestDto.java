@@ -19,7 +19,7 @@ public class PaymentRequestDto {
         public static PaymentPrepareRequestDto of(String orderId, String orderName, int amount) {
             return new PaymentPrepareRequestDto(orderId, orderName, amount);
         }
-
+    }
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
@@ -28,5 +28,5 @@ public class PaymentRequestDto {
             private String orderId;
             private int amount;
         }
-    }
+
 }
