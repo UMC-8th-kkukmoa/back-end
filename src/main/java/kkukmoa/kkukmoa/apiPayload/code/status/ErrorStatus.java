@@ -17,7 +17,7 @@ public enum ErrorStatus implements BaseErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
-
+    INVALID_INPUT(HttpStatus.BAD_REQUEST, "COMMON4001", "입력값이 유효하지 않습니다."),
     // 사용자 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
 
@@ -28,7 +28,6 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),
-
     // QR 코드 관련 에러
     QR_CANNOT_GENERATION(HttpStatus.BAD_REQUEST, "QR400", "QR 코드 생성에 실패했습니다."),
     QR_INVALID(HttpStatus.NOT_FOUND, "QR401", "유효하지 않는 QR 코드입니다."),
@@ -43,12 +42,20 @@ public enum ErrorStatus implements BaseErrorCode {
     NO_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "S3_4002", "파일 확장자가 존재하지 않습니다."),
     INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "S3_4003", "허용되지 않은 확장자입니다."),
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4004", "업로드 가능한 최대 용량을 초과했습니다."),
-    INVALID_URL_FORMAT(HttpStatus.BAD_REQUEST, "S3_4004", "잘못된 이미지 URL 형식입니다."), // ← ✅ 추가된 항목
+    INVALID_URL_FORMAT(HttpStatus.BAD_REQUEST, "S3_4004", "잘못된 이미지 URL 형식입니다."),
     IO_EXCEPTION_ON_IMAGE_UPLOAD(
             HttpStatus.INTERNAL_SERVER_ERROR, "S3_5001", "이미지 업로드 중 오류가 발생했습니다."),
     IO_EXCEPTION_ON_IMAGE_DELETE(
-            HttpStatus.INTERNAL_SERVER_ERROR, "S3_5002", "이미지 삭제 중 오류가 발생했습니다.");
-
+            HttpStatus.INTERNAL_SERVER_ERROR, "S3_5002", "이미지 삭제 중 오류가 발생했습니다."),
+    // 결제 관련 에러
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "PAYMENT4001", "결제 정보가 존재하지 않습니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT4002", "결제 금액이 일치하지 않습니다."),
+    PAYMENT_CONFIRM_RESPONSE_NULL(HttpStatus.BAD_REQUEST, "PAY4002", "결제 승인 응답이 비어 있습니다."),
+    PAYMENT_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "PAYMENT4003", "이미 승인된 결제입니다."),
+    PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT4004", "결제 승인이 실패했습니다."),
+    PAYMENT_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT4040", "결제 정보가 존재하지 않습니다."),
+    PAYMENT_REDIS_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PAYMENT5001", "결제 정보 저장에 실패했습니다."),
+    INVALID_PAYMENT_REQUEST(HttpStatus.BAD_REQUEST, "PAYMENT4005", "유효하지 않은 결제 승인 요청입니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
