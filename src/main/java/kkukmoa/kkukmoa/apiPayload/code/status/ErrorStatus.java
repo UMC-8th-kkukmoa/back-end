@@ -37,7 +37,18 @@ public enum ErrorStatus implements BaseErrorCode {
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON400", "존재하지 않는 쿠폰입니다."),
     COUPON_INVALID_USED_PLACE(HttpStatus.BAD_REQUEST, "COUPON401", "올바르지 않은 사용처(사장)입니다."),
     COUPON_IS_USED(HttpStatus.BAD_REQUEST, "COUPON402", "이미 사용한 쿠폰입니다."),
-    ;
+    
+    // S3 관련 에러
+    IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "S3_4001", "업로드 된 이미지가 존재하지 않습니다.."),
+    NO_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "S3_4002", "파일 확장자가 존재하지 않습니다."),
+    INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "S3_4003", "허용되지 않은 확장자입니다."),
+    FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE4004", "업로드 가능한 최대 용량을 초과했습니다."),
+    INVALID_URL_FORMAT(HttpStatus.BAD_REQUEST, "S3_4004", "잘못된 이미지 URL 형식입니다."), // ← ✅ 추가된 항목
+    IO_EXCEPTION_ON_IMAGE_UPLOAD(
+            HttpStatus.INTERNAL_SERVER_ERROR, "S3_5001", "이미지 업로드 중 오류가 발생했습니다."),
+    IO_EXCEPTION_ON_IMAGE_DELETE(
+            HttpStatus.INTERNAL_SERVER_ERROR, "S3_5002", "이미지 삭제 중 오류가 발생했습니다.")
+      ;
 
     private final HttpStatus httpStatus;
     private final String code;
