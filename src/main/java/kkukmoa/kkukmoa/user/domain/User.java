@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import kkukmoa.kkukmoa.common.BaseEntity;
 
-import kkukmoa.kkukmoa.store.domain.Store;
 import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;

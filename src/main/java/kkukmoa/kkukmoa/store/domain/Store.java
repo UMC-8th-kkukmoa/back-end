@@ -6,7 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,15 +22,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Store {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  // TODO: 필요한 필드 생성
+    // TODO: 필요한 필드 생성
 
-  // 연관관계 매핑
-  @OneToOne
-  @JoinColumn(name = "user_id")
-  private User owner;
-
+    // 연관관계 매핑
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 }

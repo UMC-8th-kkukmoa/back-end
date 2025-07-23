@@ -10,8 +10,8 @@ import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
-
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -120,12 +120,14 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getEmailFromToken(token);
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND)); // 이걸 한 번만 조회
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND)); // 이걸 한 번만 조회
 
         // 여기서 User를 Principal로 넣는다!
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-
     }
 
     public long getExpiration(String token) {

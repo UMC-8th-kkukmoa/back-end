@@ -5,7 +5,7 @@ import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 
 public class QrHandler extends GeneralException {
 
-  public QrHandler(BaseErrorCode code) {
-    super(code);
-  }
+    public QrHandler(BaseErrorCode code) {
+        super(code);
+    }
 }
