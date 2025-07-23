@@ -13,4 +13,3 @@ public @interface ApiErrorCodeExamples {
 
     ErrorStatus[] value();
 }
-

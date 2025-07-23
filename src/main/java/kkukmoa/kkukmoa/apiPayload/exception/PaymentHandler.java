@@ -7,4 +7,3 @@ public class PaymentHandler extends GeneralException {
         super(code);
     }
 }
-

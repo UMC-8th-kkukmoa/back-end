@@ -2,18 +2,20 @@ package kkukmoa.kkukmoa.payment.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.PaymentHandler;
-import kkukmoa.kkukmoa.payment.dto.request.PaymentRequestDto;
-import kkukmoa.kkukmoa.payment.dto.response.PaymentPrepareResponseDto;
-import kkukmoa.kkukmoa.payment.dto.response.TossPaymentConfirmResponseDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.payment.converter.PaymentConverter;
 import kkukmoa.kkukmoa.payment.domain.Payment;
+import kkukmoa.kkukmoa.payment.dto.request.PaymentRequestDto;
+import kkukmoa.kkukmoa.payment.dto.response.PaymentPrepareResponseDto;
+import kkukmoa.kkukmoa.payment.dto.response.TossPaymentConfirmResponseDto;
 import kkukmoa.kkukmoa.payment.repository.PaymentRepository;
 import kkukmoa.kkukmoa.payment.repository.RedisPaymentPrepareRepository;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
@@ -42,28 +43,25 @@ public class PaymentCommandService {
 
     public PaymentPrepareResponseDto prepare(PaymentRequestDto.PaymentPrepareRequestDto request) {
         // orderId가 비어있으면 새로 생성
-        String orderId = request.getOrderId() != null
-                ? request.getOrderId()
-                : UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        String orderId =
+                request.getOrderId() != null
+                        ? request.getOrderId()
+                        : UUID.randomUUID().toString().replace("-", "").substring(0, 20);
 
         PaymentRequestDto.PaymentPrepareRequestDto saveDto =
                 PaymentRequestDto.PaymentPrepareRequestDto.of(
-                        orderId,
-                        request.getOrderName(),
-                        request.getAmount()
-                );
+                        orderId, request.getOrderName(), request.getAmount());
         redisRepository.save(saveDto);
 
         return new PaymentPrepareResponseDto(
-                saveDto.getOrderId(),
-                saveDto.getOrderName(),
-                saveDto.getAmount()
-        );
+                saveDto.getOrderId(), saveDto.getOrderName(), saveDto.getAmount());
     }
 
     public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req) {
-        PaymentRequestDto.PaymentPrepareRequestDto prepare = redisRepository.findByOrderId(req.getOrderId())
-                .orElseThrow(() -> new PaymentHandler(ErrorStatus.PAYMENT_INFO_NOT_FOUND));
+        PaymentRequestDto.PaymentPrepareRequestDto prepare =
+                redisRepository
+                        .findByOrderId(req.getOrderId())
+                        .orElseThrow(() -> new PaymentHandler(ErrorStatus.PAYMENT_INFO_NOT_FOUND));
 
         if (req.getAmount() != prepare.getAmount()) {
             throw new PaymentHandler(ErrorStatus.PAYMENT_AMOUNT_MISMATCH);
@@ -72,21 +70,23 @@ public class PaymentCommandService {
         // Toss 결제 승인 API 호출
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String encodedKey = Base64.getEncoder().encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
+        String encodedKey =
+                Base64.getEncoder()
+                        .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
         headers.set("Authorization", "Basic " + encodedKey);
 
-        Map<String, Object> body = Map.of(
-                "paymentKey", req.getPaymentKey(),
-                "orderId", req.getOrderId(),
-                "amount", req.getAmount()
-        );
+        Map<String, Object> body =
+                Map.of(
+                        "paymentKey", req.getPaymentKey(),
+                        "orderId", req.getOrderId(),
+                        "amount", req.getAmount());
 
         HttpEntity<?> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<TossPaymentConfirmResponseDto> response = restTemplate.postForEntity(
-                "https://api.tosspayments.com/v1/payments/confirm",
-                entity,
-                TossPaymentConfirmResponseDto.class
-        );
+        ResponseEntity<TossPaymentConfirmResponseDto> response =
+                restTemplate.postForEntity(
+                        "https://api.tosspayments.com/v1/payments/confirm",
+                        entity,
+                        TossPaymentConfirmResponseDto.class);
 
         TossPaymentConfirmResponseDto res = response.getBody();
         if (res == null) {
@@ -100,6 +100,5 @@ public class PaymentCommandService {
         payment.updateFromTossResponse(res); // ← Toss 응답 전체 반영 + status 변경까지
 
         return paymentRepository.save(payment);
-
     }
 }

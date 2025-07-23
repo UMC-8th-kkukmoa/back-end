@@ -1,11 +1,14 @@
 package kkukmoa.kkukmoa.ticket.domain;
 
 import jakarta.persistence.*;
+
+import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import kkukmoa.kkukmoa.user.domain.User;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -18,8 +21,8 @@ public class Ticket {
     private Long id;
 
     private String name;
-    private String value; //가격
-    private String validDays; //유효기간
+    private String value; // 가격
+    private String validDays; // 유효기간
     private boolean used; // 사용 여부
 
     private String qrCodeUuid;
@@ -28,5 +31,4 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 }

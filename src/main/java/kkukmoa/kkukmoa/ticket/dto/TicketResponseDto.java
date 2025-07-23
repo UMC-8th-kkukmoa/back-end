@@ -12,6 +12,7 @@ public class TicketResponseDto {
         private String validDays;
         private boolean used;
     }
+
     @Getter
     @Builder
     public static class TicketDetailResponseDto {

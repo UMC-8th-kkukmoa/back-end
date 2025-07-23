@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.common.util;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
-import kkukmoa.kkukmoa.user.repository.UserRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
