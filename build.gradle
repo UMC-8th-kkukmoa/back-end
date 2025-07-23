@@ -70,7 +70,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket:3.3.2'
 	implementation 'org.springframework.security:spring-security-messaging'
 	// S3
-	implementation platform("software.amazon.awssdk:bom:2.21.0")
+	implementation platform("software.amazon.awssdk:bom:2.25.64")
 	implementation 'software.amazon.awssdk:s3'
 
 }
