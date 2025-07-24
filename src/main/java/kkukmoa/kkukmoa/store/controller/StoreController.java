@@ -24,8 +24,8 @@ public class StoreController {
     @PostMapping
     @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
     public ApiResponse<StoreIdResponseDto> createStore(
-            @RequestPart StoreRequestDto request,
-            @RequestPart MultipartFile storeImage
+            @RequestPart("request") StoreRequestDto request,
+            @RequestPart(value = "storeImage", required = false) MultipartFile storeImage
     ){
         return ApiResponse.onSuccess(storeService.createStore(request, storeImage));
     }
