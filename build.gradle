@@ -26,6 +26,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -34,6 +36,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 
 
 	//jwt
@@ -50,8 +53,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
 
 	// Swagger/OpenAPI
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
-
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -60,8 +62,15 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// QR CODE 관련
+	implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
+	implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
+
+	// Web Socket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket:3.3.2'
+	implementation 'org.springframework.security:spring-security-messaging'
 	// S3
-	implementation platform("software.amazon.awssdk:bom:2.21.0")
+	implementation platform("software.amazon.awssdk:bom:2.25.64")
 	implementation 'software.amazon.awssdk:s3'
 
 	// hibernate-spatial 의존성 추가

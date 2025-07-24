@@ -5,9 +5,12 @@ import io.jsonwebtoken.security.Keys;
 
 import jakarta.annotation.PostConstruct;
 
+import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
+import kkukmoa.kkukmoa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,7 @@ public class JwtTokenProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     private Key key;
 
@@ -117,10 +120,14 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getEmailFromToken(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND)); // 이걸 한 번만 조회
 
-        return new UsernamePasswordAuthenticationToken(
-                userDetails, "", userDetails.getAuthorities());
+        // 여기서 User를 Principal로 넣는다!
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
     public long getExpiration(String token) {

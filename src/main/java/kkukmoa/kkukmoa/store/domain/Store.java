@@ -5,10 +5,7 @@ import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,4 +46,8 @@ public class Store extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 }
