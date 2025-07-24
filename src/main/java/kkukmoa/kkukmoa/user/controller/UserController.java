@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@Tag(name = "사용자 API", description = "사용자 관련 API 입니다.")
 public class UserController {
 
     private final UserCommandService userCommandService;

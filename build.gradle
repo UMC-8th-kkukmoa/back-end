@@ -73,6 +73,8 @@ dependencies {
 	implementation platform("software.amazon.awssdk:bom:2.25.64")
 	implementation 'software.amazon.awssdk:s3'
 
+	// hibernate-spatial 의존성 추가
+	implementation 'org.hibernate:hibernate-spatial:6.2.13.Final'
 }
 
 tasks.named('test') {
