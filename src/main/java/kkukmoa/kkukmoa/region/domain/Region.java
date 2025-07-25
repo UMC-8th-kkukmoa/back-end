@@ -1,13 +1,15 @@
 package kkukmoa.kkukmoa.region.domain;
 
 import jakarta.persistence.*;
+
 import kkukmoa.kkukmoa.common.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
+import org.locationtech.jts.geom.Point;
 
 @Entity
 @Getter
@@ -28,5 +30,4 @@ public class Region extends BaseEntity {
 
     @Column(name = "location", columnDefinition = "POINT")
     private Point location;
-
 }
