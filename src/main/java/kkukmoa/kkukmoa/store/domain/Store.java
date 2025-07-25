@@ -1,10 +1,12 @@
 package kkukmoa.kkukmoa.store.domain;
 
 import jakarta.persistence.*;
+
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.*;
 
 import java.time.LocalDateTime;

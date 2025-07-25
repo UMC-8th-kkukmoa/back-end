@@ -1,17 +1,19 @@
 package kkukmoa.kkukmoa.store.service;
 
-import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.converter.CategoryConverter;
+import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.region.converter.RegionConverter;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.Store;
+import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
-import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,8 +34,12 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request, MultipartFile storeImage) {
 
-        Region region = regionConverter.toRegion(request.getAddress(), request.getDetailAddress(),
-                request.getLatitude(), request.getLongitude());
+        Region region =
+                regionConverter.toRegion(
+                        request.getAddress(),
+                        request.getDetailAddress(),
+                        request.getLatitude(),
+                        request.getLongitude());
         Category category = categoryConverter.toCategory(request.getCategory());
         Store store = createAndSaveStore(request, region, category);
 
@@ -44,9 +50,8 @@ public class StoreServiceImpl implements StoreService {
 
         Store newStore = storeConverter.toStore(request, region, category);
 
-        Store storeWithMerchantNumber = newStore.toBuilder()
-                .merchantNumber(createMerchantNumber())
-                .build();
+        Store storeWithMerchantNumber =
+                newStore.toBuilder().merchantNumber(createMerchantNumber()).build();
 
         return storeRepository.save(storeWithMerchantNumber);
     }
@@ -63,19 +68,24 @@ public class StoreServiceImpl implements StoreService {
     public List<StoreListResponseDto> getStores(double latitude, double longitude) {
         List<Store> stores = storeRepository.findAll();
         return stores.stream()
-                .map(store -> storeConverter.toStoreListResponseDto(
-                        store,
-                        calculateDistance(latitude, longitude,
-                                store.getRegion().getLatitude(),
-                                store.getRegion().getLongitude())
-                ))
+                .map(
+                        store ->
+                                storeConverter.toStoreListResponseDto(
+                                        store,
+                                        calculateDistance(
+                                                latitude,
+                                                longitude,
+                                                store.getRegion().getLatitude(),
+                                                store.getRegion().getLongitude())))
                 .collect(Collectors.toList());
     }
 
     @Override
     public StoreDetailResponseDto getStoreDetail(Long storeId) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+        Store store =
+                storeRepository
+                        .findById(storeId)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
         return storeConverter.toStoreDetailResponseDto(store);
     }
 
@@ -83,16 +93,19 @@ public class StoreServiceImpl implements StoreService {
         final int R = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                        + Math.cos(Math.toRadians(lat1))
+                                * Math.cos(Math.toRadians(lat2))
+                                * Math.sin(dLon / 2)
+                                * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
     }
 
-    //todo s3 추가하기.
-//    public Store createAndSaveStoreImage(MultipartFile storeImage, Store store){
-//
-//
-//    }
+    // todo s3 추가하기.
+    //    public Store createAndSaveStoreImage(MultipartFile storeImage, Store store){
+    //
+    //
+    //    }
 }
