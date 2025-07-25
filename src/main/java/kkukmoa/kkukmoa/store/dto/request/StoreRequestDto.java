@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
@@ -14,14 +14,16 @@ public class StoreRequestDto {
 
     private String number;
 
-    private LocalDateTime openingHours;
-    private LocalDateTime closingHours;
+    private LocalTime openingHours;
+    private LocalTime closingHours;
 
     private String address;
     private String detailAddress;
 
     private double latitude;
     private double longitude;
+
+    private String storeImage;
 
     private String category;
 }

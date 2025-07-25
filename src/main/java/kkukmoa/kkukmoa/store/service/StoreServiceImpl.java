@@ -1,5 +1,6 @@
 package kkukmoa.kkukmoa.store.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.converter.CategoryConverter;
 import kkukmoa.kkukmoa.region.converter.RegionConverter;
@@ -40,7 +41,7 @@ public class StoreServiceImpl implements StoreService {
         return new StoreIdResponseDto(store.getId());
     }
 
-    public Store createAndSaveStore(StoreRequestDto request, Region region, Category category) {
+    private Store createAndSaveStore(StoreRequestDto request, Region region, Category category) {
 
         Store newStore = storeConverter.toStore(request, region, category);
 
@@ -51,9 +52,14 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.save(storeWithMerchantNumber);
     }
 
-    public String createMerchantNumber() {
+    private String createMerchantNumber() {
         String merchantNumber;
+        int attempts = 0;
+        final int MAX_ATTEMPTS = 100;
         do {
+            if (attempts++ >= MAX_ATTEMPTS) {
+                throw new IllegalStateException("가맹점 번호 생성 실패: 최대 시도 횟수 초과");
+            }
             merchantNumber = String.format("%010d", random.nextLong(1_000_000_0000L));
         } while (storeRepository.findByMerchantNumber(merchantNumber).isPresent());
         return merchantNumber;
@@ -75,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreDetailResponseDto getStoreDetail(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게가 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + storeId));
         return storeConverter.toStoreDetailResponseDto(store);
     }
 

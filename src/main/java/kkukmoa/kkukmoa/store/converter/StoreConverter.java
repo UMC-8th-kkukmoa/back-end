@@ -19,6 +19,7 @@ public class StoreConverter {
                 .number(request.getNumber())
                 .closingHours(request.getClosingHours())
                 .openingHours(request.getOpeningHours())
+                .storeImage(request.getStoreImage())
                 .region(region)
                 .category(category)
                 .build();
