@@ -46,8 +46,7 @@ public class Stamp {
     @JoinColumn(name = "store_id")
     private Store store; // Stamp -> Store 단방향 매핑
 
-    public void saveStamp(){
+    public void saveStamp() {
         this.count++;
     }
-
 }

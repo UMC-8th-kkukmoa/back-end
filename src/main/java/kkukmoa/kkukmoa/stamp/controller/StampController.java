@@ -59,10 +59,12 @@ public class StampController {
     }
 
     @PutMapping("/coupons")
-    @Operation(summary = "스탬프 적립 API", description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
-    public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(@RequestParam("qr") String qrCode) {
+    @Operation(
+            summary = "스탬프 적립 API",
+            description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
+    public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(
+            @RequestParam("qr") String qrCode) {
         StampResponseDto.StampSaveDto saveDto = stampCommandService.save(qrCode);
         return ApiResponse.onSuccess(saveDto);
     }
-
 }

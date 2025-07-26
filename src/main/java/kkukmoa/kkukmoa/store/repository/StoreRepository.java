@@ -11,6 +11,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByMerchantNumber(String merchantNumber);
 
     Optional<Store> findByOwner(User owner);
-
-
 }
