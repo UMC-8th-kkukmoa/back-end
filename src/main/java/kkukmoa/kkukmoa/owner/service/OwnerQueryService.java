@@ -29,6 +29,8 @@ public class OwnerQueryService {
     private final StoreRepository storeRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
+    private int qrCodeExpirationTime = 300;
+
     /**
      * 스탬프의 QR 코드를 생성하고 반환합니다. QR 코드 생성 시, QR 코드 정보를
      *
@@ -81,10 +83,10 @@ public class OwnerQueryService {
 
         // 새로운 QR 소스 저장
         // key: storeId, value: QR
-        redisTemplate.opsForValue().set(qrCodeKey, qrSource, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(qrCodeKey, qrSource, qrCodeExpirationTime, TimeUnit.SECONDS);
 
         // key: QR, value: storeId
-        redisTemplate.opsForValue().set(qrStoreKey, storeId, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(qrStoreKey, storeId, qrCodeExpirationTime, TimeUnit.SECONDS);
 
         log.info("새로 생성한 qrSource = {}", qrSource);
     }
