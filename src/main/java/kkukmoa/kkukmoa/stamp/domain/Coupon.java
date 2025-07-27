@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.stamp.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,15 +49,15 @@ public class Coupon {
     //  @Column(columnDefinition = "MEDIUMBLOB")
     //  private byte[] qrImage;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 255)
     private String qrCode;
 
     // 연관관계 매핑
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // Coupon -> User 단방향 매핑
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store; // Coupon -> Store 단방향 매핑
 
