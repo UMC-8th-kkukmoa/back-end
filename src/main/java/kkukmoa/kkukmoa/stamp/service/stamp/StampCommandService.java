@@ -62,12 +62,14 @@ public class StampCommandService {
         Store store;
 
         // 스탬프 유무에 따른 처리
-        if(optionalStamp.isPresent()) { // 스탬프가 존재하면
+        if (optionalStamp.isPresent()) { // 스탬프가 존재하면
             stamp = optionalStamp.get();
             store = stamp.getStore();
         } else { // 스탬프가 존재하지 않으면
-            store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new QrHandler(ErrorStatus.STORE_NOT_FOUND));
+            store =
+                    storeRepository
+                            .findById(storeId)
+                            .orElseThrow(() -> new QrHandler(ErrorStatus.STORE_NOT_FOUND));
             stamp = makeStamp(user, store);
         }
 

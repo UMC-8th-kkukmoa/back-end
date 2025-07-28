@@ -10,8 +10,8 @@ import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponDto;
 import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
 import kkukmoa.kkukmoa.store.repository.CategoryRepository;
-
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -34,8 +34,10 @@ public class CouponQueryService {
         User user = authService.getCurrentUser();
 
         // 요청 받은 카테고리 예외 처리
-        Category category = categoryRepository.findByName(storeType)
-            .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+        Category category =
+                categoryRepository
+                        .findByName(storeType)
+                        .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
         // 쿠폰 조회
         List<Coupon> couponList = couponRepository.findByCategoryAndUser(category, user);
@@ -44,7 +46,8 @@ public class CouponQueryService {
         List<couponDto> couponDtoList = CouponConverter.toCouponDtoList(couponList);
 
         // List<dto> -> 응답 형태로 변환 후 반환
-        return CouponResponseDto.couponListDto.builder()
+        return CouponResponseDto.couponListDto
+                .builder()
                 .coupons(couponDtoList)
                 .total(couponList.size())
                 .build();

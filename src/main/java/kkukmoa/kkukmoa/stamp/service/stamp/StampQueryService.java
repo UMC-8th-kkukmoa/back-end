@@ -11,8 +11,8 @@ import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampListDto;
 import kkukmoa.kkukmoa.stamp.repository.StampRepository;
 import kkukmoa.kkukmoa.store.repository.CategoryRepository;
-
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -35,8 +35,10 @@ public class StampQueryService {
         User user = authService.getCurrentUser();
 
         // 요청 받은 카테고리 예외 처리
-        Category category = categoryRepository.findByName(storeType)
-            .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+        Category category =
+                categoryRepository
+                        .findByName(storeType)
+                        .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
         // 스탬프 조회 ( 가게, 카테고리 fetch join )
         List<Stamp> stampList = stampRepository.findByCategoryAndUser(category, user);
@@ -45,9 +47,6 @@ public class StampQueryService {
         List<StampDto> stampListDto = StampConverter.toStampDtoList(stampList);
 
         // List<dto> -> 응답 형태로 변환 후 반환
-        return StampListDto.builder()
-            .stamps(stampListDto)
-            .total(stampList.size())
-            .build();
+        return StampListDto.builder().stamps(stampListDto).total(stampList.size()).build();
     }
 }

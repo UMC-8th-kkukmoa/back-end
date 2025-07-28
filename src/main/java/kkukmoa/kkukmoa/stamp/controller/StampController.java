@@ -38,10 +38,8 @@ public class StampController {
 
     @GetMapping("/")
     @Operation(summary = "스탬프 목록 조회 API", description = "스탬프 타입을 입력하세요.")
-    @ApiErrorCodeExamples(value = {
-        ErrorStatus.STORE_CATEGORY_NOT_FOUND,
-        ErrorStatus.AUTHENTICATION_FAILED
-    })
+    @ApiErrorCodeExamples(
+            value = {ErrorStatus.STORE_CATEGORY_NOT_FOUND, ErrorStatus.AUTHENTICATION_FAILED})
     public ApiResponse<StampResponseDto.StampListDto> stamps(
             @RequestParam(name = "store-type") String storeType) {
         StampListDto stampList = stampQueryService.stampList(storeType);
@@ -52,10 +50,8 @@ public class StampController {
     @Operation(
             summary = "내 쿠폰 목록 조회 API",
             description = "내가 소유한 쿠폰의 목록을 반환합니다.\n쿠폰의 QR코드는 Base64로 형태로 인코딩 되어있습니다.")
-    @ApiErrorCodeExamples(value = {
-        ErrorStatus.AUTHENTICATION_FAILED,
-        ErrorStatus.STORE_CATEGORY_NOT_FOUND
-    })
+    @ApiErrorCodeExamples(
+            value = {ErrorStatus.AUTHENTICATION_FAILED, ErrorStatus.STORE_CATEGORY_NOT_FOUND})
     public ApiResponse<CouponResponseDto.couponListDto> coupons(
             @RequestParam(name = "store-type") String storeType) {
         couponListDto couponListDto = couponQueryService.couponList(storeType);
@@ -64,25 +60,23 @@ public class StampController {
 
     @GetMapping("/coupons/make")
     @Operation(summary = "테스트용 쿠폰 생성 API", description = "테스트용 쿠폰 생성 API")
-    @ApiErrorCodeExamples({
-
-    })
+    @ApiErrorCodeExamples({})
     public ResponseEntity<Coupon> makeCoupon() {
         return ResponseEntity.ok(couponCommandService.saveCoupon());
     }
 
     @PutMapping("/coupons")
     @Operation(
-        summary = "스탬프 적립 API",
-        description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
+            summary = "스탬프 적립 API",
+            description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
     @ApiErrorCodeExamples({
         ErrorStatus.QR_EXPIRED,
         ErrorStatus.STORE_NOT_FOUND,
         ErrorStatus.AUTHENTICATION_FAILED
     })
-    public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(@RequestParam("qr") String qrCode) {
+    public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(
+            @RequestParam("qr") String qrCode) {
         StampResponseDto.StampSaveDto saveDto = stampCommandService.save(qrCode);
         return ApiResponse.onSuccess(saveDto);
     }
-
 }
