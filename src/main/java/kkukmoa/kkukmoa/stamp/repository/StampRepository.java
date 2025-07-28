@@ -14,6 +14,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface StampRepository extends JpaRepository<Stamp, Long> {
 
+    @Query(
+        """
+        SELECT stamp FROM Stamp stamp
+        JOIN FETCH Store store ON store.id = :storeId AND stamp.store = store
+        WHERE stamp.user = :user
+        """
+    )
+    Optional<Stamp> findByUserAndStore(@Param("user") User user, @Param("storeId") Long storeId);
+
     Optional<Stamp> findByUserAndStore(User user, Store store);
 
     @Query(

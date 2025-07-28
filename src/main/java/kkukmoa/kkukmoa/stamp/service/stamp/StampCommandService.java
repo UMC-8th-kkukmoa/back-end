@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.stamp.service.stamp;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.StoreHandler;
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
 import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
@@ -43,6 +42,8 @@ public class StampCommandService {
     @Transactional(readOnly = false)
     public StampResponseDto.StampSaveDto save(String qrCode) {
 
+        User user = authService.getCurrentUser();
+
         // key = REDIS_QR_PREFIX(접두사) + qrCode
         String qrStoreKey = REDIS_QR_PREFIX + qrCode;
 
@@ -52,18 +53,23 @@ public class StampCommandService {
                         .filter(value -> value.matches("\\d+"))
                         .map(Long::parseLong)
                         .orElseThrow(() -> new QrHandler(ErrorStatus.QR_EXPIRED));
-
-        // storeId로 가게 조회하기
-        Store store =
-                storeRepository
-                        .findById(storeId)
-                        .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_NOT_FOUND));
         log.info("storeId = {}", storeId);
 
-        // 스탬프 조회. 없으면 새로 생성
-        User user = authService.getCurrentUser();
-        Stamp stamp =
-                stampRepository.findByUserAndStore(user, store).orElse(makeStamp(user, store));
+        // 스탬프 조회
+        Optional<Stamp> optionalStamp = stampRepository.findByUserAndStore(user, storeId);
+
+        Stamp stamp;
+        Store store;
+
+        // 스탬프 유무에 따른 처리
+        if(optionalStamp.isPresent()) { // 스탬프가 존재하면
+            stamp = optionalStamp.get();
+            store = stamp.getStore();
+        } else { // 스탬프가 존재하지 않으면
+            store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new QrHandler(ErrorStatus.STORE_NOT_FOUND));
+            stamp = makeStamp(user, store);
+        }
 
         // 스탬프 적립
         stamp.saveStamp();
@@ -82,7 +88,7 @@ public class StampCommandService {
     }
 
     private Stamp makeStamp(User user, Store store) {
-        return Stamp.builder().user(user).store(store).count(1).build();
+        return Stamp.builder().user(user).store(store).count(0).build();
     }
 
     private Coupon makeCoupon(User user, Store store) {
