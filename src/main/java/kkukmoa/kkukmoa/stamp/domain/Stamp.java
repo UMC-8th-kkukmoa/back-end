@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
 
@@ -25,7 +26,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Stamp {
+public class Stamp extends BaseEntity {
 
     public static int maxCount = 10;
 

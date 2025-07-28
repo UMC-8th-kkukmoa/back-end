@@ -59,8 +59,9 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PAYMENT_REQUEST(HttpStatus.BAD_REQUEST, "PAYMENT4005", "유효하지 않은 결제 승인 요청입니다."),
 
     // 가게 관련 에러
-    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다.");
-
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다."),
+    STORE_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),
+    ;
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
