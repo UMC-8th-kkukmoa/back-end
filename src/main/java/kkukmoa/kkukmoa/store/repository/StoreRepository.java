@@ -1,5 +1,6 @@
 package kkukmoa.kkukmoa.store.repository;
 
+import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
 
@@ -12,5 +13,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByOwner(User owner);
 
+    Optional<Store> findByCategory(Category category);
 
 }
