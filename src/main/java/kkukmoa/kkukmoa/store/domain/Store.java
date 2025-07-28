@@ -45,7 +45,7 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User owner;
 }
