@@ -72,7 +72,9 @@ public class StampController {
     }
 
     @PutMapping("/coupons")
-    @Operation(summary = "스탬프 적립 API", description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
+    @Operation(
+        summary = "스탬프 적립 API",
+        description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
     @ApiErrorCodeExamples({
         ErrorStatus.QR_EXPIRED,
         ErrorStatus.STORE_NOT_FOUND,

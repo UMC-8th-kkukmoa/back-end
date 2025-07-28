@@ -5,7 +5,7 @@ import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 
 public class StoreHandler extends GeneralException {
 
-  public StoreHandler(BaseErrorCode code) {
-    super(code);
-  }
+    public StoreHandler(BaseErrorCode code) {
+        super(code);
+    }
 }

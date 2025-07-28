@@ -83,10 +83,14 @@ public class OwnerQueryService {
 
         // 새로운 QR 소스 저장
         // key: storeId, value: QR
-        redisTemplate.opsForValue().set(qrCodeKey, qrSource, qrCodeExpirationTime, TimeUnit.SECONDS);
+        redisTemplate
+                .opsForValue()
+                .set(qrCodeKey, qrSource, qrCodeExpirationTime, TimeUnit.SECONDS);
 
         // key: QR, value: storeId
-        redisTemplate.opsForValue().set(qrStoreKey, storeId, qrCodeExpirationTime, TimeUnit.SECONDS);
+        redisTemplate
+                .opsForValue()
+                .set(qrStoreKey, storeId, qrCodeExpirationTime, TimeUnit.SECONDS);
 
         log.info("새로 생성한 qrSource = {}", qrSource);
     }
