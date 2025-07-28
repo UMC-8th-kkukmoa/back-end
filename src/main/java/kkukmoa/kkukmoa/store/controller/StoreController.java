@@ -39,9 +39,12 @@ public class StoreController {
             @RequestParam @DecimalMin(value = "-90.0", message = "위도는 -90.0 이상이어야 합니다")
                         @DecimalMax(value = "90.0", message = "위도는 90.0 이하여야 합니다") double latitude,
             @RequestParam @DecimalMin(value = "-180.0", message = "경도는 -180.0 이상이어야 합니다")
-                        @DecimalMax(value = "180.0", message = "경도는 180.0 이하여야 합니다") double longitude
+                        @DecimalMax(value = "180.0", message = "경도는 180.0 이하여야 합니다") double longitude,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit
+
     ) {
-        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude));
+        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, offset, limit));
     }
 
     @GetMapping("/{storeId}")
@@ -50,5 +53,19 @@ public class StoreController {
             @PathVariable Long storeId
     ) {
         return ApiResponse.onSuccess(storeService.getStoreDetail(storeId));
+    }
+
+    @GetMapping("/category")
+    @Operation(summary = "카테고리별 가게 목록 조회 API", description = "카테고리명과 현재 위치 기준으로 해당 카테고리 가게 목록을 조회합니다.")
+    public ApiResponse<List<StoreListResponseDto>> getStoresByCategory(
+            @RequestParam String categoryName,
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        return ApiResponse.onSuccess(
+                storeService.getStoresByCategory(categoryName, latitude, longitude, offset, limit)
+        );
     }
 }

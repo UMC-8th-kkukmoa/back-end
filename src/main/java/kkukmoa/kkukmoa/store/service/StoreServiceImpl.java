@@ -3,6 +3,8 @@ package kkukmoa.kkukmoa.store.service;
 import jakarta.persistence.EntityNotFoundException;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.converter.CategoryConverter;
+import kkukmoa.kkukmoa.category.domain.CategoryType;
+import kkukmoa.kkukmoa.category.repository.CategoryRepository;
 import kkukmoa.kkukmoa.region.converter.RegionConverter;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
@@ -27,6 +29,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
     private final RegionConverter regionConverter;
+    private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
     private final Random random = new Random();
 
@@ -35,7 +38,9 @@ public class StoreServiceImpl implements StoreService {
 
         Region region = regionConverter.toRegion(request.getAddress(), request.getDetailAddress(),
                 request.getLatitude(), request.getLongitude());
-        Category category = categoryConverter.toCategory(request.getCategory());
+        CategoryType categoryType = CategoryType.fromDisplayName(request.getCategory());
+        Category category = categoryRepository.findByType(categoryType)
+                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
         Store store = createAndSaveStore(request, region, category);
 
         return new StoreIdResponseDto(store.getId());
@@ -53,6 +58,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private String createMerchantNumber() {
+
         String merchantNumber;
         int attempts = 0;
         final int MAX_ATTEMPTS = 100;
@@ -66,8 +72,10 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreListResponseDto> getStores(double latitude, double longitude) {
+    public List<StoreListResponseDto> getStores(double latitude, double longitude, int offset, int limit) {
+
         List<Store> stores = storeRepository.findAll();
+
         return stores.stream()
                 .map(store -> storeConverter.toStoreListResponseDto(
                         store,
@@ -75,17 +83,21 @@ public class StoreServiceImpl implements StoreService {
                                 store.getRegion().getLatitude(),
                                 store.getRegion().getLongitude())
                 ))
+                .skip(offset)
+                .limit(limit)
                 .collect(Collectors.toList());
     }
 
     @Override
     public StoreDetailResponseDto getStoreDetail(Long storeId) {
+
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + storeId));
         return storeConverter.toStoreDetailResponseDto(store);
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+
         final int R = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
@@ -96,6 +108,26 @@ public class StoreServiceImpl implements StoreService {
         return R * c;
     }
 
+    @Override
+    public List<StoreListResponseDto> getStoresByCategory(String categoryDisplayName, double latitude, double longitude, int offset, int limit) {
+
+        CategoryType categoryType = CategoryType.fromDisplayName(categoryDisplayName);
+        Category category = categoryRepository.findByType(categoryType)
+                .orElseThrow(() -> new RuntimeException("카테고리가 DB에 등록되어 있지 않습니다."));
+
+        List<Store> stores = storeRepository.findAllByCategory(category);
+
+        return stores.stream()
+                .map(store -> storeConverter.toStoreListResponseDto(
+                        store,
+                        calculateDistance(latitude, longitude,
+                                store.getRegion().getLatitude(),
+                                store.getRegion().getLongitude())
+                ))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
     //todo s3 추가하기.
 //    public Store createAndSaveStoreImage(MultipartFile storeImage, Store store){
 //
