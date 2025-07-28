@@ -1,17 +1,13 @@
 package kkukmoa.kkukmoa.stamp.service.coupon;
 
-import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.StoreHandler;
-import kkukmoa.kkukmoa.category.domain.Category;
-import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.stamp.converter.CouponConverter;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponDto;
 import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
-import kkukmoa.kkukmoa.store.repository.CategoryRepository;
+import kkukmoa.kkukmoa.store.domain.Store;
+import kkukmoa.kkukmoa.store.repository.StoreRepository;
 
-import kkukmoa.kkukmoa.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -23,28 +19,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CouponQueryService {
 
-    private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
-    private final AuthService authService;
+    private final StoreRepository storeRepository;
 
     @Transactional(readOnly = true)
     public CouponResponseDto.couponListDto couponList(String storeType) {
 
-        // 로그인한 유저
-        User user = authService.getCurrentUser();
-
-        // 요청 받은 카테고리 예외 처리
-        Category category = categoryRepository.findByName(storeType)
-            .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
-
-        // 쿠폰 조회
-        List<Coupon> couponList = couponRepository.findByCategoryAndUser(category, user);
+        //    Store store = storeRepository.findByType(storeType);
+        // 우선 하드코딩. store 부분 깃헙에 올라오면 수정
+        Store store = storeRepository.findById(1L).orElse(null);
+        List<Coupon> couponList = couponRepository.findByStore(store);
 
         // dto -> List<dto>로 변환
-        List<couponDto> couponDtoList = CouponConverter.toCouponDtoList(couponList);
+        List<couponDto> couponDtoList = CouponConverter.toCouponDtoList(couponList, store);
 
         // List<dto> -> 응답 형태로 변환 후 반환
-        return CouponResponseDto.couponListDto.builder()
+        return CouponResponseDto.couponListDto
+                .builder()
                 .coupons(couponDtoList)
                 .total(couponList.size())
                 .build();
