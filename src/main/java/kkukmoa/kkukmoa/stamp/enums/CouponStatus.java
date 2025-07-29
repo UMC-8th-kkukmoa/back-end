@@ -2,5 +2,7 @@ package kkukmoa.kkukmoa.stamp.enums;
 
 public enum CouponStatus {
     USED,
-    UNUSED;
+    IN_USE,
+    UNUSED,
+    EXPIRED;
 }
