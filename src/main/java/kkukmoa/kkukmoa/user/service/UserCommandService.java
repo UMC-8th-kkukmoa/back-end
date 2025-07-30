@@ -1,5 +1,8 @@
 package kkukmoa.kkukmoa.user.service;
 
+import jakarta.transaction.Transactional;
+import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.converter.UserConverter;
 import kkukmoa.kkukmoa.user.domain.User;
@@ -7,17 +10,21 @@ import kkukmoa.kkukmoa.user.dto.KaKaoTokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.KaKaoUserInfoResponseDto;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
+import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.TimeUnit;
 
 import reactor.core.publisher.Mono;
 
@@ -28,6 +35,7 @@ import java.util.Optional;
 @Service
 public class UserCommandService {
 
+    private final RefreshTokenRepository refreshTokenRepository;
     @Value("${spring.kakao.client-id}")
     private String clientId;
 
@@ -38,6 +46,8 @@ public class UserCommandService {
     private final UserConverter userConverter;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final StringRedisTemplate redisTemplate;
 
     public UserResponseDto.loginDto loginOrRegisterByKakao(String code) {
         KaKaoTokenResponseDto token = getKakaoToken(code);
@@ -117,5 +127,23 @@ public class UserCommandService {
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);
                             return userConverter.toLoginDto(newUser, true, token);
                         });
+    }
+
+    @Transactional
+    public void logout(User user, String refreshToken, String accessToken) {
+        Long userIdFromRedis = refreshTokenRepository.getUserIdByToken(refreshToken);
+
+        if (userIdFromRedis == null || !userIdFromRedis.equals(user.getId())) {
+            throw new UserHandler(ErrorStatus.AUTHENTICATION_FAILED);
+        }
+
+        // Refresh Token 삭제
+        refreshTokenRepository.deleteToken(refreshToken);
+
+        // Access Token 블랙리스트 등록
+        long expiration = jwtTokenProvider.getExpiration(accessToken);
+        redisTemplate.opsForValue().set("blacklist:" + accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }
 }
