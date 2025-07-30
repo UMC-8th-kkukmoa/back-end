@@ -23,7 +23,5 @@ public class StoreRequestDto {
     private double latitude;
     private double longitude;
 
-    private String storeImage;
-
     private String category;
 }
