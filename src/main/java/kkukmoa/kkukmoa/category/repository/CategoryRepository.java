@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.category.repository;
 
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

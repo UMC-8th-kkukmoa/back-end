@@ -16,8 +16,12 @@ public class PaymentRequestDto {
         private String orderName;
         private int amount;
 
-        public static PaymentPrepareRequestDto of(String orderId, String orderName, int amount) {
-            return new PaymentPrepareRequestDto(orderId, orderName, amount);
+        private int voucherUnitPrice;
+        private int voucherQuantity;
+
+        public static PaymentPrepareRequestDto of(
+                String orderId, String orderName, int amount, int unitPrice, int quantity) {
+            return new PaymentPrepareRequestDto(orderId, orderName, amount, unitPrice, quantity);
         }
     }
 
@@ -28,5 +32,7 @@ public class PaymentRequestDto {
         private String paymentKey;
         private String orderId;
         private int amount;
+        private int voucherUnitPrice;
+        private int voucherQuantity;
     }
 }
