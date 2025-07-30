@@ -19,7 +19,6 @@ public class StoreConverter {
                 .number(request.getNumber())
                 .closingHours(request.getClosingHours())
                 .openingHours(request.getOpeningHours())
-                .storeImage(request.getStoreImage())
                 .region(region)
                 .category(category)
                 .build();
@@ -32,6 +31,7 @@ public class StoreConverter {
                 .name(store.getName())
                 .openingHours(store.getOpeningHours() != null ? store.getOpeningHours().toString() : null)
                 .closingHours(store.getClosingHours() != null ? store.getClosingHours().toString() : null)
+                .storeImage(store.getStoreImage())
                 .reviewCount(0) // 리뷰 미구현 → 0
                 .distance(distance)
                 .build();
@@ -47,6 +47,7 @@ public class StoreConverter {
                 .merchantNumber(store.getMerchantNumber())
                 .address(store.getRegion() != null ? store.getRegion().getAddress() : null)
                 .detailAddress(store.getRegion() != null ? store.getRegion().getDetailAddress() : null)
+                .storeImage(store.getStoreImage())
                 .openingHours(store.getOpeningHours() != null ? store.getOpeningHours().toString() : null)
                 .closingHours(store.getClosingHours() != null ? store.getClosingHours().toString() : null)
                 .build();
