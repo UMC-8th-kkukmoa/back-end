@@ -9,7 +9,7 @@ import kkukmoa.kkukmoa.user.domain.User;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -32,8 +32,8 @@ public class Store extends BaseEntity {
 
     private String storeImage;
 
-    private LocalDateTime openingHours;
-    private LocalDateTime closingHours;
+    private LocalTime openingHours;
+    private LocalTime closingHours;
 
     private String qrUrl;
 
