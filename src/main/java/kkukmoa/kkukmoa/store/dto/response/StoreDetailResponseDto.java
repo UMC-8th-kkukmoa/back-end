@@ -15,6 +15,7 @@ public class StoreDetailResponseDto {
     private String merchantNumber;
     private String address;
     private String detailAddress;
+    private String storeImage;
     private String openingHours;
     private String closingHours;
 }
