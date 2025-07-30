@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.user.service;
 
 import jakarta.transaction.Transactional;
+
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
@@ -24,11 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.concurrent.TimeUnit;
-
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,6 +36,7 @@ import java.util.Optional;
 public class UserCommandService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+
     @Value("${spring.kakao.client-id}")
     private String clientId;
 
@@ -142,7 +143,9 @@ public class UserCommandService {
 
         // Access Token 블랙리스트 등록
         long expiration = jwtTokenProvider.getExpiration(accessToken);
-        redisTemplate.opsForValue().set("blacklist:" + accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+        redisTemplate
+                .opsForValue()
+                .set("blacklist:" + accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
 
         log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }

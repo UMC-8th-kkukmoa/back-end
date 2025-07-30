@@ -11,19 +11,16 @@ import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
-import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
-import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.service.UserCommandService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -77,37 +74,37 @@ public class UserController {
                 .body(ApiResponse.onSuccess(userResponse));
     }
 
-
-
     @PostMapping("/logout")
     @Operation(
             summary = "로그아웃 API",
-            description = "Access Token으로 인증 후 Refresh Token을 삭제하고 Access Token을 블랙리스트에 등록합니다.\n" +
-                    "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.",
+            description =
+                    "Access Token으로 인증 후 Refresh Token을 삭제하고 Access Token을 블랙리스트에 등록합니다.\n"
+                            + "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.",
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "성공적으로 로그아웃 처리됨",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ApiResponse.class))
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "401",
-                            description = "인증 실패 (Access Token이 유효하지 않거나 Refresh Token 불일치)",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ErrorReasonDto.class))
-                    )
-            }
-    )
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "200",
+                        description = "성공적으로 로그아웃 처리됨",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ApiResponse.class))),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "401",
+                        description = "인증 실패 (Access Token이 유효하지 않거나 Refresh Token 불일치)",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = ErrorReasonDto.class)))
+            })
     @ApiErrorCodeExamples(value = {ErrorStatus.AUTHENTICATION_FAILED})
     public ApiResponse<String> logout(
-            @Parameter(hidden = true)
-            @AuthenticationPrincipal User user,
+            @Parameter(hidden = true) @AuthenticationPrincipal User user,
             @Parameter(description = "현재 발급된 Refresh Token", required = true)
-            @RequestHeader("refresh-token") String refreshToken,
+                    @RequestHeader("refresh-token")
+                    String refreshToken,
             @Parameter(description = "현재 발급된 Access Token", required = true)
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+                    @RequestHeader(HttpHeaders.AUTHORIZATION)
+                    String authorizationHeader) {
 
         // Bearer 제거 후 Access Token만 추출
         String accessToken = authorizationHeader.replace("Bearer ", "").trim();
@@ -117,5 +114,4 @@ public class UserController {
 
         return ApiResponse.onSuccess("로그아웃 완료");
     }
-
 }
