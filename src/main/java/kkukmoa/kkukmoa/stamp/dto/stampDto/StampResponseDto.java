@@ -1,7 +1,5 @@
 package kkukmoa.kkukmoa.stamp.dto.stampDto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.Builder;
@@ -35,12 +33,5 @@ public class StampResponseDto {
 
         @Schema(description = "스탬프 점수", example = "8")
         Integer stampScore;
-    }
-
-    @Builder
-    @Getter
-    public static class StampSaveDto {
-        @JsonProperty(value = "has_earned_coupon")
-        Boolean hasEarnedCoupon;
     }
 }

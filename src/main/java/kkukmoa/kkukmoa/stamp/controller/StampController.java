@@ -11,14 +11,12 @@ import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampListDto;
 import kkukmoa.kkukmoa.stamp.service.coupon.CouponCommandService;
 import kkukmoa.kkukmoa.stamp.service.coupon.CouponQueryService;
-import kkukmoa.kkukmoa.stamp.service.stamp.StampCommandService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampQueryService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StampController {
 
-    private final StampCommandService stampCommandService;
     private final StampQueryService stampQueryService;
     private final CouponQueryService couponQueryService;
     private final CouponCommandService couponCommandService;
@@ -56,15 +53,5 @@ public class StampController {
     @Operation(summary = "테스트용 쿠폰 생성 API", description = "테스트용 쿠폰 생성 API")
     public ResponseEntity<Coupon> makeCoupon() {
         return ResponseEntity.ok(couponCommandService.saveCoupon());
-    }
-
-    @PutMapping("/coupons")
-    @Operation(
-            summary = "스탬프 적립 API",
-            description = "QR 코드 정보를 이용하여 스탬프를 적립합니다.<br>스탬프가 10개 적립되면 쿠폰을 발급합니다.")
-    public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(
-            @RequestParam("qr") String qrCode) {
-        StampResponseDto.StampSaveDto saveDto = stampCommandService.save(qrCode);
-        return ApiResponse.onSuccess(saveDto);
     }
 }

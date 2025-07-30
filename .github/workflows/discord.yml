@@ -1,12 +1,9 @@
 name: Discord Notification
 
 on:
-  pull_request:
+  push:
     branches:
       - dev
-    types:
-      - opened
-      - closed
 
 jobs:
   notify:
