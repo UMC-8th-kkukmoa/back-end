@@ -32,8 +32,6 @@ public class Voucher {
 
     private String qrCodeUuid;
 
-    @Lob
-    private String qrImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -43,15 +41,6 @@ public class Voucher {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-
-    // 사용 처리 메서드
-    public void markUsed() {
-        this.status = CouponStatus.USED;
-    }
-
-    public void markExpired() {
-        this.status = CouponStatus.EXPIRED;
-    }
 
     public void deductValue(int amount) {
         if (remainingValue == null) {

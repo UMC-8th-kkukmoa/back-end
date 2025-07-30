@@ -1,5 +1,8 @@
 package kkukmoa.kkukmoa.voucher.converter;
 
+import kkukmoa.kkukmoa.common.enums.QrCodeType;
+import kkukmoa.kkukmoa.common.util.DateUtil;
+import kkukmoa.kkukmoa.common.util.QrCodeUtil;
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 
@@ -17,26 +20,25 @@ public class VoucherConverter {
     public static VoucherResponseDto.VoucherListResponseDto toListDto(Voucher voucher) {
         return VoucherResponseDto.VoucherListResponseDto.builder()
                 .name(voucher.getVoucherName())
+                .qrCodeUuid(voucher.getQrCodeUuid())
                 .validDays(voucher.getValidDays())
+                .daysLeft(DateUtil.getDdayFromToday(voucher.getValidDays()))
                 .status(voucher.getStatus())
                 .build();
     }
 
     public static VoucherResponseDto.VoucherDetailResponseDto toDetailDto(Voucher voucher) {
         return VoucherResponseDto.VoucherDetailResponseDto.builder()
-                .qrCodeUuid(removePrefix(voucher.getQrCodeUuid()))
+                .qrCodeUuid(QrCodeUtil.removePrefix(voucher.getQrCodeUuid(),QrCodeType.VOUCHER))
                 .name(voucher.getVoucherName())
                 .value(voucher.getValue())
+                .remainingValue(voucher.getRemainingValue())
                 .validDays(voucher.getValidDays())
-                .qrCode(voucher.getQrImage())
+                .qrCode(QrCodeUtil.qrCodeToBase64(voucher.getQrCodeUuid()))
+                .daysLeft(DateUtil.getDdayFromToday(voucher.getValidDays()))
                 .status(voucher.getStatus())
                 .build();
     }
 
-    private static String removePrefix(String uuid) {
-        if (uuid != null && uuid.startsWith(PREFIX)) {
-            return uuid.substring(PREFIX.length());
-        }
-        return uuid;
-    }
+
 }

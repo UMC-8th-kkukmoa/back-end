@@ -16,6 +16,7 @@ public enum QrCodeType {
     STAMP("stamp_", "/v1/stamps") //
 ;
 
+    @Getter
     private final String qrPrefix;
     private final String redirectUri;
 
@@ -25,4 +26,6 @@ public enum QrCodeType {
                 .findFirst()
                 .orElseThrow(() -> new QrHandler(ErrorStatus.QR_INVALID));
     }
+
+
 }

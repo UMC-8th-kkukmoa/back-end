@@ -13,6 +13,7 @@ public class VoucherResponseDto {
         private String validDays;
         private CouponStatus status;
         private String qrCodeUuid;
+        private String daysLeft;
     }
 
     @Getter
@@ -20,9 +21,11 @@ public class VoucherResponseDto {
     public static class VoucherDetailResponseDto {
         private String name;
         private int value;
+        private int remainingValue;
         private String validDays;
         private CouponStatus status;
         private String qrCodeUuid;
         private String qrCode;
+        private String daysLeft;
     }
 }
