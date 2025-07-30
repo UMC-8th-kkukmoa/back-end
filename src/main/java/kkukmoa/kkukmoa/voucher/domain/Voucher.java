@@ -2,12 +2,13 @@ package kkukmoa.kkukmoa.voucher.domain;
 
 import jakarta.persistence.*;
 
+import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.VoucherHandler;
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.payment.domain.Payment;
 import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class Voucher extends BaseEntity {
 
     private String voucherName;
     private Integer value; // 가격
-    private Integer remainingValue; //잔액
+    private Integer remainingValue; // 잔액
     private String validDays; // 유효기간
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +36,6 @@ public class Voucher extends BaseEntity {
 
     private String qrCodeUuid;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -43,7 +43,6 @@ public class Voucher extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Payment payment;
-
 
     public void deductValue(int amount) {
         if (remainingValue == null) {
@@ -66,7 +65,4 @@ public class Voucher extends BaseEntity {
             this.status = CouponStatus.IN_USE;
         }
     }
-
-
-
 }

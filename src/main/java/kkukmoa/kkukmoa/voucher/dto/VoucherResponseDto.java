@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.voucher.dto;
 
-import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import lombok.Builder;
 import lombok.Getter;
 

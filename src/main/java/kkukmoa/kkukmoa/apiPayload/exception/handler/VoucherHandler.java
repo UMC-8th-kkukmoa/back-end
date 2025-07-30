@@ -5,7 +5,7 @@ import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 
 public class VoucherHandler extends GeneralException {
 
-  public VoucherHandler(BaseErrorCode code) {
-    super(code);
-  }
+    public VoucherHandler(BaseErrorCode code) {
+        super(code);
+    }
 }

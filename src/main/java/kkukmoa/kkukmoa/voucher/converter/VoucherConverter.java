@@ -8,12 +8,12 @@ import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VoucherConverter {
-
 
     private static final String PREFIX = "voucher_";
 
@@ -29,7 +29,7 @@ public class VoucherConverter {
 
     public static VoucherResponseDto.VoucherDetailResponseDto toDetailDto(Voucher voucher) {
         return VoucherResponseDto.VoucherDetailResponseDto.builder()
-                .qrCodeUuid(QrCodeUtil.removePrefix(voucher.getQrCodeUuid(),QrCodeType.VOUCHER))
+                .qrCodeUuid(QrCodeUtil.removePrefix(voucher.getQrCodeUuid(), QrCodeType.VOUCHER))
                 .name(voucher.getVoucherName())
                 .value(voucher.getValue())
                 .remainingValue(voucher.getRemainingValue())
@@ -39,7 +39,9 @@ public class VoucherConverter {
                 .status(voucher.getStatus().getDescription())
                 .build();
     }
-    public static VoucherResponseDto.VoucherDeductResponseDto toDeductDto(Voucher voucher, int useAmount) {
+
+    public static VoucherResponseDto.VoucherDeductResponseDto toDeductDto(
+            Voucher voucher, int useAmount) {
         return VoucherResponseDto.VoucherDeductResponseDto.builder()
                 .name(voucher.getVoucherName())
                 .usedAmount(useAmount)
@@ -47,5 +49,4 @@ public class VoucherConverter {
                 .remainingValue(voucher.getRemainingValue())
                 .build();
     }
-
 }

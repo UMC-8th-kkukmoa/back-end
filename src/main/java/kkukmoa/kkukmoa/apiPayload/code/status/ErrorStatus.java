@@ -57,7 +57,6 @@ public enum ErrorStatus implements BaseErrorCode {
     PAYMENT_REDIS_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PAYMENT5001", "결제 정보 저장에 실패했습니다."),
     INVALID_PAYMENT_REQUEST(HttpStatus.BAD_REQUEST, "PAYMENT4005", "유효하지 않은 결제 승인 요청입니다."),
 
-
     // 금액권 관련
     VOUCHER_NOT_FOUND(HttpStatus.NOT_FOUND, "VOUCHER4001", "금액권을 찾을 수 없습니다."),
     VOUCHER_ALREADY_USED(HttpStatus.BAD_REQUEST, "VOUCHER4002", "이미 사용된 금액권입니다."),

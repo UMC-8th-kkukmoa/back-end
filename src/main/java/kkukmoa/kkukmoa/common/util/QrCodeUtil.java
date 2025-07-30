@@ -7,8 +7,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -80,15 +80,12 @@ public class QrCodeUtil {
         return Base64.getEncoder().encodeToString(makeQrCodeByte(qrSource));
     }
 
-    /**
-     * 접두어와 함께 QR UUID 생성
-     */
+    /** 접두어와 함께 QR UUID 생성 */
     public static String generatePrefixedUuid(QrCodeType type) {
         return type.getQrPrefix() + UUID.randomUUID();
     }
-    /**
-     * QrCodeType Enum 기반으로 접두사 제거
-     */
+
+    /** QrCodeType Enum 기반으로 접두사 제거 */
     public static String removePrefix(String uuid, QrCodeType type) {
         if (uuid != null && uuid.startsWith(type.getQrPrefix())) {
             return uuid.substring(type.getQrPrefix().length());

@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.payment.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -36,4 +37,3 @@ public class TossPaymentConfirmResponseDto {
     @Schema(description = "결제 승인 일시", example = "2025-07-29T18:23:45+09:00")
     private String approvedAt;
 }
-
