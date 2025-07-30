@@ -39,6 +39,13 @@ public class VoucherConverter {
                 .status(voucher.getStatus().getDescription())
                 .build();
     }
-
+    public static VoucherResponseDto.VoucherDeductResponseDto toDeductDto(Voucher voucher, int useAmount) {
+        return VoucherResponseDto.VoucherDeductResponseDto.builder()
+                .name(voucher.getVoucherName())
+                .usedAmount(useAmount)
+                .validDays(voucher.getValidDays())
+                .remainingValue(voucher.getRemainingValue())
+                .build();
+    }
 
 }

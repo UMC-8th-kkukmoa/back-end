@@ -57,11 +57,13 @@ public class VoucherController {
     @Operation(
             summary = "금액권 일부 사용 처리",
             description = """
-        금액권에서 일부 금액만 차감하여 사용하는 방식입니다.
-        
-        - QR UUID와 차감 금액을 함께 전송합니다.
-        - 남은 금액이 0이 되면 상태가 USED로 변경됩니다.
-        """)
+            금액권에서 일부 금액만 차감하여 사용하는 방식입니다.
+            
+            - QR UUID는 접두어가 포함된 상태로 전달됩니다. (예: voucher_abc123)
+            - 차감할 금액을 함께 전송해야 합니다.
+            - 남은 금액이 0이 되면 자동으로 상태가 USED로 변경됩니다.
+            """
+    )
     @ApiErrorCodeExamples({
             ErrorStatus.VOUCHER_ALREADY_USED,
             ErrorStatus.VOUCHER_NOT_FOUND,
@@ -69,15 +71,18 @@ public class VoucherController {
             ErrorStatus.QR_INVALID
     })
     @PostMapping("/{uuid}/use")
-    public ResponseEntity<ApiResponse<String>> useVoucher(
-            @Parameter(description = "금액권 QR UUID (예: voucher_3ad5c7c6-xxxx-yyyy)", example = "voucher_3ad5c7c6-3c5a-4b96-a5e7-bf9201795a42")
+    public ResponseEntity<ApiResponse<VoucherResponseDto.VoucherDeductResponseDto>> useVoucher(
+            @Parameter(
+                    description = "금액권 QR UUID (예: voucher_3ad5c7c6-3c5a-4b96-a5e7-bf9201795a42)",
+                    example = "voucher_3ad5c7c6-3c5a-4b96-a5e7-bf9201795a42"
+            )
             @PathVariable String uuid,
 
             @Parameter(description = "차감할 금액 (원)", example = "5000")
             @RequestParam("amount") int useAmount
     ) {
-        voucherCommandService.useVoucher(uuid, useAmount);
-        return ResponseEntity.ok(ApiResponse.onSuccess("금액권 사용 완료"));
+        VoucherResponseDto.VoucherDeductResponseDto dto = voucherCommandService.useVoucher(uuid, useAmount);
+        return ResponseEntity.ok(ApiResponse.onSuccess(dto));
     }
 
 

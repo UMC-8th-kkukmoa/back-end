@@ -28,4 +28,14 @@ public class VoucherResponseDto {
         private String qrCode;
         private String daysLeft;
     }
+
+    @Getter
+    @Builder
+    public static class VoucherDeductResponseDto {
+
+        private String name;
+        private String validDays;
+        private int usedAmount;
+        private int remainingValue;
+    }
 }
