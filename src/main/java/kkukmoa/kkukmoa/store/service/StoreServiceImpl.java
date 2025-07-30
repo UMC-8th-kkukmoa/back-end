@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
+import kkukmoa.kkukmoa.common.util.s3.service.S3ImageService;
 import kkukmoa.kkukmoa.region.converter.RegionConverter;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
@@ -32,6 +33,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreConverter storeConverter;
     private final RegionConverter regionConverter;
     private final CategoryRepository categoryRepository;
+    private final S3ImageService s3ImageService;
     private final Random random = new Random();
 
     @Override
@@ -43,23 +45,30 @@ public class StoreServiceImpl implements StoreService {
                         request.getDetailAddress(),
                         request.getLatitude(),
                         request.getLongitude());
+
         CategoryType categoryType = CategoryType.fromDisplayName(request.getCategory());
         Category category =
                 categoryRepository
                         .findByType(categoryType)
                         .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
 
-        Store store = createAndSaveStore(request, region, category);
+        String storeImageUrl = s3ImageService.uploadToDirectory(storeImage, "store");
+
+        Store store = createAndSaveStore(request, region, category, storeImageUrl);
 
         return new StoreIdResponseDto(store.getId());
     }
 
-    private Store createAndSaveStore(StoreRequestDto request, Region region, Category category) {
+    private Store createAndSaveStore(
+            StoreRequestDto request, Region region, Category category, String storeImageUrl) {
 
         Store newStore = storeConverter.toStore(request, region, category);
 
         Store storeWithMerchantNumber =
-                newStore.toBuilder().merchantNumber(createMerchantNumber()).build();
+                newStore.toBuilder()
+                        .merchantNumber(createMerchantNumber())
+                        .storeImage(storeImageUrl)
+                        .build();
 
         return storeRepository.save(storeWithMerchantNumber);
     }
