@@ -23,7 +23,7 @@ public class VoucherConverter {
                 .qrCodeUuid(voucher.getQrCodeUuid())
                 .validDays(voucher.getValidDays())
                 .daysLeft(DateUtil.getDdayFromToday(voucher.getValidDays()))
-                .status(voucher.getStatus())
+                .status(voucher.getStatus().getDescription())
                 .build();
     }
 
@@ -36,7 +36,7 @@ public class VoucherConverter {
                 .validDays(voucher.getValidDays())
                 .qrCode(QrCodeUtil.qrCodeToBase64(voucher.getQrCodeUuid()))
                 .daysLeft(DateUtil.getDdayFromToday(voucher.getValidDays()))
-                .status(voucher.getStatus())
+                .status(voucher.getStatus().getDescription())
                 .build();
     }
 

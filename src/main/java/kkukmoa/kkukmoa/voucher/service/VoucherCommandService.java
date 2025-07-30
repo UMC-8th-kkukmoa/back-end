@@ -73,10 +73,10 @@ public class VoucherCommandService {
      */
     @Transactional
     public void useVoucher(String qrCodeUuid, int useAmount) {
-        String stored = redisTemplate.opsForValue().get(qrCodeUuid);
-        if (stored == null) {
-            throw new VoucherHandler(ErrorStatus.QR_EXPIRED);
-        }
+//        String stored = redisTemplate.opsForValue().get(qrCodeUuid);
+//        if (stored == null) {
+//            throw new VoucherHandler(ErrorStatus.QR_INVALID);
+//        }
 
         Voucher voucher = voucherRepository.findByQrCodeUuid(qrCodeUuid)
                 .orElseThrow(() -> new VoucherHandler(ErrorStatus.VOUCHER_NOT_FOUND));
@@ -88,7 +88,7 @@ public class VoucherCommandService {
         voucher.deductValue(useAmount);
         voucherRepository.save(voucher);
 
-        redisTemplate.delete(qrCodeUuid); // QR 사용 후 삭제
+//        redisTemplate.delete(qrCodeUuid); // QR 사용 후 삭제
     }
 
 

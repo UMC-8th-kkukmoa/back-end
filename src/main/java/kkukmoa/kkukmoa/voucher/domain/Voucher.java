@@ -3,6 +3,7 @@ package kkukmoa.kkukmoa.voucher.domain;
 import jakarta.persistence.*;
 
 import kkukmoa.kkukmoa.apiPayload.exception.handler.VoucherHandler;
+import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.payment.domain.Payment;
 import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.user.domain.User;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Voucher {
+public class Voucher extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +28,10 @@ public class Voucher {
     private Integer value; // 가격
     private Integer remainingValue; //잔액
     private String validDays; // 유효기간
-    @Getter
-    private CouponStatus status; // 사용 여부
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private CouponStatus status = CouponStatus.UNUSED;
 
     private String qrCodeUuid;
 

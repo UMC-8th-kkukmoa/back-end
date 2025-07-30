@@ -66,7 +66,7 @@ public class VoucherController {
             ErrorStatus.VOUCHER_ALREADY_USED,
             ErrorStatus.VOUCHER_NOT_FOUND,
             ErrorStatus.VOUCHER_BALANCE_NOT_ENOUGH,
-            ErrorStatus.QR_EXPIRED
+            ErrorStatus.QR_INVALID
     })
     @PostMapping("/{uuid}/use")
     public ResponseEntity<ApiResponse<String>> useVoucher(
@@ -80,34 +80,6 @@ public class VoucherController {
         return ResponseEntity.ok(ApiResponse.onSuccess("금액권 사용 완료"));
     }
 
-    @Operation(
-            summary = "금액권 차감 테스트",
-            description = """
-                    금액권 UUID와 차감할 금액을 입력하면, 해당 금액만큼 금액권 잔액을 차감합니다.
 
-                    - 차감 금액은 0보다 커야 합니다.
-                    - 잔액이 부족하면 예외가 발생합니다.
-                    - 차감 이후 상태는 자동으로 업데이트됩니다 (IN_USE 또는 USED).
-                    """)
-    @ApiErrorCodeExamples({
-            ErrorStatus.VOUCHER_INVALID_AMOUNT,
-            ErrorStatus.VOUCHER_BALANCE_NOT_ENOUGH,
-            ErrorStatus.VOUCHER_NOT_FOUND
-    })
-    @PostMapping("/{uuid}/deduct")
-    public ResponseEntity<Void> deductVoucher(
-            @PathVariable String uuid,
-            @RequestParam int amount
-    ) {
-        voucherCommandService.deductTest(uuid, amount);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/qr")
-    public ResponseEntity<String> getQrBase64(@RequestParam String text) {
-        String base64 = QrCodeUtil.qrCodeToBase64(text);
-        String imgTag = "<img src=\"data:image/png;base64," + base64 + "\" />";
-        return ResponseEntity.ok(imgTag);
-    }
 
 }

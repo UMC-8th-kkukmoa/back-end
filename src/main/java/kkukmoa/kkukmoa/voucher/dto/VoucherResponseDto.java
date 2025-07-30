@@ -11,7 +11,7 @@ public class VoucherResponseDto {
 
         private String name;
         private String validDays;
-        private CouponStatus status;
+        private String status;
         private String qrCodeUuid;
         private String daysLeft;
     }
@@ -23,7 +23,7 @@ public class VoucherResponseDto {
         private int value;
         private int remainingValue;
         private String validDays;
-        private CouponStatus status;
+        private String status;
         private String qrCodeUuid;
         private String qrCode;
         private String daysLeft;
