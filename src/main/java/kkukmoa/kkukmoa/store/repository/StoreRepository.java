@@ -5,14 +5,14 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByMerchantNumber(String merchantNumber);
+
     Optional<Store> findByOwner(User owner);
+
     List<Store> findAllByCategory(Category category);
 }

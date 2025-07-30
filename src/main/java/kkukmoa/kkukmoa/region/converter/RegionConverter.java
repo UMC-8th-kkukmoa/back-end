@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegionConverter {
 
-    public Region toRegion(String address, String detailAddress, double latitude, double longitude) {
+    public Region toRegion(
+            String address, String detailAddress, double latitude, double longitude) {
 
         // 지리적 좌표와 주소 데이터의 유효성 검증
         if (address == null || address.trim().isEmpty()) {
@@ -19,7 +20,7 @@ public class RegionConverter {
         if (longitude < -180 || longitude > 180) {
             throw new IllegalArgumentException("Longitude must be between -180 and 180");
         }
-      
+
         return Region.builder()
                 .address(address)
                 .detailAddress(detailAddress)

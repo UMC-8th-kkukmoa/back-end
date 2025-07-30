@@ -45,7 +45,10 @@ public class StoreConverter {
                 .storeId(store.getId())
                 .name(store.getName())
                 .reviewCount(0) // 리뷰 미구현 → 0
-                .categoryName(store.getCategory() != null ? store.getCategory().getType().getDisplayName() : null)
+                .categoryName(
+                        store.getCategory() != null
+                                ? store.getCategory().getType().getDisplayName()
+                                : null)
                 .merchantNumber(store.getMerchantNumber())
                 .address(store.getRegion() != null ? store.getRegion().getAddress() : null)
                 .detailAddress(

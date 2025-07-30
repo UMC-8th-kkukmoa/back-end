@@ -1,11 +1,11 @@
-//package kkukmoa.kkukmoa.category.converter;
+// package kkukmoa.kkukmoa.category.converter;
 //
-//import kkukmoa.kkukmoa.category.domain.Category;
-//import kkukmoa.kkukmoa.category.domain.CategoryType;
-//import org.springframework.stereotype.Component;
+// import kkukmoa.kkukmoa.category.domain.Category;
+// import kkukmoa.kkukmoa.category.domain.CategoryType;
+// import org.springframework.stereotype.Component;
 //
-//@Component
-//public class CategoryConverter {
+// @Component
+// public class CategoryConverter {
 //
 //    public Category toCategory(CategoryType categoryType) {
 //        return Category.builder()
@@ -13,4 +13,4 @@
 //                .build();
 //    }
 //
-//}
+// }

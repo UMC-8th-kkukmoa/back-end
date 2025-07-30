@@ -26,4 +26,3 @@ public enum CategoryType {
         throw new RuntimeException("유효하지 않은 카테고리입니다: " + displayName);
     }
 }
-
