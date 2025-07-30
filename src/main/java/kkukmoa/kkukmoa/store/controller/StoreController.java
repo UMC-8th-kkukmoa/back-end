@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
+import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
@@ -58,14 +59,14 @@ public class StoreController {
     @GetMapping("/category")
     @Operation(summary = "카테고리별 가게 목록 조회 API", description = "카테고리명과 현재 위치 기준으로 해당 카테고리 가게 목록을 조회합니다.")
     public ApiResponse<List<StoreListResponseDto>> getStoresByCategory(
-            @RequestParam String categoryName,
+            @RequestParam CategoryType categoryType,
             @RequestParam double latitude,
             @RequestParam double longitude,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit
     ) {
         return ApiResponse.onSuccess(
-                storeService.getStoresByCategory(categoryName, latitude, longitude, offset, limit)
+                storeService.getStoresByCategory(categoryType, latitude, longitude, offset, limit)
         );
     }
 }

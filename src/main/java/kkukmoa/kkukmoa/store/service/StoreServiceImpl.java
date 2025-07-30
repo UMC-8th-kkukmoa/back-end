@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.store.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import kkukmoa.kkukmoa.category.domain.Category;
-import kkukmoa.kkukmoa.category.converter.CategoryConverter;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
 import kkukmoa.kkukmoa.region.converter.RegionConverter;
@@ -30,7 +29,6 @@ public class StoreServiceImpl implements StoreService {
     private final StoreConverter storeConverter;
     private final RegionConverter regionConverter;
     private final CategoryRepository categoryRepository;
-    private final CategoryConverter categoryConverter;
     private final Random random = new Random();
 
     @Override
@@ -109,9 +107,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreListResponseDto> getStoresByCategory(String categoryDisplayName, double latitude, double longitude, int offset, int limit) {
+    public List<StoreListResponseDto> getStoresByCategory(CategoryType categoryType, double latitude, double longitude, int offset, int limit) {
 
-        CategoryType categoryType = CategoryType.fromDisplayName(categoryDisplayName);
         Category category = categoryRepository.findByType(categoryType)
                 .orElseThrow(() -> new RuntimeException("카테고리가 DB에 등록되어 있지 않습니다."));
 
