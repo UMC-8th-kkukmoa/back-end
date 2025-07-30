@@ -1,7 +1,7 @@
 package kkukmoa.kkukmoa.voucher.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -74,5 +74,4 @@ public class VoucherResponseDto {
         @Schema(description = "남은 금액", example = "3000")
         private int remainingValue;
     }
-
 }
