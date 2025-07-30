@@ -9,6 +9,7 @@ import kkukmoa.kkukmoa.user.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -47,7 +48,7 @@ public class Payment extends BaseEntity {
         this.paymentKey = res.getPaymentKey();
         this.method = res.getMethod();
         this.amount = res.getTotalAmount();
-        this.approvedAt = LocalDateTime.parse(res.getApprovedAt());
+        this.approvedAt = OffsetDateTime.parse(res.getApprovedAt()).toLocalDateTime();
         this.status = PaymentStatus.SUCCESS;
     }
 }

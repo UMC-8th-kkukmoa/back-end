@@ -14,17 +14,16 @@ public class CouponConverter {
                 .builder()
                 .couponId(coupon.getId())
                 .storeId(store.getId())
-                .storeImg(store.getStoreImage())
-                .storeName(store.getName())
-                .storeType(store.getCategory().getName())
+                .storeImg("imgURL")
+                .storeName("storeName")
+                .storeType("storeType")
                 .couponName(coupon.getName())
                 .couponQrCode(QrCodeUtil.qrCodeToBase64(coupon.getQrCode()))
                 .build();
     }
 
-    public static List<CouponResponseDto.couponDto> toCouponDtoList(List<Coupon> coupons) {
-        return coupons.stream()
-                .map(coupon -> CouponConverter.toCouponDto(coupon, coupon.getStore()))
-                .toList();
+    public static List<CouponResponseDto.couponDto> toCouponDtoList(
+            List<Coupon> coupons, Store store) {
+        return coupons.stream().map(coupon -> CouponConverter.toCouponDto(coupon, store)).toList();
     }
 }
