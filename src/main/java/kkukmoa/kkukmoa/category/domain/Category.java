@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.category.domain;
 
 import jakarta.persistence.*;
 import kkukmoa.kkukmoa.common.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

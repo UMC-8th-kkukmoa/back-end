@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.region.converter;
 
 import kkukmoa.kkukmoa.region.domain.Region;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,14 +19,12 @@ public class RegionConverter {
         if (longitude < -180 || longitude > 180) {
             throw new IllegalArgumentException("Longitude must be between -180 and 180");
         }
-
+      
         return Region.builder()
                 .address(address)
                 .detailAddress(detailAddress)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
-
     }
-
 }

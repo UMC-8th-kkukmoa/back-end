@@ -35,7 +35,9 @@ public class StoreController {
     }
 
     @GetMapping
-    @Operation(summary = "가게 목록 조회 API", description = "현재 위치(latitude, longitude) 기준으로 가게 목록을 조회합니다.")
+    @Operation(
+            summary = "가게 목록 조회 API",
+            description = "현재 위치(latitude, longitude) 기준으로 가게 목록을 조회합니다.")
     public ApiResponse<List<StoreListResponseDto>> getStores(
             @RequestParam @DecimalMin(value = "-90.0", message = "위도는 -90.0 이상이어야 합니다")
                         @DecimalMax(value = "90.0", message = "위도는 90.0 이하여야 합니다") double latitude,
@@ -50,9 +52,7 @@ public class StoreController {
 
     @GetMapping("/{storeId}")
     @Operation(summary = "가게 상세 조회 API", description = "storeId로 특정 가게의 상세 정보를 조회합니다.")
-    public ApiResponse<StoreDetailResponseDto> getStoreDetail(
-            @PathVariable Long storeId
-    ) {
+    public ApiResponse<StoreDetailResponseDto> getStoreDetail(@PathVariable Long storeId) {
         return ApiResponse.onSuccess(storeService.getStoreDetail(storeId));
     }
 
