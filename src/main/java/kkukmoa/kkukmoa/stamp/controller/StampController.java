@@ -49,7 +49,7 @@ public class StampController {
     @GetMapping("/coupons")
     @Operation(
             summary = "내 쿠폰 목록 조회 API",
-            description = "내가 소유한 쿠폰의 목록을 반환합니다.\n쿠폰의 QR코드는 Base64로 형태로 인코딩 되어있습니다.")
+            description = "내가 소유한 쿠폰의 목록을 반환합니다.\n쿠폰의 QR 코드 Ex) coupon_a305acf6-66a9-4776-a48a-ca9d3210643e.")
     @ApiErrorCodeExamples(
             value = {ErrorStatus.AUTHENTICATION_FAILED, ErrorStatus.STORE_CATEGORY_NOT_FOUND})
     public ApiResponse<CouponResponseDto.couponListDto> coupons(
