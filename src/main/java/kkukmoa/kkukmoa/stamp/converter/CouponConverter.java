@@ -24,7 +24,7 @@ public class CouponConverter {
 
     public static List<CouponResponseDto.couponDto> toCouponDtoList(List<Coupon> coupons) {
         return coupons.stream()
-            .map(coupon -> CouponConverter.toCouponDto(coupon, coupon.getStore()))
-            .toList();
+                .map(coupon -> CouponConverter.toCouponDto(coupon, coupon.getStore()))
+                .toList();
     }
 }

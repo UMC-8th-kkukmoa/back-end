@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.stamp.dto.stampDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.Builder;
@@ -45,5 +46,4 @@ public class StampResponseDto {
         @JsonProperty(value = "has_earned_coupon")
         Boolean hasEarnedCoupon;
     }
-
 }

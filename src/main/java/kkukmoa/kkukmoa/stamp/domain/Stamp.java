@@ -27,7 +27,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Stamp  extends BaseEntity {
+public class Stamp extends BaseEntity {
 
     public static int maxCount = 10;
 
@@ -51,5 +51,4 @@ public class Stamp  extends BaseEntity {
     public void saveStamp() {
         this.count++;
     }
-
 }

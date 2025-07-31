@@ -19,7 +19,7 @@ public class StampConverter {
     public static List<StampResponseDto.StampDto> toStampDtoList(List<Stamp> stampList) {
         System.out.println("hello");
         return stampList.stream()
-            .map(stamp -> StampConverter.toStampDto(stamp, stamp.getStore()))
-            .toList();
+                .map(stamp -> StampConverter.toStampDto(stamp, stamp.getStore()))
+                .toList();
     }
 }

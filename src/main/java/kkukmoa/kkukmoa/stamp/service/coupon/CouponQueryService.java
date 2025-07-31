@@ -11,8 +11,8 @@ import kkukmoa.kkukmoa.stamp.domain.Coupon;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponDto;
 import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
-
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -37,9 +37,10 @@ public class CouponQueryService {
         // 요청 받은 카테고리 예외 처리
         System.out.println("hello");
         Category category =
-            categoryRepository
-                .findByType(requestCategory)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+                categoryRepository
+                        .findByType(requestCategory)
+                        .orElseThrow(
+                                () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
         // 쿠폰 조회
         System.out.println("hello");

@@ -37,9 +37,10 @@ public class StampQueryService {
 
         // 요청 받은 카테고리 예외 처리
         Category category =
-            categoryRepository
-                .findByType(storeType)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+                categoryRepository
+                        .findByType(storeType)
+                        .orElseThrow(
+                                () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
         // 스탬프 조회 ( 가게, 카테고리 fetch join )
         List<Stamp> stampList = stampRepository.findByCategoryAndUser(category, user);
