@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface StoreService {
-    StoreIdResponseDto createStore(StoreRequestDto request, MultipartFile storeImage);
+    StoreIdResponseDto createStore(StoreRequestDto request);
 
     List<StoreListResponseDto> getStores(double latitude, double longitude, int offset, int limit);
 

@@ -24,4 +24,6 @@ public class StoreRequestDto {
     private double longitude;
 
     private String category;
+
+    private String storeImage;
 }
