@@ -63,7 +63,9 @@ public enum ErrorStatus implements BaseErrorCode {
     VOUCHER_BALANCE_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "VOUCHER4004", "금액권 잔액이 부족합니다."),
     VOUCHER_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "VOUCHER4001", "차감 금액은 0보다 커야 합니다."),
     // 가게 관련 에러
-    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다.");
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다."),
+    STORE_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;
