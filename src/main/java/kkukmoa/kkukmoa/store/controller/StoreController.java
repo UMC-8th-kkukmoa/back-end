@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
 @RestController
@@ -33,7 +32,8 @@ public class StoreController {
 
     @PostMapping
     @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
-    public ApiResponse<StoreIdResponseDto> createStore(@RequestBody @Valid StoreRequestDto request) {
+    public ApiResponse<StoreIdResponseDto> createStore(
+            @RequestBody @Valid StoreRequestDto request) {
         return ApiResponse.onSuccess(storeService.createStore(request));
     }
 

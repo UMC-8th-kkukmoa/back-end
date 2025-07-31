@@ -6,7 +6,6 @@ import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
 import kkukmoa.kkukmoa.common.util.s3.service.S3ImageService;
-import kkukmoa.kkukmoa.region.converter.RegionConverter;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.region.service.RegionService;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
@@ -20,7 +19,6 @@ import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Random;
@@ -40,16 +38,18 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request) {
 
-        Region region = regionService.createRegion(
-                request.getAddress(),
-                request.getDetailAddress(),
-                request.getLatitude(),
-                request.getLongitude()
-        );
+        Region region =
+                regionService.createRegion(
+                        request.getAddress(),
+                        request.getDetailAddress(),
+                        request.getLatitude(),
+                        request.getLongitude());
 
         CategoryType categoryType = CategoryType.fromDisplayName(request.getCategory());
-        Category category = categoryRepository.findByType(categoryType)
-                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
+        Category category =
+                categoryRepository
+                        .findByType(categoryType)
+                        .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
 
         Store store = createAndSaveStore(request, region, category, request.getStoreImage());
 
