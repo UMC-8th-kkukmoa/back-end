@@ -6,8 +6,8 @@ import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
 import kkukmoa.kkukmoa.common.util.s3.service.S3ImageService;
-import kkukmoa.kkukmoa.region.converter.RegionConverter;
 import kkukmoa.kkukmoa.region.domain.Region;
+import kkukmoa.kkukmoa.region.service.RegionService;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
@@ -19,7 +19,6 @@ import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Random;
@@ -31,16 +30,16 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
-    private final RegionConverter regionConverter;
+    private final RegionService regionService;
     private final CategoryRepository categoryRepository;
     private final S3ImageService s3ImageService;
     private final Random random = new Random();
 
     @Override
-    public StoreIdResponseDto createStore(StoreRequestDto request, MultipartFile storeImage) {
+    public StoreIdResponseDto createStore(StoreRequestDto request) {
 
         Region region =
-                regionConverter.toRegion(
+                regionService.createRegion(
                         request.getAddress(),
                         request.getDetailAddress(),
                         request.getLatitude(),
@@ -52,9 +51,7 @@ public class StoreServiceImpl implements StoreService {
                         .findByType(categoryType)
                         .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
 
-        String storeImageUrl = s3ImageService.uploadToDirectory(storeImage, "store");
-
-        Store store = createAndSaveStore(request, region, category, storeImageUrl);
+        Store store = createAndSaveStore(request, region, category, request.getStoreImage());
 
         return new StoreIdResponseDto(store.getId());
     }

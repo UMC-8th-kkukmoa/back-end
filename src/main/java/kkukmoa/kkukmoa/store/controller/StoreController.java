@@ -17,13 +17,14 @@ import kkukmoa.kkukmoa.store.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "가게 API", description = "가게 등록, 조회 관련 API")
 @RequestMapping("/v1/stores")
 public class StoreController {
@@ -32,9 +33,8 @@ public class StoreController {
     @PostMapping
     @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
     public ApiResponse<StoreIdResponseDto> createStore(
-            @RequestPart("request") @Valid StoreRequestDto request,
-            @RequestPart(value = "storeImage", required = false) MultipartFile storeImage) {
-        return ApiResponse.onSuccess(storeService.createStore(request, storeImage));
+            @RequestBody @Valid StoreRequestDto request) {
+        return ApiResponse.onSuccess(storeService.createStore(request));
     }
 
     @GetMapping

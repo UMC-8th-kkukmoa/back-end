@@ -17,7 +17,13 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public Region createRegion(
             String address, String detailAddress, double latitude, double longitude) {
-        return regionRepository.save(
-                regionConverter.toRegion(address, detailAddress, latitude, longitude));
+        return regionRepository
+                .findByAddressAndDetailAddressAndLatitudeAndLongitude(
+                        address, detailAddress, latitude, longitude)
+                .orElseGet(
+                        () ->
+                                regionRepository.save(
+                                        regionConverter.toRegion(
+                                                address, detailAddress, latitude, longitude)));
     }
 }
