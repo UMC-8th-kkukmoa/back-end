@@ -11,29 +11,26 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if merged
-        id: check
+      - name: Set message for Discord
+        id: set-message
         run: |
-          echo "merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+          if [ "${{ github.event.action }}" = "opened" ]; then
+            echo "MESSAGE=Pull Request가 생성되었습니다." >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+            echo "MESSAGE=Pull Request가 병합되었습니다." >> $GITHUB_OUTPUT
+          else
+            echo "MESSAGE=" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Send Discord message (Opened)
-        if: github.event.action == 'opened'
+      - name: Send Discord message
+        if: steps.set-message.outputs.MESSAGE != ''
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            🆕 **${{ github.actor }}**님이 새로운 PR을 생성했습니다!
-            🔗 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
-            🔍 브랜치: `${{ github.head_ref }}` → `${{ github.base_ref }}`
+            ${{ steps.set-message.outputs.MESSAGE }}
 
-      - name: Send Discord message (Merged)
-        if: github.event.action == 'closed' && github.event.pull_request.merged == true
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: |
-            ✅ **${{ github.actor }}**님이 PR을 **Merge**했습니다!
-            🔗 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
-            🔍 브랜치: `${{ github.head_ref }}` → `${{ github.base_ref }}`
+            • 작성자: ${{ github.actor }}
+            • 제목: [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            • 브랜치: ${{ github.head_ref }} → ${{ github.base_ref }}
