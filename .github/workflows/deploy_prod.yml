@@ -38,6 +38,9 @@ jobs:
       - name: 빌드 (bootJar만 수행)
         run: ./gradlew clean bootJar -x test
 
+      - name : 빌드 확인
+        run: ls -al ./build/libs
+
       - name: JAR 이름 변경
         run: |
           JAR_PATH=$(ls ./build/libs/*SNAPSHOT.jar | head -n 1)
@@ -55,6 +58,9 @@ jobs:
           proxy_key: ${{ secrets.BASTION_KEY }}
           source: project.jar
           target: /home/ubuntu/back-end/tobe
+
+      - name: project.jar 존재 확인
+        run: ls -al ./project.jar
 
       - name: .env 전송 (운영 EC2 via Bastion)
         uses: appleboy/scp-action@v0.1.7
