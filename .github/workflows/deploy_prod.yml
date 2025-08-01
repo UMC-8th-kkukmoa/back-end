@@ -94,4 +94,16 @@ jobs:
 
             sudo fuser -k -n tcp 8080 || true
             env $(cat .env | xargs) nohup java -jar project.jar > output.log 2>&1 &
+
+            echo "서버 기동 대기 중..."
+            sleep 10
+
+            if curl -s http://localhost:8080/api/health | grep -q "200"; then
+              echo "서버 기동 성공"
+            else
+              echo "서버 기동 실패"
+              cat output.log
+              exit 1
+            fi
+
             rm -rf /home/ubuntu/back-end/tobe
