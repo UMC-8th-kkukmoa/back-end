@@ -1,15 +1,39 @@
-name: Discord Notification
+name: Discord PR Notification
 
 on:
-  push:
+  pull_request:
+    types: [opened, closed]
     branches:
+      - main
       - dev
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send commit message to Discord
+      - name: Check if merged
+        id: check
+        run: |
+          echo "merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+
+      - name: Send Discord message (Opened)
+        if: github.event.action == 'opened'
         uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          args: |
+            🆕 **${{ github.actor }}**님이 새로운 PR을 생성했습니다!
+            🔗 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            🔍 브랜치: `${{ github.head_ref }}` → `${{ github.base_ref }}`
+
+      - name: Send Discord message (Merged)
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            ✅ **${{ github.actor }}**님이 PR을 **Merge**했습니다!
+            🔗 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            🔍 브랜치: `${{ github.head_ref }}` → `${{ github.base_ref }}`
