@@ -96,7 +96,7 @@ jobs:
             env $(cat .env | xargs) nohup java -jar project.jar > output.log 2>&1 &
 
             echo "서버 기동 대기 중..."
-            sleep 10
+            sleep 30
 
             if [ "$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)" = "200" ]; then
               echo "서버 기동 성공"
