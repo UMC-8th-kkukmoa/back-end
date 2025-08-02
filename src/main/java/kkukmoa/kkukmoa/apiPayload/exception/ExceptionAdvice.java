@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +44,52 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                                                 "ConstraintViolationException 추출 도중 에러 발생"));
         return handleExceptionInternalConstraint(
                 e, ErrorStatus.valueOf(errorMessage), HttpHeaders.EMPTY, request);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException e, WebRequest request) {
+
+        String paramName = e.getName();
+        Object invalidValue = e.getValue();
+        Class<?> requiredType = e.getRequiredType();
+
+        String errorMessage;
+        if (requiredType != null && requiredType.isEnum()) {
+            String enumValues =
+                    String.join(
+                            ", ",
+                            Arrays.stream(requiredType.getEnumConstants())
+                                    .map(Object::toString)
+                                    .toArray(String[]::new));
+            errorMessage =
+                    String.format(
+                            "잘못된 enum 값입니다. [%s=%s], 가능한 값: [%s]",
+                            paramName, invalidValue, enumValues);
+        } else if (requiredType == Long.class || requiredType == Integer.class) {
+            errorMessage = String.format("숫자 타입 파라미터가 잘못되었습니다. [%s=%s]", paramName, invalidValue);
+        } else if (requiredType == java.time.LocalDateTime.class) {
+            errorMessage =
+                    String.format(
+                            "날짜/시간 형식이 잘못되었습니다. [%s=%s], 예: 2024-01-01T12:00:00",
+                            paramName, invalidValue);
+        } else if (requiredType == java.time.LocalDate.class) {
+            errorMessage =
+                    String.format(
+                            "날짜 형식이 잘못되었습니다. [%s=%s], 예: 2024-01-01", paramName, invalidValue);
+        } else {
+            errorMessage =
+                    String.format(
+                            "요청 파라미터 타입이 잘못되었습니다. [%s=%s], 기대 타입: %s",
+                            paramName,
+                            invalidValue,
+                            requiredType != null ? requiredType.getSimpleName() : "알 수 없음");
+        }
+
+        Map<String, String> errorArgs = Map.of(paramName, errorMessage);
+
+        return handleExceptionInternalArgs(
+                e, HttpHeaders.EMPTY, ErrorStatus.valueOf("BAD_REQUEST"), request, errorArgs);
     }
 
     @Override
