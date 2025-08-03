@@ -54,6 +54,7 @@ public class SecurityConfig {
                                                 "/v3/api-docs/**",
                                                 "/users/oauth/kakao",
                                                 "/ws/**",
+                                                "/health", // 인프라 상태검사
                                                 "/api/images/**")
                                         .permitAll()
                                         .anyRequest()
@@ -73,6 +74,8 @@ public class SecurityConfig {
         for (String origin : allowedOrigins.split(",")) {
             configuration.addAllowedOrigin(origin.trim());
         }
+        configuration.addAllowedOrigin("https://api.kkukmoa.shop");
+        configuration.addAllowedOrigin("http://localhost:8081");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true); // 인증 정보 포함 허용
