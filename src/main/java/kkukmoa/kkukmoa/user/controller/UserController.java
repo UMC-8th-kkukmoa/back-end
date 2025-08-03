@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
@@ -21,6 +23,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -64,14 +68,29 @@ public class UserController {
                         content = @Content(mediaType = "application/json"))
             })
     public ResponseEntity<ApiResponse<UserResponseDto.loginDto>> callback(
-            @RequestParam("code") String code) {
+            @RequestParam("code") String code, HttpServletResponse response) throws IOException {
+
+        // 카카오 로그인 후 유저 정보를 처리
         UserResponseDto.loginDto userResponse = userCommandService.loginOrRegisterByKakao(code);
 
-        return ResponseEntity.ok()
-                .header(
-                        HttpHeaders.AUTHORIZATION,
-                        "Bearer " + userResponse.getTokenResponseDto().getAccessToken())
-                .body(ApiResponse.onSuccess(userResponse));
+        // JWT 토큰 발급
+        String accessToken = userResponse.getTokenResponseDto().getAccessToken();
+        String refreshToken = userResponse.getTokenResponseDto().getRefreshToken(); // 리프레시 토큰 추가
+
+        // 리다이렉트 URL 생성 (AccessToken과 RefreshToken을 URL에 포함하지 않음)
+        String redirectUri = "kkukmoa://oauth";
+
+        // Location 헤더에 리다이렉트 URL 추가
+        response.setHeader("Location", redirectUri);
+
+        // 리다이렉트 상태 코드(302) 반환
+        response.setStatus(HttpServletResponse.SC_FOUND); // 302 상태 코드
+
+        // Authorization 헤더에 JWT 토큰 포함
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+
+        // 리다이렉트 후 실제 응답은 클라이언트가 처리하게 되므로 빈 본문 반환
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")
