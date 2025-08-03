@@ -1,15 +1,36 @@
-name: Discord Notification
+name: Discord PR Notification
 
 on:
-  push:
+  pull_request:
+    types: [opened, closed]
     branches:
+      - main
       - dev
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send commit message to Discord
+      - name: Set message for Discord
+        id: set-message
+        run: |
+          if [ "${{ github.event.action }}" = "opened" ]; then
+            echo "MESSAGE=Pull Request가 생성되었습니다." >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+            echo "MESSAGE=Pull Request가 병합되었습니다." >> $GITHUB_OUTPUT
+          else
+            echo "MESSAGE=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Discord message
+        if: steps.set-message.outputs.MESSAGE != ''
         uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          args: |
+            ${{ steps.set-message.outputs.MESSAGE }}
+
+            • 작성자: ${{ github.actor }}
+            • 제목: [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            • 브랜치: ${{ github.head_ref }} → ${{ github.base_ref }}
