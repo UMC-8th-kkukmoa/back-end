@@ -40,6 +40,9 @@ public class UserCommandService {
     @Value("${spring.kakao.client-id}")
     private String clientId;
 
+    @Value("${spring.kakao.redirect-uri}")
+    private String redirectUri;
+
     private final WebClient kakaoTokenWebClient;
     private final WebClient kakaoUserInfoWebClient;
 
@@ -75,9 +78,7 @@ public class UserCommandService {
                         .body(
                                 BodyInserters.fromFormData("grant_type", "authorization_code")
                                         .with("client_id", clientId)
-                                        .with(
-                                                "redirect_uri",
-                                                "http://localhost:8080/users/oauth/kakao")
+                                        .with("redirect_uri", redirectUri)
                                         .with("code", code))
                         .retrieve()
                         .onStatus(
