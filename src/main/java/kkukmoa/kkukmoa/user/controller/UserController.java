@@ -20,11 +20,15 @@ import kkukmoa.kkukmoa.user.service.UserCommandService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,22 +79,16 @@ public class UserController {
 
         // JWT 토큰 발급
         String accessToken = userResponse.getTokenResponseDto().getAccessToken();
-        String refreshToken = userResponse.getTokenResponseDto().getRefreshToken(); // 리프레시 토큰 추가
+        String encodedToken =
+                UriUtils.encode(accessToken, StandardCharsets.UTF_8); // 토큰을 URL-safe 방식으로 인코딩
 
-        // 리다이렉트 URL 생성 (AccessToken과 RefreshToken을 URL에 포함하지 않음)
-        String redirectUri = "kkukmoa://oauth";
+        // 리다이렉트 URL 생성 (AccessToken을 URL 쿼리 파라미터로 포함)
+        String redirectUri = "kkukmoa://oauth?token=" + encodedToken;
 
-        // Location 헤더에 리다이렉트 URL 추가
-        response.setHeader("Location", redirectUri);
-
-        // 리다이렉트 상태 코드(302) 반환
-        response.setStatus(HttpServletResponse.SC_FOUND); // 302 상태 코드
-
-        // Authorization 헤더에 JWT 토큰 포함
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-
-        // 리다이렉트 후 실제 응답은 클라이언트가 처리하게 되므로 빈 본문 반환
-        return ResponseEntity.noContent().build();
+        // 리다이렉트 응답 상태 코드(302)와 Location 헤더 설정
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(redirectUri)) // Location 헤더에 리다이렉트 URL 설정
+                .build();
     }
 
     @PostMapping("/logout")
