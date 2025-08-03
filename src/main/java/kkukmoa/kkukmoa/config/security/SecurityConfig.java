@@ -54,6 +54,7 @@ public class SecurityConfig {
                                                 "/v3/api-docs/**",
                                                 "/users/oauth/kakao",
                                                 "/ws/**",
+                                                "/health", // 인프라 상태검사
                                                 "/api/images/**")
                                         .permitAll()
                                         .anyRequest()
