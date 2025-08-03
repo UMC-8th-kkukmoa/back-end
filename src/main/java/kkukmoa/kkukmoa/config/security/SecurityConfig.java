@@ -73,6 +73,8 @@ public class SecurityConfig {
         for (String origin : allowedOrigins.split(",")) {
             configuration.addAllowedOrigin(origin.trim());
         }
+        configuration.addAllowedOrigin("https://api.kkukmoa.shop");
+        configuration.addAllowedOrigin("http://localhost:8081");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true); // 인증 정보 포함 허용
@@ -88,3 +90,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
