@@ -74,7 +74,7 @@ public class SecurityConfig {
         for (String origin : allowedOrigins.split(",")) {
             configuration.addAllowedOrigin(origin.trim());
         }
-        configuration.addAllowedOrigin("https://api.kkukmoa.shop");
+        configuration.addAllowedOrigin("https://kkukmoa.shop");
         configuration.addAllowedOrigin("http://localhost:8081");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
