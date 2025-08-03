@@ -55,7 +55,7 @@ spring:
       max-request-size: 10MB
 
 cors:
-  allowed-origins: http://localhost:5173,http://localhost:8080,http://kkukmoa.shop
+  allowed-origins: http://localhost:5173,http://localhost:8080,http://kkukmoa.shop,https://kkukmoa.shop
 
 aws:
   s3:
