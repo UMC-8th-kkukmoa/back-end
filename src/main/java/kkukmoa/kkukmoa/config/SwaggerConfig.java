@@ -58,7 +58,7 @@ public class SwaggerConfig {
                                         .description("Local server")) // 서버 URL 설정
                         .addServersItem(
                                 new Server()
-                                        .url("https://api.kkukmoa.shop")
+                                        .url("https://kkukmoa.shop")
                                         .description("Production server"))
                         .addSecurityItem(securityRequirement)
                         .components(components);
