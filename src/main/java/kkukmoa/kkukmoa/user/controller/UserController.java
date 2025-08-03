@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
@@ -45,30 +46,30 @@ public class UserController {
                             + "- isNewUser: false (기존 유저, DB 조회 확인됨)\n"
                             + "- isNewUser: true  (신규 유저, DB에 없음)",
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "성공적으로 토큰 발급 및 유저 정보 반환",
-                            headers = {
-                                    @Header(
-                                            name = HttpHeaders.AUTHORIZATION,
-                                            description = "JWT access token",
-                                            schema = @Schema(type = "string"))
-                            },
-                            content =
-                            @Content(
-                                    mediaType = "application/json",
-                                    schema =
-                                    @Schema(
-                                            implementation =
-                                                    UserResponseDto.loginDto.class))),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid Parameter (예: code 누락)",
-                            content = @Content(mediaType = "application/json")),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "500",
-                            description = "Internal Server Error (카카오 API 오류 또는 DB 처리 실패)",
-                            content = @Content(mediaType = "application/json"))
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "200",
+                        description = "성공적으로 토큰 발급 및 유저 정보 반환",
+                        headers = {
+                            @Header(
+                                    name = HttpHeaders.AUTHORIZATION,
+                                    description = "JWT access token",
+                                    schema = @Schema(type = "string"))
+                        },
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                UserResponseDto.loginDto.class))),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "400",
+                        description = "Invalid Parameter (예: code 누락)",
+                        content = @Content(mediaType = "application/json")),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "500",
+                        description = "Internal Server Error (카카오 API 오류 또는 DB 처리 실패)",
+                        content = @Content(mediaType = "application/json"))
             })
     public ResponseEntity<ApiResponse<UserResponseDto.loginDto>> callback(
             @RequestParam("code") String code, HttpServletResponse response) throws IOException {
@@ -78,7 +79,8 @@ public class UserController {
 
         // JWT 토큰 발급
         String accessToken = userResponse.getTokenResponseDto().getAccessToken();
-        String encodedToken = UriUtils.encode(accessToken, StandardCharsets.UTF_8); // 토큰을 URL-safe 방식으로 인코딩
+        String encodedToken =
+                UriUtils.encode(accessToken, StandardCharsets.UTF_8); // 토큰을 URL-safe 방식으로 인코딩
 
         // 리다이렉트 URL 생성 (AccessToken을 URL 쿼리 파라미터로 포함)
         String redirectUri = "kkukmoa://oauth?token=" + encodedToken;
@@ -88,7 +90,6 @@ public class UserController {
                 .location(URI.create(redirectUri)) // Location 헤더에 리다이렉트 URL 설정
                 .build();
     }
-
 
     @PostMapping("/logout")
     @Operation(
