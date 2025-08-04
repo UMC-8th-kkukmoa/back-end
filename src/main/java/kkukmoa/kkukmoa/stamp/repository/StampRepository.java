@@ -14,14 +14,14 @@ import java.util.Optional;
 public interface StampRepository extends JpaRepository<Stamp, Long> {
 
     @Query(
-        """
-            SELECT stamp FROM Stamp stamp
-            JOIN FETCH stamp.store store
-            JOIN FETCH stamp.user user
-            WHERE user.id = :userId AND store.id = :storeId
-        """
-    )
-    Optional<Stamp> findByUserAndStore(@Param("userId") Long userId, @Param("storeId") Long storeId);
+            """
+                SELECT stamp FROM Stamp stamp
+                JOIN FETCH stamp.store store
+                JOIN FETCH stamp.user user
+                WHERE user.id = :userId AND store.id = :storeId
+            """)
+    Optional<Stamp> findByUserAndStore(
+            @Param("userId") Long userId, @Param("storeId") Long storeId);
 
     @Query(
             """

@@ -14,8 +14,8 @@ import kkukmoa.kkukmoa.stamp.repository.StampRepository;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
