@@ -85,8 +85,6 @@ public class StampCommandService {
         boolean isComplete = stamp.getCount() == Stamp.maxCount;
         if (isComplete) { // Stamp 클래스에 max 지정되어 있음
             stampRepository.delete(stamp); // 스탬프 제거
-            System.out.println("user = " + user);
-            System.out.println("store = " + store);
             couponRepository.save(makeCoupon(user, store)); // 쿠폰 발급
             log.info("스탬프 완성! 쿠폰을 1개 발급했습니다.");
         }
