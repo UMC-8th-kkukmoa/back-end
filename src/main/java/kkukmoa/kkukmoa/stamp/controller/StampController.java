@@ -55,7 +55,7 @@ public class StampController {
     @ApiErrorCodeExamples(
             value = {ErrorStatus.AUTHENTICATION_FAILED, ErrorStatus.STORE_CATEGORY_NOT_FOUND})
     public ApiResponse<CouponResponseDto.couponListDto> coupons(
-            @RequestParam(name = "store-type") CategoryType storeType) {
+            @RequestParam(name = "store-type", required = false) CategoryType storeType) {
         couponListDto couponListDto = couponQueryService.couponList(storeType);
         return ApiResponse.onSuccess(couponListDto);
     }

@@ -29,23 +29,35 @@ public class CouponQueryService {
     private final AuthService authService;
 
     @Transactional(readOnly = true)
-    public CouponResponseDto.couponListDto couponList(CategoryType requestCategory) {
+    public CouponResponseDto.couponListDto couponList(CategoryType storeType) {
 
         // 로그인한 유저
         User user = authService.getCurrentUser();
 
-        // 요청 받은 카테고리 예외 처리
-        Category category =
-                categoryRepository
-                        .findByType(requestCategory)
-                        .orElseThrow(
-                                () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+        // List<Coupon> 생성
+        List<Coupon> couponList;
 
         // 쿠폰 조회
-        List<Coupon> couponList = couponRepository.findByCategoryAndUser(category, user);
+        if (storeType != null) { // store 카테고리 조건 있음
 
+            Category category =
+                categoryRepository
+                    .findByType(storeType)
+                    .orElseThrow(
+                        () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+
+            // category, user로 조회
+            couponList = couponRepository.findByCategoryAndUser(category, user);
+
+        }else{ // store 카테고리 없음 ( ALL )
+            //user로 조회
+            couponList = couponRepository.findByUser(user);
+        }
+
+        // dto -> List<dto>로 변환
         List<couponDto> couponDtoList = CouponConverter.toCouponDtoList(couponList);
 
+        // List<dto> -> 응답 형태로 변환 후 반환
         return CouponResponseDto.couponListDto
                 .builder()
                 .coupons(couponDtoList)

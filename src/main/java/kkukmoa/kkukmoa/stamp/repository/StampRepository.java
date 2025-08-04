@@ -24,9 +24,8 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
     @Query(
             """
               SELECT DISTINCT p FROM Stamp p
-              LEFT JOIN FETCH User u ON p.user = :user
-              LEFT JOIN FETCH p.store
-              WHERE p.user = :user AND p.store.category = :category
+              LEFT JOIN FETCH p.store s
+              WHERE p.user = :user AND s.category = :category
             """)
     List<Stamp> findByCategoryAndUser(
             @Param("category") Category category, @Param("user") User user);
@@ -34,8 +33,7 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
     @Query(
         """
           SELECT DISTINCT p FROM Stamp p
-          LEFT JOIN FETCH User u ON p.user = :user
-          LEFT JOIN FETCH p.store
+          LEFT JOIN FETCH p.store s
           WHERE p.user = :user
         """
     )
