@@ -7,19 +7,16 @@ import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
-import kkukmoa.kkukmoa.stamp.domain.Coupon;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponListDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampListDto;
-import kkukmoa.kkukmoa.stamp.service.coupon.CouponCommandService;
 import kkukmoa.kkukmoa.stamp.service.coupon.CouponQueryService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampCommandService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampQueryService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +30,6 @@ public class StampController {
 
     private final StampQueryService stampQueryService;
     private final CouponQueryService couponQueryService;
-    private final CouponCommandService couponCommandService;
     private final StampCommandService stampCommandService;
 
     @GetMapping
@@ -58,13 +54,6 @@ public class StampController {
             @RequestParam(name = "store-type", required = false) CategoryType storeType) {
         couponListDto couponListDto = couponQueryService.couponList(storeType);
         return ApiResponse.onSuccess(couponListDto);
-    }
-
-    @GetMapping("/coupons/make")
-    @Operation(summary = "테스트용 쿠폰 생성 API", description = "테스트용 쿠폰 생성 API")
-    @ApiErrorCodeExamples({})
-    public ResponseEntity<Coupon> makeCoupon() {
-        return ResponseEntity.ok(couponCommandService.saveCoupon());
     }
 
     @Operation(
