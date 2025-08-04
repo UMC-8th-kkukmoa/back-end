@@ -15,6 +15,7 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 
+import kkukmoa.kkukmoa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +36,7 @@ public class StampCommandService {
     private final StringRedisTemplate stringRedisTemplate;
     private final AuthService authService;
     private final CouponRepository couponRepository;
+    private final UserRepository userRepository;
 
     // storeId를 찾기 위한 레디스 키 접두사
     private String REDIS_QR_PREFIX = "qrStore:";
@@ -43,6 +45,7 @@ public class StampCommandService {
     public StampResponseDto.StampSaveDto save(String qrCode) {
 
         User user = authService.getCurrentUser();
+        user = userRepository.getReferenceById(user.getId());
 
         // key = REDIS_QR_PREFIX(접두사) + qrCode
         String qrStoreKey = REDIS_QR_PREFIX + qrCode;
@@ -56,7 +59,7 @@ public class StampCommandService {
         log.info("storeId = {}", storeId);
 
         // 스탬프 조회
-        Optional<Stamp> optionalStamp = stampRepository.findByUserAndStore(user, storeId);
+        Optional<Stamp> optionalStamp = stampRepository.findByUserAndStore(user.getId(), storeId);
 
         Stamp stamp;
         Store store;
@@ -81,9 +84,11 @@ public class StampCommandService {
         // 스탬프 다 채우면
         boolean isComplete = stamp.getCount() == Stamp.maxCount;
         if (isComplete) { // Stamp 클래스에 max 지정되어 있음
-            log.info("스탬프 완성! 쿠폰을 1개 발급했습니다.");
             stampRepository.delete(stamp); // 스탬프 제거
+            System.out.println("user = " + user);
+            System.out.println("store = " + store);
             couponRepository.save(makeCoupon(user, store)); // 쿠폰 발급
+            log.info("스탬프 완성! 쿠폰을 1개 발급했습니다.");
         }
 
         return StampResponseDto.StampSaveDto.builder().hasEarnedCoupon(isComplete).build();

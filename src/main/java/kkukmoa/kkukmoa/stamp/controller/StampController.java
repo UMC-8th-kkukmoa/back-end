@@ -18,6 +18,7 @@ import kkukmoa.kkukmoa.stamp.service.stamp.StampQueryService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +65,7 @@ public class StampController {
         ErrorStatus.STORE_NOT_FOUND,
         ErrorStatus.AUTHENTICATION_FAILED
     })
+    @PutMapping
     public ApiResponse<StampResponseDto.StampSaveDto> saveCoupon(
             @RequestParam("qr") String qrCode) {
         StampResponseDto.StampSaveDto saveDto = stampCommandService.save(qrCode);

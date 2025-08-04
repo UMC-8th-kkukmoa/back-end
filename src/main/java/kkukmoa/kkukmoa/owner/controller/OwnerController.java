@@ -34,10 +34,10 @@ public class OwnerController {
             description =
                     """
                         QR 코드 정보를 받아 차감할 금액을 반환합니다. 금액 차감에 성공하면\n
-                        - 쿠폰의 경우  <b>/v1/stamps/coupons</b>
-                        - 금액권의 경우 <b>/v1/...</b>
+                        - 쿠폰의 경우  /v1/stamps/coupons
+                        - 금액권의 경우 /v1/...
                         으로 redirect 하도록 Web Socket 으로 메시지를 보냅니다.\n
-                        웹소켓 요청 주소는 <b>ws://baseUrl/ws</b> 입니다.
+                        웹소켓 요청 주소는 ws://baseUrl/ws 입니다.
                     """)
     @ApiErrorCodeExamples(
             value = {

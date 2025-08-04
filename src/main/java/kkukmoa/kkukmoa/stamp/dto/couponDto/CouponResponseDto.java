@@ -40,7 +40,7 @@ public class CouponResponseDto {
 
         @Schema(
                 description = "가게 이미지",
-                example = "https://[bucket name].s3-[aws-region].amazonaws.com")
+                example = "iVBORw0KGgoAAAANSUhEUgAAAMg...")
         @JsonProperty(value = "store_image")
         String storeImg;
 
