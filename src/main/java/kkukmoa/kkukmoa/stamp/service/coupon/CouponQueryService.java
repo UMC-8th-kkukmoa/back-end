@@ -35,7 +35,6 @@ public class CouponQueryService {
         User user = authService.getCurrentUser();
 
         // 요청 받은 카테고리 예외 처리
-        System.out.println("hello");
         Category category =
                 categoryRepository
                         .findByType(requestCategory)
@@ -43,7 +42,6 @@ public class CouponQueryService {
                                 () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
         // 쿠폰 조회
-        System.out.println("hello");
         List<Coupon> couponList = couponRepository.findByCategoryAndUser(category, user);
 
         List<couponDto> couponDtoList = CouponConverter.toCouponDtoList(couponList);

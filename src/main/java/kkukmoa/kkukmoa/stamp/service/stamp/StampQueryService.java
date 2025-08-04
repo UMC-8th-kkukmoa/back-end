@@ -36,14 +36,21 @@ public class StampQueryService {
         User user = authService.getCurrentUser();
 
         // 요청 받은 카테고리 예외 처리
-        Category category =
-                categoryRepository
-                        .findByType(storeType)
-                        .orElseThrow(
-                                () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+        List<Stamp> stampList;
 
-        // 스탬프 조회 ( 가게, 카테고리 fetch join )
-        List<Stamp> stampList = stampRepository.findByCategoryAndUser(category, user);
+        // 스탬프 조회
+        if(storeType != null) { // store 카테고리 조건 있음
+            Category category = categoryRepository
+                .findByType(storeType)
+                .orElseThrow(
+                    () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+            // category, user로 조회
+            stampList = stampRepository.findByCategoryAndUser(category, user);
+
+        } else{ // store 카테고리 없음 ( ALL )
+            // user로만 조회
+            stampList = stampRepository.findByUser(user);
+        }
 
         // dto -> List<dto>로 변환
         List<StampDto> stampListDto = StampConverter.toStampDtoList(stampList);

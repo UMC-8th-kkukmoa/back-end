@@ -65,6 +65,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 가게 관련 에러
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다."),
     STORE_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),
+    STORE_INVALID_CATEGORY(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),
     ;
 
     private final HttpStatus httpStatus;

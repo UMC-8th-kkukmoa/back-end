@@ -36,12 +36,12 @@ public class StampController {
     private final CouponCommandService couponCommandService;
     private final StampCommandService stampCommandService;
 
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "스탬프 목록 조회 API", description = "스탬프 타입을 입력하세요.")
     @ApiErrorCodeExamples(
             value = {ErrorStatus.STORE_CATEGORY_NOT_FOUND, ErrorStatus.AUTHENTICATION_FAILED})
     public ApiResponse<StampResponseDto.StampListDto> stamps(
-            @RequestParam(name = "store-type") CategoryType storeType) {
+            @RequestParam(name = "store-type", required = false) CategoryType storeType) {
         StampListDto stampList = stampQueryService.stampList(storeType);
         return ApiResponse.onSuccess(stampList);
     }
