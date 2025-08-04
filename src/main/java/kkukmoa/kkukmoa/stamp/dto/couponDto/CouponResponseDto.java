@@ -38,9 +38,7 @@ public class CouponResponseDto {
         @JsonProperty(value = "store_id")
         Long storeId;
 
-        @Schema(
-                description = "가게 이미지",
-                example = "https://[bucket name].s3-[aws-region].amazonaws.com")
+        @Schema(description = "가게 이미지", example = "iVBORw0KGgoAAAANSUhEUgAAAMg...")
         @JsonProperty(value = "store_image")
         String storeImg;
 

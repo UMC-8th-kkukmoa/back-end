@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.stamp.repository;
 
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.stamp.domain.Stamp;
-import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,21 +15,28 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
 
     @Query(
             """
-            SELECT stamp FROM Stamp stamp
-            JOIN FETCH Store store ON store.id = :storeId AND stamp.store = store
-            WHERE stamp.user = :user
+                SELECT stamp FROM Stamp stamp
+                JOIN FETCH stamp.store store
+                JOIN FETCH stamp.user user
+                WHERE user.id = :userId AND store.id = :storeId
             """)
-    Optional<Stamp> findByUserAndStore(@Param("user") User user, @Param("storeId") Long storeId);
-
-    Optional<Stamp> findByUserAndStore(User user, Store store);
+    Optional<Stamp> findByUserAndStore(
+            @Param("userId") Long userId, @Param("storeId") Long storeId);
 
     @Query(
             """
-              SELECT p, s, u FROM Stamp p
-              JOIN FETCH Store s ON p.store = s
-              JOIN FETCH User u ON p.user = :user
-              WHERE p.user = u AND s.category = :category
+              SELECT DISTINCT p FROM Stamp p
+              LEFT JOIN FETCH p.store s
+              WHERE p.user = :user AND s.category = :category
             """)
     List<Stamp> findByCategoryAndUser(
             @Param("category") Category category, @Param("user") User user);
+
+    @Query(
+            """
+              SELECT DISTINCT p FROM Stamp p
+              LEFT JOIN FETCH p.store s
+              WHERE p.user = :user
+            """)
+    List<Stamp> findByUser(@Param("user") User user);
 }
