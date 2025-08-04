@@ -2,7 +2,7 @@ name: Deploy To EC2 (Production)
 
 on:
   pull_request:
-    branches: [ prod ]   # 운영 서버 배포는 prod 브랜치 PR에서만 실행
+    branches: [ main ]   # 서버 배포는 main 브랜치 PR에서만 실행
   workflow_dispatch:
 
 jobs:
