@@ -11,11 +11,11 @@ import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
 import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
-
 import kkukmoa.kkukmoa.user.domain.User;
-import lombok.RequiredArgsConstructor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,8 +83,9 @@ public class OwnerCommandService {
                 .qrType(qrType)
                 .build();
     }
+
     /**
-     *  사장이 사용자의 쿠폰 QR 코드 인식 후의 처리입니다. 사장검증 -> 쿠폰 유효성 검사( 사용여부 ) -> 쿠폰 사용 처리 ( 상태 변경, 금액 차감 )
+     * 사장이 사용자의 쿠폰 QR 코드 인식 후의 처리입니다. 사장검증 -> 쿠폰 유효성 검사( 사용여부 ) -> 쿠폰 사용 처리 ( 상태 변경, 금액 차감 )
      *
      * @param 'coupon_uuid' 형태의 QR 정보
      * @return 쿠폰 사용 성공 여부 반환
@@ -115,5 +116,4 @@ public class OwnerCommandService {
         coupon.use();
         log.info("쿠폰 사용 성공 : Coupon Id = {}", coupon.getId());
     }
-
 }

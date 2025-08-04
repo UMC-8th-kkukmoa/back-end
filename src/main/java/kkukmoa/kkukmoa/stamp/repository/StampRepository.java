@@ -31,12 +31,10 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
             @Param("category") Category category, @Param("user") User user);
 
     @Query(
-        """
-          SELECT DISTINCT p FROM Stamp p
-          LEFT JOIN FETCH p.store s
-          WHERE p.user = :user
-        """
-    )
-    List<Stamp> findByUser(@Param("user")  User user);
-
+            """
+              SELECT DISTINCT p FROM Stamp p
+              LEFT JOIN FETCH p.store s
+              WHERE p.user = :user
+            """)
+    List<Stamp> findByUser(@Param("user") User user);
 }

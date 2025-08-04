@@ -39,17 +39,20 @@ public class StampQueryService {
         List<Stamp> stampList;
 
         // 스탬프 조회
-        if(storeType != null) { // store 카테고리 조건 있음
+        if (storeType != null) { // store 카테고리 조건 있음
 
-            Category category = categoryRepository
-                .findByType(storeType)
-                .orElseThrow(
-                    () -> new GeneralException(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
+            Category category =
+                    categoryRepository
+                            .findByType(storeType)
+                            .orElseThrow(
+                                    () ->
+                                            new GeneralException(
+                                                    ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
             // category, user로 조회
             stampList = stampRepository.findByCategoryAndUser(category, user);
 
-        } else{ // store 카테고리 없음 ( ALL )
+        } else { // store 카테고리 없음 ( ALL )
             // user로만 조회
             stampList = stampRepository.findByUser(user);
         }
