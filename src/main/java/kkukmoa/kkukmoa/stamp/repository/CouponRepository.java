@@ -26,11 +26,18 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
     @Query(
             """
-              SELECT c FROM Coupon c
-              JOIN FETCH Store s ON c.store = s
-              JOIN FETCH User u ON c.user = :user
-              WHERE c.user = u AND s.category = :category AND c.status = kkukmoa.kkukmoa.stamp.enums.CouponStatus.UNUSED
+              SELECT DISTINCT c FROM Coupon c
+              LEFT JOIN FETCH c.store s
+              WHERE c.user = :user AND s.category = :category AND c.status = kkukmoa.kkukmoa.stamp.enums.CouponStatus.UNUSED
             """)
     List<Coupon> findByCategoryAndUser(
             @Param("category") Category category, @Param("user") User user);
+
+    @Query(
+            """
+              SELECT DISTINCT c From Coupon c
+              LEFT JOIN FETCH c.store s
+              WHERE c.user = :user AND c.status = kkukmoa.kkukmoa.stamp.enums.CouponStatus.UNUSED
+            """)
+    List<Coupon> findByUser(@Param("user") User user);
 }

@@ -4,23 +4,27 @@ import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.CouponHandler;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
+import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.config.websocket.handler.QrWebSocketHandler;
 import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
 import kkukmoa.kkukmoa.stamp.domain.Coupon;
+import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
-import kkukmoa.kkukmoa.stamp.service.coupon.CouponCommandService;
+import kkukmoa.kkukmoa.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OwnerCommandService {
 
-    private final CouponCommandService couponCommandService;
+    private final AuthService authService;
     private final QrWebSocketHandler qrWebSocketHandler;
     private final CouponRepository couponRepository;
 
@@ -51,7 +55,7 @@ public class OwnerCommandService {
 
             // 동작
             discountAmount = coupon.getDiscountAmount(); // 차감 금액 설정
-            couponCommandService.useCoupon(coupon); // 쿠폰 사용
+            useCoupon(coupon); // 쿠폰 사용
 
         } else if (qrType == QrCodeType.VOUCHER) { // 금액권
 
@@ -78,5 +82,38 @@ public class OwnerCommandService {
                 .discountAmount(discountAmount)
                 .qrType(qrType)
                 .build();
+    }
+
+    /**
+     * 사장이 사용자의 쿠폰 QR 코드 인식 후의 처리입니다. 사장검증 -> 쿠폰 유효성 검사( 사용여부 ) -> 쿠폰 사용 처리 ( 상태 변경, 금액 차감 )
+     *
+     * @param 'coupon_uuid' 형태의 QR 정보
+     * @return 쿠폰 사용 성공 여부 반환
+     */
+    private void useCoupon(Coupon coupon) {
+
+        // 쿠폰이 속한 가게의 사장
+        User couponOwner = coupon.getStore().getOwner();
+        log.info("조회된 쿠폰 ID : {}", coupon.getId());
+        log.info("조회된 쿠폰 상태 : {}", coupon.getStatus());
+        log.info("쿠폰 가게 사장님 정보 : {}", couponOwner.getEmail());
+
+        // 사장 검증
+        Long currentLoginOwnerId = authService.getCurrentUserId();
+        log.info("현재 로그인된 사장님 정보 : {}", authService.getCurrentUserEmail());
+
+        // 사장 ID 비교
+        if (!couponOwner.getId().equals(currentLoginOwnerId)) {
+            throw new CouponHandler(ErrorStatus.COUPON_INVALID_USED_PLACE);
+        }
+
+        // 쿠폰 유효성 검사
+        if (coupon.getStatus().equals(CouponStatus.USED)) {
+            throw new CouponHandler(ErrorStatus.COUPON_IS_USED);
+        }
+
+        // 쿠폰 사용 처리
+        coupon.use();
+        log.info("쿠폰 사용 성공 : Coupon Id = {}", coupon.getId());
     }
 }
