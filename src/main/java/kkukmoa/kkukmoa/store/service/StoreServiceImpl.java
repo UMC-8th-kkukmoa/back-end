@@ -14,6 +14,7 @@ import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -154,6 +155,21 @@ public class StoreServiceImpl implements StoreService {
                                                 longitude,
                                                 store.getRegion().getLatitude(),
                                                 store.getRegion().getLongitude())))
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StoreSearchResponseDto> searchStoresByName(String name, int offset, int limit) {
+
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("검색어를 입력하세요.");
+        }
+
+        List<Store> stores = storeRepository.findByNameContainingIgnoreCase(name);
+        return stores.stream()
+                .map(storeConverter::toSearchDto)
                 .skip(offset)
                 .limit(limit)
                 .collect(Collectors.toList());
