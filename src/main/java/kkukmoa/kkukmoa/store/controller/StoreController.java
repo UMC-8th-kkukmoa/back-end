@@ -79,9 +79,7 @@ public class StoreController {
     }
 
     @GetMapping("/search")
-    @Operation(
-            summary = "가게 검색 API",
-            description = "가게명으로 가게를 조회합니다.")
+    @Operation(summary = "가게 검색 API", description = "가게명으로 가게를 조회합니다.")
     public ApiResponse<List<StoreSearchResponseDto>> searchStores(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int offset,
@@ -91,8 +89,7 @@ public class StoreController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<?>> handleIllegalArgument(IllegalArgumentException e) {
-        return ResponseEntity
-                .badRequest()
+        return ResponseEntity.badRequest()
                 .body(ApiResponse.onFailure("COMMON400", e.getMessage(), null));
     }
 }

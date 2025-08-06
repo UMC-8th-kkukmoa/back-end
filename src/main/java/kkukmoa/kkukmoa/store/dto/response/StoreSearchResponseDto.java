@@ -13,4 +13,3 @@ public class StoreSearchResponseDto {
     private Long id;
     private String name;
 }
-
