@@ -18,6 +18,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findAllByCategory(Category category);
 
+    List<Store> findByNameContainingIgnoreCase(String name);
+
     Optional<Store> findByCategory(Category category);
 
     @Query(

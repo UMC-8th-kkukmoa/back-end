@@ -13,10 +13,12 @@ import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
 import kkukmoa.kkukmoa.store.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,5 +76,20 @@ public class StoreController {
             @RequestParam(defaultValue = "10") int limit) {
         return ApiResponse.onSuccess(
                 storeService.getStoresByCategory(categoryType, latitude, longitude, offset, limit));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "가게 검색 API", description = "가게명으로 가게를 조회합니다.")
+    public ApiResponse<List<StoreSearchResponseDto>> searchStores(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+        return ApiResponse.onSuccess(storeService.searchStoresByName(name, offset, limit));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgument(IllegalArgumentException e) {
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.onFailure("COMMON400", e.getMessage(), null));
     }
 }

@@ -6,6 +6,7 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
 
 import org.springframework.stereotype.Component;
 
@@ -60,5 +61,10 @@ public class StoreConverter {
                 .closingHours(
                         store.getClosingHours() != null ? store.getClosingHours().toString() : null)
                 .build();
+    }
+
+    // 가게 검색 응답
+    public StoreSearchResponseDto toSearchDto(Store store) {
+        return StoreSearchResponseDto.builder().id(store.getId()).name(store.getName()).build();
     }
 }
