@@ -58,7 +58,8 @@ public class SecurityConfig {
                                                 "/health", // 인프라 상태검사
                                                 "/api/images/**")
                                         .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/v1/stores/**").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/v1/stores/**")
+                                        .permitAll()
                                         .anyRequest()
                                         .authenticated())
                 //                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,
