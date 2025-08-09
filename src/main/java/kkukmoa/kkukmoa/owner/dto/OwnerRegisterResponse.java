@@ -1,7 +1,9 @@
 package kkukmoa.kkukmoa.owner.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class OwnerRegisterResponse {
-
 
     @Schema(description = "매장 ID", example = "1")
     private Long storeId;

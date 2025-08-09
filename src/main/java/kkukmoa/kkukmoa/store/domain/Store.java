@@ -57,10 +57,11 @@ public class Store extends BaseEntity {
 
     // 신청 시 받는 상세 정보(주소/좌표)
     @Column(nullable = false)
-    private String address;                  // 기본 주소
-    private String addressDetail;            // 상세 주소
-    private Double latitude;                 // 위도
-    private Double longitude;                // 경도
+    private String address; // 기본 주소
+
+    private String addressDetail; // 상세 주소
+    private Double latitude; // 위도
+    private Double longitude; // 경도
 
     public void approve(String merchantNumber, User owner, Region region) {
         this.merchantNumber = merchantNumber;
@@ -71,5 +72,4 @@ public class Store extends BaseEntity {
     public void changeStatus(StoreStatus next) {
         this.status = next;
     }
-
 }

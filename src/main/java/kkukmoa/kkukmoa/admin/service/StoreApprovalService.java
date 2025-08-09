@@ -24,8 +24,10 @@ public class StoreApprovalService {
     @Transactional
     public void approve(Long storeId) {
         // 1) 매장 조회
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.STORE_NOT_FOUND));
+        Store store =
+                storeRepository
+                        .findById(storeId)
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.STORE_NOT_FOUND));
 
         // 2) 상태 검증: PENDING만 승인 가능
         if (store.getStatus() == StoreStatus.APPROVED) {

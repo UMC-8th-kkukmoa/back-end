@@ -52,9 +52,7 @@ public class OwnerRegisterCheckService {
                         .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
         // 2) PENDING 존재 여부 즉시 확인
-        boolean hasPending =
-                storeRepository.existsPending(
-                        user.getId());
+        boolean hasPending = storeRepository.existsPending(user.getId());
 
         // 3) 응답 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";

@@ -31,7 +31,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             """)
     Optional<Store> findStoreAndStamp(@Param("storeId") Long storeId, @Param("user") User user);
 
-
     boolean existsByOwner_IdAndStatus(Long ownerId, StoreStatus status);
 
     default boolean existsPending(Long ownerId) {
