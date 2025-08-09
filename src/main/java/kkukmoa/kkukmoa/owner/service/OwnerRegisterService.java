@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OwnerRegisterService { // 입점 신청 서비스
+public class OwnerRegisterService {
+
+    // 입점 신청 서비스
 
     private final StoreRegistrationRepository storeRegistrationRepository;
     private final CategoryRepository categoryRepository;

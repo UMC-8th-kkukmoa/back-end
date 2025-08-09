@@ -43,6 +43,12 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true)
     private String password; // 로컬 로그인용 (소셜은 null 가능)
 
+    @Column(nullable = false)
+    private boolean agreeTerms = false; // 서비스 이용약관 동의 여부
+
+    @Column(nullable = false)
+    private boolean agreePrivacy = false; // 개인정보 처리방침 동의 여부
+
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
@@ -77,6 +83,8 @@ public class User extends BaseEntity implements UserDetails {
             return this.email;
         }
     }
+
+
 
     public Long getUserId() {
         return id;

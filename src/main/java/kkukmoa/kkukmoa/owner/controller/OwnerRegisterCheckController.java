@@ -1,17 +1,14 @@
 package kkukmoa.kkukmoa.owner.controller;
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import jakarta.validation.Valid;
-
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.service.OwnerRegisterCheckService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +39,7 @@ public class OwnerRegisterCheckController {
     @PreAuthorize("isAuthenticated()") // 필요시 hasAnyRole('USER','OWNER')로 강화
     public ApiResponse<OwnerRegisterCheckResponse> checkPendingLogin(
             @AuthenticationPrincipal(expression = "id") Long userId // ★ Principal 타입 몰라도 id만 주입
-            ) {
+    ) {
         return ApiResponse.onSuccess(service.checkPendingForUser(userId));
     }
 }

@@ -1,5 +1,5 @@
 name: Deploy To EC2 (Production)
-g
+
 on:
   pull_request:
     branches: [ main ]   # 서버 배포는 main 브랜치 PR에서만 실행

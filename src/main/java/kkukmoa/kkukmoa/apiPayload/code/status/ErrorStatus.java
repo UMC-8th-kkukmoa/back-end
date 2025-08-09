@@ -22,6 +22,8 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
     DUPLICATION_PHONE_NUMBER(HttpStatus.CONFLICT, "USER4005", "이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED, "USER_401", "비밀번호가 일치하지 않습니다."),
+    TERMS_NOT_AGREED(HttpStatus.BAD_REQUEST, "USER4006", "서비스 이용약관에 동의해야 합니다."),
+    PRIVACY_NOT_AGREED(HttpStatus.BAD_REQUEST, "USER4007", "개인정보 처리방침에 동의해야 합니다."),
 
     // 사장님 관련 에러
     OWNER_ALREADY_EXISTS(HttpStatus.CONFLICT, "OWNER4001", "이미 사장님 권한이 있습니다."),
