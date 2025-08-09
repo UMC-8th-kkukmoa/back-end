@@ -1,7 +1,10 @@
 package kkukmoa.kkukmoa.apiPayload.exception.handler;
 
-public class TokenHandler extends RuntimeException {
-    public TokenHandler(String message) {
-        super(message);
+import kkukmoa.kkukmoa.apiPayload.code.BaseErrorCode;
+import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
+
+public class TokenHandler extends GeneralException {
+    public TokenHandler(BaseErrorCode code) {
+        super(code);
     }
 }

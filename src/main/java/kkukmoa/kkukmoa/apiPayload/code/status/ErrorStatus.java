@@ -18,8 +18,19 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "COMMON4001", "입력값이 유효하지 않습니다."),
+    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "COMMON4002", "code 누락 또는 공백 등 잘못된 파라미터입니다."),
+    // 카카오 API 관련 에러
+    KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO5001", "카카오 API 호출에 실패했습니다."),
     // 사용자 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
+    REFRESH_TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "TOKEN4001", "Refresh Token이 필요합니다."),
+    REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN4002", "유효하지 않은 Refresh Token입니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "TOKEN4003", "저장된 Refresh Token과 일치하지 않습니다."),
+    // 교환코드 관련 에러
+    EXCHANGE_CODE_DUPLICATE(HttpStatus.CONFLICT, "OAUTH4090", "이미 사용 중인 교환코드입니다."),
+    EXCHANGE_CODE_INVALID(HttpStatus.BAD_REQUEST, "OAUTH4001", "유효하지 않거나 만료된 교환코드입니다."),
+    EXCHANGE_CODE_SERIALIZE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH5001", "토큰 직렬화에 실패했습니다."),
+    EXCHANGE_CODE_DESERIALIZE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH5002", "토큰 역직렬화에 실패했습니다."),
 
     // 사장님 관련 에러
     OWNER_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4004", "올바르지 않은 사장님 정보입니다."),
