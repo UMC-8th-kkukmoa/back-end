@@ -16,7 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "입점신청 상태 조회(비로그인)", description = "연락처/비밀번호로 본인 확인 후, PENDING 상태 신청 존재 여부만 확인")
+@Tag(name = "입점신청 상태 조회(소셜로그인/로컬로그인)", description = "연락처/비밀번호로 본인 확인 후, PENDING 상태 신청 존재 여부만 확인")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")

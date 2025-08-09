@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/owners")
-@Tag(name = "사장님 인증 API", description = "사장님 회원가입 및 로그인")
+@Tag(name = "사장님 회원가입/입점신청 API", description = "사장님 회원가입 및 로그인")
 public class OwnerAuthController {
 
     private final OwnerAccountService ownerAccountService;
