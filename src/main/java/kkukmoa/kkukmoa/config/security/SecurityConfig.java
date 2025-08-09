@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -52,12 +53,17 @@ public class SecurityConfig {
                                                 "/swagger-ui/**",
                                                 "/v3/api-docs/**",
                                                 "/v3/api-docs/**",
+                                                "/v1/owners/register",
+                                                "/v1/owners/login",
                                                 "/v1/users/oauth/kakao",
                                                 "/v1/users/reissue",
                                                 "/v1/users/exchange",
+                                                "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
                                                 "/api/images/**")
+                                        .permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/v1/stores/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
@@ -73,12 +79,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         for (String origin : allowedOrigins.split(",")) {
-            configuration.addAllowedOrigin(origin.trim());
+            configuration.addAllowedOriginPattern(origin.trim());
         }
         configuration.addAllowedOrigin("https://kkukmoa.shop");
         configuration.addAllowedOrigin("http://localhost:8081");
-        configuration.addAllowedOrigin("http://127.0.0.1:5500");
         configuration.addAllowedOrigin("kkukmoa://oauth");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

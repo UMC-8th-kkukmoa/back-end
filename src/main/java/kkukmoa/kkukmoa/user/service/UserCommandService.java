@@ -11,6 +11,8 @@ import kkukmoa.kkukmoa.user.dto.KaKaoTokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.KaKaoUserInfoResponseDto;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
+import kkukmoa.kkukmoa.user.enums.SocialType;
+import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
@@ -28,6 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -123,7 +126,15 @@ public class UserCommandService {
                 .orElseGet(
                         () -> {
                             log.info("신규 유저 회원가입: {}", email);
-                            User newUser = User.builder().email(email).nickname(nickname).build();
+                            User newUser =
+                                    User.builder()
+                                            .email(email)
+                                            .nickname(nickname)
+                                            .socialType(SocialType.KAKAO)
+                                            .agreeTerms(false)
+                                            .agreePrivacy(false)
+                                            .roles(Set.of(UserType.USER))
+                                            .build();
 
                             userRepository.save(newUser);
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);

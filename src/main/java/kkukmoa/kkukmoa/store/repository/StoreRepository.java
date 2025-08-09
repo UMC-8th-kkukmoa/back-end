@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.store.repository;
 
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.store.domain.Store;
+import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.user.domain.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findAllByCategory(Category category);
 
+    List<Store> findByNameContainingIgnoreCase(String name);
+
     Optional<Store> findByCategory(Category category);
 
     @Query(
@@ -27,4 +30,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             WHERE store.id = :storeId
             """)
     Optional<Store> findStoreAndStamp(@Param("storeId") Long storeId, @Param("user") User user);
+
+    boolean existsByOwner_IdAndStatus(Long ownerId, StoreStatus status);
+
+    default boolean existsPending(Long ownerId) {
+        return existsByOwner_IdAndStatus(ownerId, StoreStatus.PENDING);
+    }
+
+    boolean existsByOwner(User owner);
 }
