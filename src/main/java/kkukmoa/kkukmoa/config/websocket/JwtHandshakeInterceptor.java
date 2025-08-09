@@ -31,8 +31,10 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         log.info("[+] JwtHandshakeInterceptor beforeHandshake :: " + request.getURI());
         String token = extractToken(request.getHeaders().get("Authorization"));
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getEmailFromToken(token);
-            attributes.put("email", email);
+/*            String email = jwtTokenProvider.getEmailFromToken(token);
+            attributes.put("email", email);*/
+            String userId = jwtTokenProvider.getSubjectFromToken(token); // sub 값
+            attributes.put("userId", userId); // 이후 세션에서 사용
         } else {
             // TODO: token invalid 예외 처리
         }

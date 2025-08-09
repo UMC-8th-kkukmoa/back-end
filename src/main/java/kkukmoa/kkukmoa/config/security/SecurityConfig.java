@@ -52,7 +52,10 @@ public class SecurityConfig {
                                                 "/swagger-ui/**",
                                                 "/v3/api-docs/**",
                                                 "/v3/api-docs/**",
+                                                "/v1/owners/register",
+                                                "/v1/owners/login",
                                                 "/users/oauth/kakao",
+                                                "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
                                                 "/api/images/**")
@@ -71,8 +74,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         for (String origin : allowedOrigins.split(",")) {
-            configuration.addAllowedOrigin(origin.trim());
+            configuration.addAllowedOriginPattern(origin.trim());
         }
         configuration.addAllowedOrigin("https://kkukmoa.shop");
         configuration.addAllowedOrigin("http://localhost:8081");
