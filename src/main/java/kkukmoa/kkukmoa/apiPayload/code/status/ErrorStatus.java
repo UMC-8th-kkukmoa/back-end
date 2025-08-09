@@ -74,6 +74,13 @@ public enum ErrorStatus implements BaseErrorCode {
     // 가게 관련 에러
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다."),
     STORE_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),
+
+    // 상태 전환/부가
+    STORE_STATUS_INVALID_TRANSITION(HttpStatus.BAD_REQUEST, "STORE4101", "현재 상태에서는 승인할 수 없습니다."),
+    STORE_OWNER_NOT_FOUND(HttpStatus.BAD_REQUEST, "STORE4103", "점주 정보를 확인할 수 없습니다."),
+    MERCHANT_NUMBER_GENERATION_FAILED(
+            HttpStatus.INTERNAL_SERVER_ERROR, "STORE4105", "가맹점번호 생성에 실패했습니다."),
+
     // 입점 신청 관련 에러
     STORE_REGISTRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4003", "존재하지 않는 입점 신청입니다."),
     STORE_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "STORE4004", "이미 승인된 입점 신청입니다.");

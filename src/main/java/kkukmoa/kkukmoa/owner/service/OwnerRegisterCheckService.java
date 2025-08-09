@@ -2,8 +2,7 @@ package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
-import kkukmoa.kkukmoa.store.enums.StoreRegistrationStatus;
-import kkukmoa.kkukmoa.store.repository.StoreRegistrationRepository;
+import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
@@ -21,7 +20,7 @@ public class OwnerRegisterCheckService {
     // 입점신청 확인 서비스
 
     private final UserRepository userRepository;
-    private final StoreRegistrationRepository storeRegistrationRepository;
+    private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
 
     public OwnerRegisterCheckResponse checkPending(OwnerSignupRequest req) {
@@ -36,10 +35,8 @@ public class OwnerRegisterCheckService {
                     .build();
         }
 
-        // 3) PENDING 존재 여부 즉시 확인
-        boolean hasPending =
-                storeRegistrationRepository.existsPending(
-                        user.getId(), StoreRegistrationStatus.PENDING);
+        // 3) PENDING 존재 여부 즉시 확인 (레포지토리 래퍼 메서드 사용)
+        boolean hasPending = storeRepository.existsPending(user.getId());
 
         // 4) 응답 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";
@@ -55,9 +52,7 @@ public class OwnerRegisterCheckService {
                         .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
         // 2) PENDING 존재 여부 즉시 확인
-        boolean hasPending =
-                storeRegistrationRepository.existsPending(
-                        user.getId(), StoreRegistrationStatus.PENDING);
+        boolean hasPending = storeRepository.existsPending(user.getId());
 
         // 3) 응답 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";

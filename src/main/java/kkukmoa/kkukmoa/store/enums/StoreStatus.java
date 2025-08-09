@@ -1,6 +1,6 @@
 package kkukmoa.kkukmoa.store.enums;
 
-public enum StoreRegistrationStatus {
+public enum StoreStatus {
     PENDING,
     APPROVED,
     REJECTED
