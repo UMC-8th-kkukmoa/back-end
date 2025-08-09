@@ -45,14 +45,15 @@ public class OwnerAccountService {
         }
 
         // 2. 유저 생성
-        User user = User.builder()
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .socialType(SocialType.LOCAL)
-                .agreeTerms(request.isAgreeTerms())
-                .agreePrivacy(request.isAgreePrivacy())
-                .roles(Set.of(UserType.PENDING_OWNER)) // owner 승인 대기 role 부여
-                .build();
+        User user =
+                User.builder()
+                        .phoneNumber(request.getPhoneNumber())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .socialType(SocialType.LOCAL)
+                        .agreeTerms(request.isAgreeTerms())
+                        .agreePrivacy(request.isAgreePrivacy())
+                        .roles(Set.of(UserType.PENDING_OWNER)) // owner 승인 대기 role 부여
+                        .build();
 
         userRepository.save(user);
     }

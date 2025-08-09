@@ -37,23 +37,22 @@ public class OwnerAuthController {
     @PostMapping("/register")
     @Operation(
             summary = "사장님 회원가입",
-            description = """
-            로컬 로그인 기반 사장님 회원가입 API입니다.
+            description =
+                    """
+                    로컬 로그인 기반 사장님 회원가입 API입니다.
 
-            - 전화번호와 비밀번호를 입력받아 등록합니다.
-            - (필수) 약관 동의: agreeTerms=true, agreePrivacy=true
-            - 기본 권한은 ROLE_PENDING_OWNER로 부여되며, 입점 신청 이후 승인됩니다.
-            """
-    )
+                    - 전화번호와 비밀번호를 입력받아 등록합니다.
+                    - (필수) 약관 동의: agreeTerms=true, agreePrivacy=true
+                    - 기본 권한은 ROLE_PENDING_OWNER로 부여되며, 입점 신청 이후 승인됩니다.
+                    """)
     @ApiErrorCodeExamples(
             value = {
-                    ErrorStatus.DUPLICATION_PHONE_NUMBER, // 전화번호 중복
-                    ErrorStatus.INTERNAL_SERVER_ERROR     // 서버 오류(공통)
-            }
-    )
+                ErrorStatus.DUPLICATION_PHONE_NUMBER, // 전화번호 중복
+                ErrorStatus.INTERNAL_SERVER_ERROR // 서버 오류(공통)
+            })
     public ResponseEntity<ApiResponse<String>> registerOwner(
             @RequestBody @Valid LocalSignupRequest request // DTO 통일: LocalSignupRequest
-    ) {
+            ) {
         ownerAccountService.registerLocalOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("사장님 회원가입 성공"));
     }

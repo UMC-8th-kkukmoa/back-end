@@ -84,8 +84,6 @@ public class User extends BaseEntity implements UserDetails {
         }
     }
 
-
-
     public Long getUserId() {
         return id;
     }

@@ -24,7 +24,6 @@ public class OwnerRegisterCheckService {
     private final StoreRegistrationRepository storeRegistrationRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     public OwnerRegisterCheckResponse checkPending(OwnerSignupRequest req) {
         // 1) 사용자 조회 (연락처가 로그인 ID)
         User user = userRepository.findByPhoneNumber(req.getPhoneNumber()).orElse(null);
