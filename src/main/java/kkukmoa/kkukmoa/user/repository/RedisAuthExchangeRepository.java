@@ -2,16 +2,19 @@ package kkukmoa.kkukmoa.user.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.TokenHandler;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class RedisAuthExchangeRepository implements AuthExchangeRepository {
@@ -20,16 +23,18 @@ public class RedisAuthExchangeRepository implements AuthExchangeRepository {
     private final ObjectMapper objectMapper;
 
     private static final String PREFIX = "oauth:ex:";
-    private String key(String code) { return PREFIX + code; }
 
+    private String key(String code) {
+        return PREFIX + code;
+    }
 
-    private static final org.springframework.data.redis.core.script.DefaultRedisScript<String> GET_AND_DEL_SCRIPT =
-            new org.springframework.data.redis.core.script.DefaultRedisScript<>(
-                    "local v = redis.call('GET', KEYS[1]); " +
-                            "if v then redis.call('DEL', KEYS[1]); end; " +
-                            "return v",
-                    String.class
-            );
+    private static final org.springframework.data.redis.core.script.DefaultRedisScript<String>
+            GET_AND_DEL_SCRIPT =
+                    new org.springframework.data.redis.core.script.DefaultRedisScript<>(
+                            "local v = redis.call('GET', KEYS[1]); "
+                                    + "if v then redis.call('DEL', KEYS[1]); end; "
+                                    + "return v",
+                            String.class);
 
     @Override
     public void save(String code, TokenResponseDto tokens, Duration ttl) {
@@ -49,7 +54,8 @@ public class RedisAuthExchangeRepository implements AuthExchangeRepository {
     public TokenResponseDto find(String code) {
         String k = key(code);
 
-        String json = redisTemplate.execute(GET_AND_DEL_SCRIPT, java.util.Collections.singletonList(k));
+        String json =
+                redisTemplate.execute(GET_AND_DEL_SCRIPT, java.util.Collections.singletonList(k));
 
         try {
             return objectMapper.readValue(json, TokenResponseDto.class);

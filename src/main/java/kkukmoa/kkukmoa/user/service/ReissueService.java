@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.user.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.TokenHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
@@ -8,8 +9,9 @@ import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,9 +22,7 @@ public class ReissueService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
-
     private static final boolean ROTATE_REFRESH_TOKEN = true;
-
 
     public TokenResponseDto reissue(HttpServletRequest request) {
         // 1) 헤더에서 RT 추출
@@ -32,7 +32,8 @@ public class ReissueService {
         }
 
         // 2) 서명/만료 검증 (JwtTokenProvider 변경 없음)
-        if (!jwtTokenProvider.validateToken(refreshToken) || jwtTokenProvider.isTokenExpired(refreshToken)) {
+        if (!jwtTokenProvider.validateToken(refreshToken)
+                || jwtTokenProvider.isTokenExpired(refreshToken)) {
             throw new TokenHandler(ErrorStatus.REFRESH_TOKEN_INVALID);
         }
 
@@ -43,8 +44,10 @@ public class ReissueService {
         }
 
         // 4) DB에서 유저 존재 확인
-        User user = userRepository.findById(storedUserId)
-                .orElseThrow(() -> new TokenHandler(ErrorStatus.USER_NOT_FOUND));
+        User user =
+                userRepository
+                        .findById(storedUserId)
+                        .orElseThrow(() -> new TokenHandler(ErrorStatus.USER_NOT_FOUND));
 
         // 5) AT 재발급
         String newAccessToken = jwtTokenProvider.createAccessToken(user);

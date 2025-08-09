@@ -94,6 +94,7 @@ public class JwtTokenProvider {
         }
         return false;
     }
+
     public String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         Date now = new Date();
@@ -116,6 +117,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public boolean isTokenExpired(String token) {
         try {
             Date expiration =
