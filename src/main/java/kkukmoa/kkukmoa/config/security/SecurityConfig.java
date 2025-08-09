@@ -55,7 +55,9 @@ public class SecurityConfig {
                                                 "/v3/api-docs/**",
                                                 "/v1/owners/register",
                                                 "/v1/owners/login",
-                                                "/users/oauth/kakao",
+                                                "/v1/users/oauth/kakao",
+                                                "/v1/users/reissue",
+                                                "/v1/users/exchange",
                                                 "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사

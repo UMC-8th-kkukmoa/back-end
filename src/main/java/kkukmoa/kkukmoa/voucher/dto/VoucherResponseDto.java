@@ -17,7 +17,7 @@ public class VoucherResponseDto {
         @Schema(description = "유효기간", example = "2026-07-29")
         private String validDays;
 
-        @Schema(description = "금액권 상태", example = "UNUSED")
+        @Schema(description = "금액권 상태", example = "사용중")
         private String status;
 
         @Schema(description = "QR 코드 UUID", example = "voucher_f8c9b7a3-xxxx-yyyy")
@@ -44,7 +44,7 @@ public class VoucherResponseDto {
         @Schema(description = "유효기간", example = "2026-07-29")
         private String validDays;
 
-        @Schema(description = "상태", example = "UNUSED")
+        @Schema(description = "상태", example = "사용중")
         private String status;
 
         @Schema(description = "QR 코드 UUID (prefix 제거된 값)", example = "f8c9b7a3-xxxx-yyyy")

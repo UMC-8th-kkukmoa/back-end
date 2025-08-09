@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.voucher.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/vouchers")
+@Tag(name = "금액권 API", description = "금액권 관련 API 입니다.")
 public class VoucherController {
 
     private final VoucherQueryService voucherQueryService;
