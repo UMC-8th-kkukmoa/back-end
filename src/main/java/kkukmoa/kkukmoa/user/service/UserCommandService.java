@@ -131,6 +131,8 @@ public class UserCommandService {
                                             .email(email)
                                             .nickname(nickname)
                                             .socialType(SocialType.KAKAO)
+                                            .agreeTerms(false)
+                                            .agreePrivacy(false)
                                             .roles(Set.of(UserType.USER))
                                             .build();
 

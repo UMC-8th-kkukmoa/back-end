@@ -17,6 +17,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class OwnerRegisterRequest {
 
+    // 입점 신청
+
     @Schema(description = "매장 이름", example = "스타벅스 강남점")
     @NotBlank
     private String storeName;

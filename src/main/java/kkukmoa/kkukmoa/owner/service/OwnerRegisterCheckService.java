@@ -18,14 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class OwnerRegisterCheckService {
 
+    // 입점신청 확인 서비스
+
     private final UserRepository userRepository;
     private final StoreRegistrationRepository storeRegistrationRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * [비로그인용] 연락처/비밀번호로 본인 확인 후 PENDING 여부 반환. - 사용자 미존재/비번 불일치는 동일 메시지로 응답하여 계정 유추 방지 - 존재 여부는
-     * JPQL existsPending(...)으로 즉시 확인 (인덱스 있으면 매우 빠름)
-     */
     public OwnerRegisterCheckResponse checkPending(OwnerSignupRequest req) {
         // 1) 사용자 조회 (연락처가 로그인 ID)
         User user = userRepository.findByPhoneNumber(req.getPhoneNumber()).orElse(null);

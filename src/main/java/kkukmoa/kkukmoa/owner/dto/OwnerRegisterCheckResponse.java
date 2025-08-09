@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OwnerRegisterCheckResponse {
 
+    // 입점신청 조회 DTO
+
     @Schema(description = "PENDING 상태의 신청 존재 여부", example = "true")
     private boolean pending;
 

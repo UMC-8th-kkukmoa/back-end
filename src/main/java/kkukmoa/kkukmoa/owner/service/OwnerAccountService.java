@@ -3,6 +3,7 @@ package kkukmoa.kkukmoa.owner.service;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
+import kkukmoa.kkukmoa.owner.dto.LocalSignupRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
@@ -29,7 +30,15 @@ public class OwnerAccountService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void registerLocalOwner(OwnerSignupRequest request) {
+    public void registerLocalOwner(LocalSignupRequest request) {
+        // 0. 약관 동의 여부 확인
+        if (!request.isAgreeTerms()) {
+            throw new UserHandler(ErrorStatus.TERMS_NOT_AGREED);
+        }
+        if (!request.isAgreePrivacy()) {
+            throw new UserHandler(ErrorStatus.PRIVACY_NOT_AGREED);
+        }
+
         // 1. 중복 확인
         if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             throw new UserHandler(ErrorStatus.DUPLICATION_PHONE_NUMBER);
@@ -41,6 +50,8 @@ public class OwnerAccountService {
                         .phoneNumber(request.getPhoneNumber())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .socialType(SocialType.LOCAL)
+                        .agreeTerms(request.isAgreeTerms())
+                        .agreePrivacy(request.isAgreePrivacy())
                         .roles(Set.of(UserType.PENDING_OWNER)) // owner 승인 대기 role 부여
                         .build();
 
