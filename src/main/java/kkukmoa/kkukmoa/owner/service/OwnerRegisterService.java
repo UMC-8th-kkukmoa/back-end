@@ -27,11 +27,10 @@ public class OwnerRegisterService {
     private final CategoryRepository categoryRepository;
     private final RegionService regionService; // ※ Region 로직은 그대로 유지
 
-    /**
-     * 입점 신청(PENDING) 생성
-     * - 단일 Store 엔티티에 PENDING 상태로 저장한다.
-     * - 승인 전에는 merchantNumber/owner는 비워둔다.
-     */
+    /** 입점 신청(PENDING) 생성
+          *  - 단일 Store 엔티티에 PENDING 상태로 저장한다.
+          *  - 승인 전에는 merchantNumber는 null이며, owner는 신청자(User)로 설정한다.
+          */
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
         /* 1) 중복 신청 방지 정책
@@ -56,10 +55,7 @@ public class OwnerRegisterService {
                 request.getLongitude()
         );
 
-        /* 4) Store(PENDING) 생성
-         *    - 승인 전이므로 merchantNumber(null), owner(null) 유지
-         *    - 주소/좌표 스냅샷도 Store에 저장(요구사항에 맞게)
-         */
+
         Store store = Store.builder()
                 .owner(user)                                // 신청자
                 .name(request.getStoreName())                   // 매장명

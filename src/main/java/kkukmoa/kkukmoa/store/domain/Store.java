@@ -52,7 +52,8 @@ public class Store extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private StoreStatus status;              // PENDING, APPROVED, REJECTED
+    @Builder.Default
+    private StoreStatus status = StoreStatus.PENDING;
 
     // 신청 시 받는 상세 정보(주소/좌표)
     @Column(nullable = false)

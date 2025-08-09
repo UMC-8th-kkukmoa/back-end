@@ -2,7 +2,6 @@ package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
-import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
@@ -37,7 +36,7 @@ public class OwnerRegisterCheckService {
         }
 
         // 3) PENDING 존재 여부 즉시 확인 (레포지토리 래퍼 메서드 사용)
-        boolean hasPending = storeRepository.existsPending(user.getId(), StoreStatus.PENDING);
+        boolean hasPending = storeRepository.existsPending(user.getId());
 
         // 4) 응답 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";
@@ -55,7 +54,7 @@ public class OwnerRegisterCheckService {
         // 2) PENDING 존재 여부 즉시 확인
         boolean hasPending =
                 storeRepository.existsPending(
-                        user.getId(), StoreStatus.PENDING);
+                        user.getId());
 
         // 3) 응답 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";

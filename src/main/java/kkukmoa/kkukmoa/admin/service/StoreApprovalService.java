@@ -53,9 +53,7 @@ public class StoreApprovalService {
         store.changeStatus(StoreStatus.APPROVED);
 
         // 6) 유저 역할 변경: PENDING_OWNER → OWNER
-        owner.getRoles().remove(UserType.PENDING_OWNER);
         owner.getRoles().add(UserType.OWNER);
-        // 영속 상태라 dirty checking으로 반영됨
     }
 
     /** 10자리 랜덤 + 중복 체크. 충돌 시 최대 100회 재시도 */
