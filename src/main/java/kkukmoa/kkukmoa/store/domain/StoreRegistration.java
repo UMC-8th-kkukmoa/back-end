@@ -1,11 +1,14 @@
 package kkukmoa.kkukmoa.store.domain;
 
 import jakarta.persistence.*;
+
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.store.enums.StoreRegistrationStatus;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.*;
+
 import java.time.LocalTime;
 
 @Entity

@@ -110,7 +110,7 @@ public class JwtTokenProvider {
         }
     }
 
-/*    public String getEmailFromToken(String token) {
+    /*    public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -128,7 +128,7 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-/*    public Authentication getAuthentication(String token) {
+    /*    public Authentication getAuthentication(String token) {
         String email = getEmailFromToken(token);
         User user =
                 userRepository
@@ -139,15 +139,17 @@ public class JwtTokenProvider {
         // 여기서 User를 Principal로 넣는다!
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }*/
-public Authentication getAuthentication(String token) {
-    String userIdString = getSubjectFromToken(token); // sub에서 userId 꺼냄
-    Long userId = Long.parseLong(userIdString);
+    public Authentication getAuthentication(String token) {
+        String userIdString = getSubjectFromToken(token); // sub에서 userId 꺼냄
+        Long userId = Long.parseLong(userIdString);
 
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
-    return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-}
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
 
     public long getExpiration(String token) {
         try {

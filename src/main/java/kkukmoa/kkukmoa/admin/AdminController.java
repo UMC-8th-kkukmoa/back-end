@@ -2,9 +2,12 @@ package kkukmoa.kkukmoa.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import kkukmoa.kkukmoa.admin.service.StoreRegistrationApprovalService;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final StoreRegistrationApprovalService approvalService;
-
 
     @Operation(summary = "입점 신청 승인", description = "관리자가 입점 신청을 승인하고, 가게를 등록합니다.")
     // @PreAuthorize("hasRole('ADMIN')")

@@ -23,7 +23,6 @@ public enum ErrorStatus implements BaseErrorCode {
     DUPLICATION_PHONE_NUMBER(HttpStatus.CONFLICT, "USER4005", "이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED, "USER_401", "비밀번호가 일치하지 않습니다."),
 
-
     // 사장님 관련 에러
     OWNER_ALREADY_EXISTS(HttpStatus.CONFLICT, "OWNER4001", "이미 사장님 권한이 있습니다."),
     OWNER_REQUEST_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "OWNER4002", "이미 입점 신청을 보냈습니다."),
@@ -33,7 +32,6 @@ public enum ErrorStatus implements BaseErrorCode {
     OWNER_INVALID_SCAN(HttpStatus.BAD_REQUEST, "OWNER4006", "사장님은 스탬프 적립 QR을 스캔할 수 없습니다."),
     OWNER_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4007", "사장님 소유의 가게가 없습니다."),
     OWNER_CANNOT_ACCESS(HttpStatus.FORBIDDEN, "OWNER4008", "사장님만 접근할 수 있는 기능입니다."),
-
 
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),

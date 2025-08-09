@@ -1,15 +1,17 @@
 package kkukmoa.kkukmoa.owner.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
+
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
+import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.service.OwnerRegisterCheckService;
-import kkukmoa.kkukmoa.user.annotation.CurrentUser;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,26 +26,23 @@ public class OwnerRegisterCheckController {
 
     @Operation(
             summary = "PENDING 존재여부 확인 (로컬 로그인)",
-            description = """
-            연락처와 비밀번호를 통해 본인 인증 후,
-            PENDING 상태의 입점신청이 존재하면 pending=true, 아니면 false를 반환합니다.
-            """
-    )
+            description =
+                    """
+                    연락처와 비밀번호를 통해 본인 인증 후,
+                    PENDING 상태의 입점신청이 존재하면 pending=true, 아니면 false를 반환합니다.
+                    """)
     @PostMapping("/public/registrations/check-pending")
-    public ApiResponse<OwnerRegisterCheckResponse> checkPending(@Valid @RequestBody OwnerSignupRequest request) {
+    public ApiResponse<OwnerRegisterCheckResponse> checkPending(
+            @Valid @RequestBody OwnerSignupRequest request) {
         return ApiResponse.onSuccess(service.checkPending(request));
     }
 
-
-    @Operation(
-            summary = "PENDING 존재여부 확인 (로그인)",
-            description = "현재 로그인한 사용자 기준 PENDING 상태 여부 반환"
-    )
+    @Operation(summary = "PENDING 존재여부 확인 (로그인)", description = "현재 로그인한 사용자 기준 PENDING 상태 여부 반환")
     @GetMapping("/owners/registrations/check-pending")
     @PreAuthorize("isAuthenticated()") // 필요시 hasAnyRole('USER','OWNER')로 강화
     public ApiResponse<OwnerRegisterCheckResponse> checkPendingLogin(
             @AuthenticationPrincipal(expression = "id") Long userId // ★ Principal 타입 몰라도 id만 주입
-    ) {
+            ) {
         return ApiResponse.onSuccess(service.checkPendingForUser(userId));
     }
 }

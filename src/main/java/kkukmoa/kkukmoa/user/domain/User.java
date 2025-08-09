@@ -3,9 +3,9 @@ package kkukmoa.kkukmoa.user.domain;
 import jakarta.persistence.*;
 
 import kkukmoa.kkukmoa.common.BaseEntity;
-
-import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.enums.SocialType;
+import kkukmoa.kkukmoa.user.enums.UserType;
+
 import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -46,7 +46,7 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
-/*    @Override
+    /*    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }*/
@@ -61,9 +61,8 @@ public class User extends BaseEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role" ,length = 30)
+    @Column(name = "role", length = 30)
     private Set<UserType> roles = new HashSet<>();
-
 
     @Override
     public String getPassword() {
@@ -82,6 +81,4 @@ public class User extends BaseEntity implements UserDetails {
     public Long getUserId() {
         return id;
     }
-
-
 }

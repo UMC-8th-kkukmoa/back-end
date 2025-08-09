@@ -126,8 +126,13 @@ public class UserCommandService {
                 .orElseGet(
                         () -> {
                             log.info("신규 유저 회원가입: {}", email);
-                            User newUser = User.builder().email(email).nickname(nickname).socialType(SocialType.KAKAO)
-                                    .roles(Set.of(UserType.USER)).build();
+                            User newUser =
+                                    User.builder()
+                                            .email(email)
+                                            .nickname(nickname)
+                                            .socialType(SocialType.KAKAO)
+                                            .roles(Set.of(UserType.USER))
+                                            .build();
 
                             userRepository.save(newUser);
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);

@@ -10,7 +10,9 @@ import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,11 @@ public class StoreRegistrationApprovalService {
     @Transactional
     public void approveStoreRegistration(Long registrationId) {
         // 1. 입점 신청 조회
-        StoreRegistration registration = storeRegistrationRepository.findById(registrationId)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.STORE_REGISTRATION_NOT_FOUND));
+        StoreRegistration registration =
+                storeRegistrationRepository
+                        .findById(registrationId)
+                        .orElseThrow(
+                                () -> new UserHandler(ErrorStatus.STORE_REGISTRATION_NOT_FOUND));
 
         // 2. 중복 승인 방지
         if (registration.getStatus() == StoreRegistrationStatus.APPROVED) {
@@ -43,18 +48,17 @@ public class StoreRegistrationApprovalService {
         userRepository.save(user);
 
         // 5. Store 생성
-        Store store = Store.builder()
-                .name(registration.getStoreName())
-                .number(registration.getStorePhoneNumber())        // 전화번호
-                .storeImage(registration.getStoreImageUrl())
-                .openingHours(registration.getOpeningHours())
-                .closingHours(registration.getClosingHours())
-                .owner(user)
-                .category(registration.getCategory())
-                .build();
+        Store store =
+                Store.builder()
+                        .name(registration.getStoreName())
+                        .number(registration.getStorePhoneNumber()) // 전화번호
+                        .storeImage(registration.getStoreImageUrl())
+                        .openingHours(registration.getOpeningHours())
+                        .closingHours(registration.getClosingHours())
+                        .owner(user)
+                        .category(registration.getCategory())
+                        .build();
 
         storeRepository.save(store);
     }
-
 }
-

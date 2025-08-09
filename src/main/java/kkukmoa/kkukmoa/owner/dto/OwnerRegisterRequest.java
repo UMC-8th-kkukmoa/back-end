@@ -1,9 +1,13 @@
 package kkukmoa.kkukmoa.owner.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.NotBlank;
+
 import kkukmoa.kkukmoa.category.domain.CategoryType;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

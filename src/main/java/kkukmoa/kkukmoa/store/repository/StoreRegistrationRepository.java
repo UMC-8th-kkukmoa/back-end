@@ -3,13 +3,13 @@ package kkukmoa.kkukmoa.store.repository;
 import kkukmoa.kkukmoa.store.domain.StoreRegistration;
 import kkukmoa.kkukmoa.store.enums.StoreRegistrationStatus;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
 
 @Repository
 public interface StoreRegistrationRepository extends JpaRepository<StoreRegistration, Long> {
@@ -21,12 +21,14 @@ public interface StoreRegistrationRepository extends JpaRepository<StoreRegistra
 
     Optional<StoreRegistration> findById(Long id);
 
-    @Query("""
-       select (count(sr.id) > 0)
-       from StoreRegistration sr
-       where sr.applicant.id = :applicantId
-         and sr.status = :status
-       """)
-    boolean existsPending(@Param("applicantId") Long applicantId,
-                          @Param("status") StoreRegistrationStatus status);
+    @Query(
+            """
+            select (count(sr.id) > 0)
+            from StoreRegistration sr
+            where sr.applicant.id = :applicantId
+              and sr.status = :status
+            """)
+    boolean existsPending(
+            @Param("applicantId") Long applicantId,
+            @Param("status") StoreRegistrationStatus status);
 }
