@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserType {
     USER("ROLE_USER"),
-    OWNER("ROLE_OWNER"),
+    PENDING_OWNER("ROLE_PENDING_OWNER"), // 입점 신청 중
+    OWNER("ROLE_OWNER"), // 입점 승인
     ADMIN("ROLE_ADMIN");
     ;
 
