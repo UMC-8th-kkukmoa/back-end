@@ -13,6 +13,9 @@ public class StoreListResponseDto {
     private String openingHours;
     private String closingHours;
     private String storeImage;
-    private int reviewCount;
-    private double distance;
+    private Double latitude;
+    private Double longitude;
+    private String categoryName;
+    private Integer reviewCount;
+    private Double distance;
 }
