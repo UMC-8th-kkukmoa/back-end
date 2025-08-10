@@ -36,8 +36,10 @@ public class StoreConverter {
 
     // 가게 목록 조회 응답
     public StoreListResponseDto toStoreListResponseDto(Store store, double distance) {
-        String opening = store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null;
-        String closing = store.getClosingHours() != null ? store.getClosingHours().format(TF) : null;
+        String opening =
+                store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null;
+        String closing =
+                store.getClosingHours() != null ? store.getClosingHours().format(TF) : null;
 
         String categoryName = null;
         if (store.getCategory() != null && store.getCategory().getType() != null) {
@@ -73,8 +75,10 @@ public class StoreConverter {
                 .detailAddress(
                         store.getRegion() != null ? store.getRegion().getDetailAddress() : null)
                 .storeImage(store.getStoreImage())
-                .openingHours(store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null)
-                .closingHours(store.getClosingHours() != null ? store.getClosingHours().format(TF) : null)
+                .openingHours(
+                        store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null)
+                .closingHours(
+                        store.getClosingHours() != null ? store.getClosingHours().format(TF) : null)
                 .build();
     }
 

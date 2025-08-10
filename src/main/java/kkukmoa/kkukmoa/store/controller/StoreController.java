@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
