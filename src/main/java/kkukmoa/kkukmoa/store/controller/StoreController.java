@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
@@ -81,7 +83,10 @@ public class StoreController {
     @GetMapping("/search")
     @Operation(summary = "가게 검색 API", description = "가게명으로 가게를 조회합니다.")
     public ApiResponse<List<StoreSearchResponseDto>> searchStores(
-            @RequestParam String name,
+            @RequestParam
+                    @NotBlank(message = "검색어는 필수입니다.")
+                    @Size(min = 1, max = 50, message = "검색어는 1~50자 이내여야 합니다.")
+                    String name,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit) {
         return ApiResponse.onSuccess(storeService.searchStoresByName(name, offset, limit));

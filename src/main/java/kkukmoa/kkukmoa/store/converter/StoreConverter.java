@@ -10,6 +10,8 @@ import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
 
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class StoreConverter {
 
@@ -23,19 +25,34 @@ public class StoreConverter {
                 .region(region)
                 .category(category)
                 .storeImage(request.getStoreImage())
+                .address(request.getAddress())
+                .addressDetail(request.getDetailAddress())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .build();
     }
 
+    private static final DateTimeFormatter TF = DateTimeFormatter.ofPattern("HH:mm");
+
     // 가게 목록 조회 응답
     public StoreListResponseDto toStoreListResponseDto(Store store, double distance) {
+        String opening = store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null;
+        String closing = store.getClosingHours() != null ? store.getClosingHours().format(TF) : null;
+
+        String categoryName = null;
+        if (store.getCategory() != null && store.getCategory().getType() != null) {
+            categoryName = store.getCategory().getType().getDisplayName();
+        }
+
         return StoreListResponseDto.builder()
                 .storeId(store.getId())
                 .name(store.getName())
-                .openingHours(
-                        store.getOpeningHours() != null ? store.getOpeningHours().toString() : null)
-                .closingHours(
-                        store.getClosingHours() != null ? store.getClosingHours().toString() : null)
+                .openingHours(opening)
+                .closingHours(closing)
                 .storeImage(store.getStoreImage())
+                .latitude(store.getRegion().getLatitude())
+                .longitude(store.getRegion().getLongitude())
+                .categoryName(categoryName)
                 .reviewCount(0) // 리뷰 미구현 → 0
                 .distance(distance)
                 .build();
@@ -56,10 +73,8 @@ public class StoreConverter {
                 .detailAddress(
                         store.getRegion() != null ? store.getRegion().getDetailAddress() : null)
                 .storeImage(store.getStoreImage())
-                .openingHours(
-                        store.getOpeningHours() != null ? store.getOpeningHours().toString() : null)
-                .closingHours(
-                        store.getClosingHours() != null ? store.getClosingHours().toString() : null)
+                .openingHours(store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null)
+                .closingHours(store.getClosingHours() != null ? store.getClosingHours().format(TF) : null)
                 .build();
     }
 
