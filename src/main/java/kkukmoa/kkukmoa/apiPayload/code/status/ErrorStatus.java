@@ -58,6 +58,11 @@ public enum ErrorStatus implements BaseErrorCode {
     COUPON_INVALID_USED_PLACE(HttpStatus.BAD_REQUEST, "COUPON401", "올바르지 않은 사용처(사장)입니다."),
     COUPON_IS_USED(HttpStatus.BAD_REQUEST, "COUPON402", "이미 사용한 쿠폰입니다."),
 
+    // 리뷰 관련 에러
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R404", "리뷰가 존재하지 않습니다."),
+    TOO_MANY_IMAGES(HttpStatus.BAD_REQUEST, "R001", "이미지는 최대 5장까지 업로드할 수 있습니다."),
+
+
     // S3 관련 에러
     IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "S3_4001", "업로드 된 이미지가 존재하지 않습니다.."),
     NO_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "S3_4002", "파일 확장자가 존재하지 않습니다."),
