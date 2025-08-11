@@ -63,7 +63,7 @@ public class SecurityConfig {
                                                 "/health", // 인프라 상태검사
                                                 "/api/images/**")
                                         .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/v1/stores/**", "/v1/reviews/**")
+                                        .requestMatchers(HttpMethod.GET, "/v1/stores/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
