@@ -29,7 +29,7 @@ public class VoucherResponseDto {
         @Schema(
                 description =
                         "유효기간까지 남은 일수. 만약 유효기간이 지난 경우 `-1`이 반환됩니다. 오늘 만료되면 `0`이 반환되며, 그 외에는 유효기간까지"
-                            + " 남은 일수를 반환합니다.",
+                                + " 남은 일수를 반환합니다.",
                 example = "90")
         private int daysLeft;
     }
