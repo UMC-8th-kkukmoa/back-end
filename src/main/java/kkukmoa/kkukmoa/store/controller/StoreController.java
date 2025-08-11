@@ -42,11 +42,11 @@ public class StoreController {
     @Operation(
             summary = "가게 목록 조회 API",
             description = "현재 위치(latitude, longitude) 기준으로 가게 목록을 조회합니다.")
-    @Parameters(value = {
-            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
-        }
-    )
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+                @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+            })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStores(
             @RequestParam
                     @DecimalMin(value = "-90.0", message = "위도는 -90.0 이상이어야 합니다")
@@ -72,11 +72,11 @@ public class StoreController {
     @Operation(
             summary = "카테고리별 가게 목록 조회 API",
             description = "카테고리명과 현재 위치 기준으로 해당 카테고리 가게 목록을 조회합니다.")
-    @Parameters(value = {
-            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
-    }
-    )
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+                @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+            })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStoresByCategory(
             @RequestParam CategoryType categoryType,
             @RequestParam double latitude,
@@ -89,11 +89,11 @@ public class StoreController {
 
     @GetMapping("/search")
     @Operation(summary = "가게 검색 API", description = "가게명으로 가게를 조회합니다.")
-    @Parameters(value = {
-            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
-    }
-    )
+    @Parameters(
+            value = {
+                @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+                @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+            })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> searchStores(
             @RequestParam
                     @NotBlank(message = "검색어는 필수입니다.")
@@ -103,7 +103,8 @@ public class StoreController {
             @RequestParam double longitude,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
-        return ApiResponse.onSuccess(storeService.searchStoresByName(name, latitude, longitude, page, size));
+        return ApiResponse.onSuccess(
+                storeService.searchStoresByName(name, latitude, longitude, page, size));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

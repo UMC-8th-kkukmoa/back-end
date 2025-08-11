@@ -3,12 +3,13 @@ package kkukmoa.kkukmoa.region.domain;
 import jakarta.persistence.*;
 
 import kkukmoa.kkukmoa.common.BaseEntity;
-
 import kkukmoa.kkukmoa.common.util.GeometryUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.locationtech.jts.geom.Point;
 
 @Entity
@@ -40,7 +41,8 @@ public class Region extends BaseEntity {
         this.location = GeometryUtils.createPoint(longitude, latitude);
     }
 
-    @PrePersist @PreUpdate
+    @PrePersist
+    @PreUpdate
     private void syncPoint() {
         // lat/lon이 유효하면 location 갱신
         if (!Double.isNaN(latitude) && !Double.isNaN(longitude)) {

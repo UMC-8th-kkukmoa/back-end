@@ -20,9 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +35,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request) {
 
-//        request.parseTimes();
+        //        request.parseTimes();
 
         Region region =
                 regionService.createRegion(
@@ -92,18 +90,20 @@ public class StoreServiceImpl implements StoreService {
         Pageable pageable = PageRequest.of(page, size);
 
         // 3km(= 3000m) 내에서만 조회
-        Page<Store> stores = storeRepository.findWithinRadiusPoint(
-                latitude, longitude, 3000, pageable);
+        Page<Store> stores =
+                storeRepository.findWithinRadiusPoint(latitude, longitude, 3000, pageable);
 
         return storeConverter.toStorePagingResponseDto(
-                stores.map(store -> {
-                    double d = calculateDistance(
-                            latitude, longitude,
-                            store.getRegion().getLatitude(),
-                            store.getRegion().getLongitude());
-                    return storeConverter.toStoreListResponseDto(store, d);
-                })
-        );
+                stores.map(
+                        store -> {
+                            double d =
+                                    calculateDistance(
+                                            latitude,
+                                            longitude,
+                                            store.getRegion().getLatitude(),
+                                            store.getRegion().getLongitude());
+                            return storeConverter.toStoreListResponseDto(store, d);
+                        }));
     }
 
     @Override
@@ -124,10 +124,12 @@ public class StoreServiceImpl implements StoreService {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
 
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                        + Math.cos(Math.toRadians(lat1))
+                                * Math.cos(Math.toRadians(lat2))
+                                * Math.sin(dLon / 2)
+                                * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c; // km 단위
@@ -135,7 +137,6 @@ public class StoreServiceImpl implements StoreService {
         // 소수점 2자리까지만 반올림
         return Math.round(distance * 100.0) / 100.0;
     }
-
 
     @Override
     public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
@@ -148,18 +149,21 @@ public class StoreServiceImpl implements StoreService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Store> stores = storeRepository.findWithinRadiusPointByCategory(
-                category.getId(), latitude, longitude, 3000, pageable);
+        Page<Store> stores =
+                storeRepository.findWithinRadiusPointByCategory(
+                        category.getId(), latitude, longitude, 3000, pageable);
 
         return storeConverter.toStorePagingResponseDto(
-                stores.map(store -> {
-                    double d = calculateDistance(
-                            latitude, longitude,
-                            store.getRegion().getLatitude(),
-                            store.getRegion().getLongitude());
-                    return storeConverter.toStoreListResponseDto(store, d);
-                })
-        );
+                stores.map(
+                        store -> {
+                            double d =
+                                    calculateDistance(
+                                            latitude,
+                                            longitude,
+                                            store.getRegion().getLatitude(),
+                                            store.getRegion().getLongitude());
+                            return storeConverter.toStoreListResponseDto(store, d);
+                        }));
     }
 
     @Override
@@ -172,17 +176,20 @@ public class StoreServiceImpl implements StoreService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Store> stores = storeRepository.findWithinRadiusPointByName(
-                name, latitude, longitude, 3000, pageable);
+        Page<Store> stores =
+                storeRepository.findWithinRadiusPointByName(
+                        name, latitude, longitude, 3000, pageable);
 
         return storeConverter.toStorePagingResponseDto(
-                stores.map(store -> {
-                    double d = calculateDistance(
-                            latitude, longitude,
-                            store.getRegion().getLatitude(),
-                            store.getRegion().getLongitude());
-                    return storeConverter.toStoreListResponseDto(store, d);
-                })
-        );
+                stores.map(
+                        store -> {
+                            double d =
+                                    calculateDistance(
+                                            latitude,
+                                            longitude,
+                                            store.getRegion().getLatitude(),
+                                            store.getRegion().getLongitude());
+                            return storeConverter.toStoreListResponseDto(store, d);
+                        }));
     }
 }

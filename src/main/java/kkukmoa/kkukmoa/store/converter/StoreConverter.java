@@ -84,7 +84,7 @@ public class StoreConverter {
                 .stores(page.getContent())
                 .page(page.getNumber())
                 .totalPages(page.getTotalPages())
-                .totalElements((int)page.getTotalElements())
+                .totalElements((int) page.getTotalElements())
                 .isFirst(page.isFirst())
                 .isLast(page.isLast())
                 .build();
