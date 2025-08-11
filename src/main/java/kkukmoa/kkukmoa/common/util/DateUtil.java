@@ -30,5 +30,4 @@ public class DateUtil {
             return -1; // 형식이 잘못된 경우 또는 파싱 오류는 -1로 처리
         }
     }
-
 }
