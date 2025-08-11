@@ -2,19 +2,15 @@ package kkukmoa.kkukmoa.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.TokenHandler;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
@@ -32,7 +28,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -47,23 +42,24 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final AuthExchangeRepository authExchangeRepository;
     private final ReissueService reissueService;
+
     @GetMapping("/oauth/kakao")
     @Operation(
             summary = "카카오 로그인 콜백 (교환코드 발급)",
-            description = """
-            카카오 OAuth 인증 완료 후 호출되는 콜백입니다.
+            description =
+                    """
+                    카카오 OAuth 인증 완료 후 호출되는 콜백입니다.
 
-            - 카카오 인가코드(code)로 로그인/회원가입 처리 후 AT/RT를 생성합니다.
-            - 생성된 토큰쌍은 1회용 교환코드(예: TTL 60초)에 임시 저장합니다.
-            - 최종적으로 302 Redirect로 `kkukmoa://oauth?code={exchangeCode}` 딥링크로 이동합니다.
-            """
-    )
+                    - 카카오 인가코드(code)로 로그인/회원가입 처리 후 AT/RT를 생성합니다.
+                    - 생성된 토큰쌍은 1회용 교환코드(예: TTL 60초)에 임시 저장합니다.
+                    - 최종적으로 302 Redirect로 `kkukmoa://oauth?code={exchangeCode}` 딥링크로 이동합니다.
+                    """)
     @ApiErrorCodeExamples({
-            ErrorStatus.INVALID_PARAMETER,
-            ErrorStatus.KAKAO_API_FAILED,
-            ErrorStatus.EXCHANGE_CODE_DUPLICATE,
-            ErrorStatus.EXCHANGE_CODE_SERIALIZE_FAIL,
-            ErrorStatus.INTERNAL_SERVER_ERROR
+        ErrorStatus.INVALID_PARAMETER,
+        ErrorStatus.KAKAO_API_FAILED,
+        ErrorStatus.EXCHANGE_CODE_DUPLICATE,
+        ErrorStatus.EXCHANGE_CODE_SERIALIZE_FAIL,
+        ErrorStatus.INTERNAL_SERVER_ERROR
     })
     public ResponseEntity<Void> callback(@RequestParam("code") String kakaoCode) {
         // 1) 카카오 로그인 처리 & 토큰쌍 생성(AT/RT)
@@ -75,26 +71,26 @@ public class UserController {
         authExchangeRepository.save(exchangeCode, tokens, Duration.ofSeconds(60));
 
         // 3) 앱으로는 교환코드만 전달
-        String redirectUri = "kkukmoa://oauth?code=" + UriUtils.encode(exchangeCode, StandardCharsets.UTF_8);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(redirectUri))
-                .build();
+        String redirectUri =
+                "kkukmoa://oauth?code=" + UriUtils.encode(exchangeCode, StandardCharsets.UTF_8);
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUri)).build();
     }
+
     @Operation(
             summary = "1회용 교환코드 → AT/RT 교환",
-            description = """
-            딥링크로 전달받은 교환코드(code)를 AT/RT로 교환합니다.
+            description =
+                    """
+                    딥링크로 전달받은 교환코드(code)를 AT/RT로 교환합니다.
 
-            - 교환코드는 1회용이며 사용 즉시 삭제됩니다.
-            - TTL 만료 또는 이미 사용된 코드는 유효하지 않습니다.
-            - 성공 시 ApiResponse.data에 { accessToken, refreshToken } 형태로 반환합니다.
-            """
-    )
+                    - 교환코드는 1회용이며 사용 즉시 삭제됩니다.
+                    - TTL 만료 또는 이미 사용된 코드는 유효하지 않습니다.
+                    - 성공 시 ApiResponse.data에 { accessToken, refreshToken } 형태로 반환합니다.
+                    """)
     @ApiErrorCodeExamples({
-            ErrorStatus.INVALID_PARAMETER,             // code 누락/공백
-            ErrorStatus.EXCHANGE_CODE_INVALID,         // 키 없음/만료/이미 사용됨
-            ErrorStatus.EXCHANGE_CODE_DESERIALIZE_FAIL,
-            ErrorStatus.INTERNAL_SERVER_ERROR
+        ErrorStatus.INVALID_PARAMETER, // code 누락/공백
+        ErrorStatus.EXCHANGE_CODE_INVALID, // 키 없음/만료/이미 사용됨
+        ErrorStatus.EXCHANGE_CODE_DESERIALIZE_FAIL,
+        ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/exchange")
     public ResponseEntity<TokenResponseDto> exchange(@RequestParam("code") String code) {
@@ -147,24 +143,24 @@ public class UserController {
 
         return ApiResponse.onSuccess("로그아웃 완료");
     }
+
     @Operation(
             summary = "JWT 재발급 (AT, 필요 시 RT도 새로 발급)",
-            description = """
-    이 API는 리프레시 토큰(Refresh Token)을 사용해 새로운 엑세스 토큰(Access Token)을 발급해줍니다.
+            description =
+                    """
+                    이 API는 리프레시 토큰(Refresh Token)을 사용해 새로운 엑세스 토큰(Access Token)을 발급해줍니다.
 
-    - 요청 시 Authorization 헤더에 Bearer {refreshToken} 형식으로 넣어주세요.
-    - 리프레시 토큰도 새로 발급될 수 있습니다.
-    - 성공하면 accessToken과 refreshToken을 함께 반환합니다.
-    """
-    )
-
+                    - 요청 시 Authorization 헤더에 Bearer {refreshToken} 형식으로 넣어주세요.
+                    - 리프레시 토큰도 새로 발급될 수 있습니다.
+                    - 성공하면 accessToken과 refreshToken을 함께 반환합니다.
+                    """)
     @ApiErrorCodeExamples({
-            ErrorStatus.REFRESH_TOKEN_REQUIRED,    // 헤더 누락
-            ErrorStatus.REFRESH_TOKEN_INVALID,     // 서명 불일치/만료
-            ErrorStatus.REFRESH_TOKEN_MISMATCH,    // Redis 기준 불일치
-            ErrorStatus.USER_NOT_FOUND,            // 토큰 사용자 없음
-            ErrorStatus.UNAUTHORIZED,              // 그 외 인증 실패
-            ErrorStatus.INTERNAL_SERVER_ERROR
+        ErrorStatus.REFRESH_TOKEN_REQUIRED, // 헤더 누락
+        ErrorStatus.REFRESH_TOKEN_INVALID, // 서명 불일치/만료
+        ErrorStatus.REFRESH_TOKEN_MISMATCH, // Redis 기준 불일치
+        ErrorStatus.USER_NOT_FOUND, // 토큰 사용자 없음
+        ErrorStatus.UNAUTHORIZED, // 그 외 인증 실패
+        ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponseDto> reissue(HttpServletRequest request) {

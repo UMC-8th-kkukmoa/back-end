@@ -34,7 +34,8 @@ public enum ErrorStatus implements BaseErrorCode {
     EXCHANGE_CODE_DUPLICATE(HttpStatus.CONFLICT, "OAUTH4090", "이미 사용 중인 교환코드입니다."),
     EXCHANGE_CODE_INVALID(HttpStatus.BAD_REQUEST, "OAUTH4001", "유효하지 않거나 만료된 교환코드입니다."),
     EXCHANGE_CODE_SERIALIZE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH5001", "토큰 직렬화에 실패했습니다."),
-    EXCHANGE_CODE_DESERIALIZE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH5002", "토큰 역직렬화에 실패했습니다."),
+    EXCHANGE_CODE_DESERIALIZE_FAIL(
+            HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH5002", "토큰 역직렬화에 실패했습니다."),
 
     // 사장님 관련 에러
     OWNER_ALREADY_EXISTS(HttpStatus.CONFLICT, "OWNER4001", "이미 사장님 권한이 있습니다."),

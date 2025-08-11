@@ -40,7 +40,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 15;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 15 * 24;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 24 * 30;
 
     @PostConstruct
@@ -94,6 +94,7 @@ public class JwtTokenProvider {
         }
         return false;
     }
+
     public String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         Date now = new Date();
@@ -116,6 +117,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
     public boolean isTokenExpired(String token) {
         try {
             Date expiration =

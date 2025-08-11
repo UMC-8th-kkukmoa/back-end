@@ -161,6 +161,4 @@ public class UserCommandService {
 
         log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }
-
-
 }
