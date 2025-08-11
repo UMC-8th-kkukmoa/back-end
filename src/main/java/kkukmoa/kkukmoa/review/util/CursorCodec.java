@@ -7,7 +7,8 @@ public final class CursorCodec {
     private CursorCodec() {}
 
     public static String encode(String raw) {
-        return Base64.getUrlEncoder().withoutPadding()
+        return Base64.getUrlEncoder()
+                .withoutPadding()
                 .encodeToString(raw.getBytes(StandardCharsets.UTF_8));
     }
 

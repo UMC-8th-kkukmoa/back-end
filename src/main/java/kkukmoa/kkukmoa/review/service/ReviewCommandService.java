@@ -10,7 +10,9 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,8 @@ public class ReviewCommandService {
     private final StoreRepository storeRepository;
     private final S3ImageService s3ImageService;
 
-    public Long createWithImages(Long userId, Long storeId, String content, List<MultipartFile> images) {
+    public Long createWithImages(
+            Long userId, Long storeId, String content, List<MultipartFile> images) {
         // 1) 작성자/가게 참조
         User writer = userRepository.getReferenceById(userId);
         Store store = storeRepository.getReferenceById(storeId);
@@ -54,11 +57,7 @@ public class ReviewCommandService {
         }
 
         // 4) Review 엔티티 생성(이미지는 생성 시점에만 add)
-        Review review = Review.builder()
-                .writer(writer)
-                .store(store)
-                .content(content)
-                .build();
+        Review review = Review.builder().writer(writer).store(store).content(content).build();
 
         for (String url : uploadedUrls) {
             review.addImageOnCreate(ReviewImage.builder().imageUrl(url).build());

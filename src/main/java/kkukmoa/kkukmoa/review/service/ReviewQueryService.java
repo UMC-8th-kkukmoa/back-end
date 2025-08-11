@@ -7,7 +7,9 @@ import kkukmoa.kkukmoa.review.domain.ReviewImage;
 import kkukmoa.kkukmoa.review.dto.CreateReviewResponse;
 import kkukmoa.kkukmoa.review.dto.ReviewSummaryDto;
 import kkukmoa.kkukmoa.review.repository.ReviewRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,19 +24,23 @@ public class ReviewQueryService {
     private final ReviewRepository reviewRepository;
 
     public Page<ReviewSummaryDto> getByStore(Long storeId, Pageable pageable) {
-        return reviewRepository.findByStoreIdOrderByCreatedAtDesc(storeId, pageable)
+        return reviewRepository
+                .findByStoreIdOrderByCreatedAtDesc(storeId, pageable)
                 .map(this::toSummary);
     }
 
     public CreateReviewResponse getCreateResponse(Long id) {
-        Review r = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewHandler(ErrorStatus.REVIEW_NOT_FOUND));
+        Review r =
+                reviewRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ReviewHandler(ErrorStatus.REVIEW_NOT_FOUND));
         return new CreateReviewResponse(
-                r.getId(), r.getStore().getId(), r.getWriter().getId(),
+                r.getId(),
+                r.getStore().getId(),
+                r.getWriter().getId(),
                 r.getContent(),
                 r.getImages().stream().map(ReviewImage::getImageUrl).toList(),
-                r.getCreatedAt()
-        );
+                r.getCreatedAt());
     }
 
     private ReviewSummaryDto toSummary(Review r) {
@@ -44,7 +50,6 @@ public class ReviewQueryService {
                 r.getWriter().getNickname(), // 표시용(선택)
                 r.getContent(),
                 r.getImages().stream().map(ReviewImage::getImageUrl).toList(),
-                r.getCreatedAt()
-        );
+                r.getCreatedAt());
     }
 }

@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.review.repository;
 
 import kkukmoa.kkukmoa.review.domain.Review;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByWriterIdOrderByCreatedAtDesc(Long writerId, Pageable pageable);
 
     default List<Review> findPreview(Long storeId, int limit) {
-        return findByStoreIdOrderByCreatedAtDesc(storeId,
-                PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt"))).getContent();
+        return findByStoreIdOrderByCreatedAtDesc(
+                        storeId,
+                        PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt")))
+                .getContent();
     }
 }

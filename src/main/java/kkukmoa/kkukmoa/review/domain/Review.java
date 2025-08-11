@@ -1,10 +1,11 @@
 package kkukmoa.kkukmoa.review.domain;
 
-
 import jakarta.persistence.*;
+
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,11 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "reviews",
+@Table(
+        name = "reviews",
         indexes = {
-                @Index(name = "idx_review_store", columnList = "store_id"),
-                @Index(name = "idx_review_user", columnList = "user_id"),
-                @Index(name = "idx_review_created_at", columnList = "created_at")
+            @Index(name = "idx_review_store", columnList = "store_id"),
+            @Index(name = "idx_review_user", columnList = "user_id"),
+            @Index(name = "idx_review_created_at", columnList = "created_at")
         })
 public class Review extends BaseEntity {
 
@@ -43,7 +45,6 @@ public class Review extends BaseEntity {
     @OrderBy("sortOrder ASC") // 업로드 순서 보장
     @Builder.Default
     private List<ReviewImage> images = new ArrayList<>();
-
 
     /** 생성 시에만 이미지 추가 허용(최대 5장) */
     public void addImageOnCreate(ReviewImage image) {

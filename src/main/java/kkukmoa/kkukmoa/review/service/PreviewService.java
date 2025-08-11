@@ -2,7 +2,9 @@ package kkukmoa.kkukmoa.review.service;
 
 import kkukmoa.kkukmoa.review.dto.ReviewCardDto;
 import kkukmoa.kkukmoa.review.repository.ReviewRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +21,16 @@ public class PreviewService {
 
     public List<ReviewCardDto> getPreview(Long storeId, int limit) {
         return reviewRepository.findPreview(storeId, limit).stream()
-                .map(r -> new ReviewCardDto(
-                        r.getId(),
-                        r.getWriter().getNickname(),
-                        r.getImages().isEmpty() ? null : r.getImages().get(0).getImageUrl(),
-                        snippet(r.getContent(), 10),
-                        r.getCreatedAt()
-                ))
+                .map(
+                        r ->
+                                new ReviewCardDto(
+                                        r.getId(),
+                                        r.getWriter().getNickname(),
+                                        r.getImages().isEmpty()
+                                                ? null
+                                                : r.getImages().get(0).getImageUrl(),
+                                        snippet(r.getContent(), 10),
+                                        r.getCreatedAt()))
                 .toList();
     }
 

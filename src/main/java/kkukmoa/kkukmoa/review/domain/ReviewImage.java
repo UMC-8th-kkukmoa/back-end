@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.review.domain;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 // ReviewImage.java
@@ -10,10 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "review_images",
+@Table(
+        name = "review_images",
         indexes = {
-                @Index(name = "idx_review_image_review", columnList = "review_id"),
-                @Index(name = "idx_review_image_sort", columnList = "review_id, sort_order")
+            @Index(name = "idx_review_image_review", columnList = "review_id"),
+            @Index(name = "idx_review_image_sort", columnList = "review_id, sort_order")
         })
 public class ReviewImage {
 
@@ -32,6 +34,11 @@ public class ReviewImage {
     @Column(name = "sort_order", nullable = false) // 0~4
     private int sortOrder;
 
-    void setReview(Review review)    { this.review = review; }
-    void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
+    void setReview(Review review) {
+        this.review = review;
+    }
+
+    void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 }
