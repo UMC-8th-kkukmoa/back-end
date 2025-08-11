@@ -91,7 +91,10 @@ public class StoreServiceImpl implements StoreService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Store> stores = storeRepository.findAll(pageable);
+        // 3km(= 3000m) 내에서만 조회
+        Page<Store> stores = storeRepository.findWithinRadiusPoint(
+                latitude, longitude, 3000, pageable);
+
         return storeConverter.toStorePagingResponseDto(
                 stores.map(store -> {
                     double d = calculateDistance(
@@ -133,6 +136,7 @@ public class StoreServiceImpl implements StoreService {
         return Math.round(distance * 100.0) / 100.0;
     }
 
+
     @Override
     public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
             CategoryType categoryType, double latitude, double longitude, int page, int size) {
@@ -144,7 +148,8 @@ public class StoreServiceImpl implements StoreService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Store> stores = storeRepository.findAllByCategory(category, pageable);
+        Page<Store> stores = storeRepository.findWithinRadiusPointByCategory(
+                category.getId(), latitude, longitude, 3000, pageable);
 
         return storeConverter.toStorePagingResponseDto(
                 stores.map(store -> {
@@ -167,7 +172,9 @@ public class StoreServiceImpl implements StoreService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Store> stores = storeRepository.findByNameContainingIgnoreCase(name, pageable);
+        Page<Store> stores = storeRepository.findWithinRadiusPointByName(
+                name, latitude, longitude, 3000, pageable);
+
         return storeConverter.toStorePagingResponseDto(
                 stores.map(store -> {
                     double d = calculateDistance(
