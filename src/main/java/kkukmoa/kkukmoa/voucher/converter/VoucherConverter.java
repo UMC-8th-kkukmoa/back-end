@@ -20,6 +20,7 @@ public class VoucherConverter {
     public static VoucherResponseDto.VoucherListResponseDto toListDto(Voucher voucher) {
         return VoucherResponseDto.VoucherListResponseDto.builder()
                 .name(voucher.getVoucherName())
+                .amount(voucher.getValue())
                 .qrCodeUuid(voucher.getQrCodeUuid())
                 .validDays(voucher.getValidDays())
                 .daysLeft(DateUtil.getDdayFromToday(voucher.getValidDays()))
