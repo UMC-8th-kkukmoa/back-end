@@ -1,6 +1,8 @@
 package kkukmoa.kkukmoa.store.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
@@ -12,10 +14,7 @@ import jakarta.validation.constraints.Size;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.*;
 import kkukmoa.kkukmoa.store.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,7 +42,12 @@ public class StoreController {
     @Operation(
             summary = "가게 목록 조회 API",
             description = "현재 위치(latitude, longitude) 기준으로 가게 목록을 조회합니다.")
-    public ApiResponse<List<StoreListResponseDto>> getStores(
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+        }
+    )
+    public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStores(
             @RequestParam
                     @DecimalMin(value = "-90.0", message = "위도는 -90.0 이상이어야 합니다")
                     @DecimalMax(value = "90.0", message = "위도는 90.0 이하여야 합니다")
@@ -54,10 +56,10 @@ public class StoreController {
                     @DecimalMin(value = "-180.0", message = "경도는 -180.0 이상이어야 합니다")
                     @DecimalMax(value = "180.0", message = "경도는 180.0 이하여야 합니다")
                     double longitude,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
 
-        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, offset, limit));
+        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, page, size));
     }
 
     @GetMapping("/{storeId}")
@@ -70,26 +72,38 @@ public class StoreController {
     @Operation(
             summary = "카테고리별 가게 목록 조회 API",
             description = "카테고리명과 현재 위치 기준으로 해당 카테고리 가게 목록을 조회합니다.")
-    public ApiResponse<List<StoreListResponseDto>> getStoresByCategory(
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+    }
+    )
+    public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStoresByCategory(
             @RequestParam CategoryType categoryType,
             @RequestParam double latitude,
             @RequestParam double longitude,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
         return ApiResponse.onSuccess(
-                storeService.getStoresByCategory(categoryType, latitude, longitude, offset, limit));
+                storeService.getStoresByCategory(categoryType, latitude, longitude, page, size));
     }
 
     @GetMapping("/search")
     @Operation(summary = "가게 검색 API", description = "가게명으로 가게를 조회합니다.")
-    public ApiResponse<List<StoreSearchResponseDto>> searchStores(
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 가게 개수")
+    }
+    )
+    public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> searchStores(
             @RequestParam
                     @NotBlank(message = "검색어는 필수입니다.")
                     @Size(min = 1, max = 50, message = "검색어는 1~50자 이내여야 합니다.")
                     String name,
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit) {
-        return ApiResponse.onSuccess(storeService.searchStoresByName(name, offset, limit));
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
+        return ApiResponse.onSuccess(storeService.searchStoresByName(name, latitude, longitude, page, size));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

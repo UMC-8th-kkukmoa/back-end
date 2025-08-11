@@ -5,20 +5,19 @@ import jakarta.persistence.EntityNotFoundException;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
-import kkukmoa.kkukmoa.common.util.s3.service.S3ImageService;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.region.service.RegionService;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreIdResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.*;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,11 +32,12 @@ public class StoreServiceImpl implements StoreService {
     private final StoreConverter storeConverter;
     private final RegionService regionService;
     private final CategoryRepository categoryRepository;
-    private final S3ImageService s3ImageService;
     private final Random random = new Random();
 
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request) {
+
+//        request.parseTimes();
 
         Region region =
                 regionService.createRegion(
@@ -86,24 +86,21 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreListResponseDto> getStores(
-            double latitude, double longitude, int offset, int limit) {
+    public StorePagingResponseDto<StoreListResponseDto> getStores(
+            double latitude, double longitude, int page, int size) {
 
-        List<Store> stores = storeRepository.findAll();
+        Pageable pageable = PageRequest.of(page, size);
 
-        return stores.stream()
-                .map(
-                        store ->
-                                storeConverter.toStoreListResponseDto(
-                                        store,
-                                        calculateDistance(
-                                                latitude,
-                                                longitude,
-                                                store.getRegion().getLatitude(),
-                                                store.getRegion().getLongitude())))
-                .skip(offset)
-                .limit(limit)
-                .collect(Collectors.toList());
+        Page<Store> stores = storeRepository.findAll(pageable);
+        return storeConverter.toStorePagingResponseDto(
+                stores.map(store -> {
+                    double d = calculateDistance(
+                            latitude, longitude,
+                            store.getRegion().getLatitude(),
+                            store.getRegion().getLongitude());
+                    return storeConverter.toStoreListResponseDto(store, d);
+                })
+        );
     }
 
     @Override
@@ -120,58 +117,65 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-
-        final int R = 6371;
+        final int R = 6371; // 지구 반지름 (km)
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
-        double a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                        + Math.cos(Math.toRadians(lat1))
-                                * Math.cos(Math.toRadians(lat2))
-                                * Math.sin(dLon / 2)
-                                * Math.sin(dLon / 2);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
+        double distance = R * c; // km 단위
+
+        // 소수점 2자리까지만 반올림
+        return Math.round(distance * 100.0) / 100.0;
     }
 
     @Override
-    public List<StoreListResponseDto> getStoresByCategory(
-            CategoryType categoryType, double latitude, double longitude, int offset, int limit) {
+    public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
+            CategoryType categoryType, double latitude, double longitude, int page, int size) {
 
         Category category =
                 categoryRepository
                         .findByType(categoryType)
                         .orElseThrow(() -> new RuntimeException("카테고리가 DB에 등록되어 있지 않습니다."));
 
-        List<Store> stores = storeRepository.findAllByCategory(category);
+        Pageable pageable = PageRequest.of(page, size);
 
-        return stores.stream()
-                .map(
-                        store ->
-                                storeConverter.toStoreListResponseDto(
-                                        store,
-                                        calculateDistance(
-                                                latitude,
-                                                longitude,
-                                                store.getRegion().getLatitude(),
-                                                store.getRegion().getLongitude())))
-                .skip(offset)
-                .limit(limit)
-                .collect(Collectors.toList());
+        Page<Store> stores = storeRepository.findAllByCategory(category, pageable);
+
+        return storeConverter.toStorePagingResponseDto(
+                stores.map(store -> {
+                    double d = calculateDistance(
+                            latitude, longitude,
+                            store.getRegion().getLatitude(),
+                            store.getRegion().getLongitude());
+                    return storeConverter.toStoreListResponseDto(store, d);
+                })
+        );
     }
 
     @Override
-    public List<StoreSearchResponseDto> searchStoresByName(String name, int offset, int limit) {
+    public StorePagingResponseDto<StoreListResponseDto> searchStoresByName(
+            String name, double latitude, double longitude, int page, int size) {
 
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("검색어를 입력하세요.");
         }
 
-        List<Store> stores = storeRepository.findByNameContainingIgnoreCase(name);
-        return stores.stream()
-                .map(storeConverter::toSearchDto)
-                .skip(offset)
-                .limit(limit)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Store> stores = storeRepository.findByNameContainingIgnoreCase(name, pageable);
+        return storeConverter.toStorePagingResponseDto(
+                stores.map(store -> {
+                    double d = calculateDistance(
+                            latitude, longitude,
+                            store.getRegion().getLatitude(),
+                            store.getRegion().getLongitude());
+                    return storeConverter.toStoreListResponseDto(store, d);
+                })
+        );
     }
 }

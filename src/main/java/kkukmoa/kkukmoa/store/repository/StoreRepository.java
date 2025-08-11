@@ -5,6 +5,8 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.user.domain.User;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,13 +15,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
+
+    Page<Store> findAll(Pageable pageable);
+
     Optional<Store> findByMerchantNumber(String merchantNumber);
 
     Optional<Store> findByOwner(User owner);
 
-    List<Store> findAllByCategory(Category category);
+    Page<Store> findAllByCategory(Category category, Pageable pageable);
 
-    List<Store> findByNameContainingIgnoreCase(String name);
+    Page<Store> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Optional<Store> findByCategory(Category category);
 
