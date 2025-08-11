@@ -14,6 +14,9 @@ public class VoucherResponseDto {
         @Schema(description = "금액권 이름", example = "금액권 5,000원권")
         private String name;
 
+        @Schema(description = "총 금액", example = "5000")
+        private int amount;
+
         @Schema(description = "유효기간", example = "2026-07-29")
         private String validDays;
 
@@ -23,8 +26,12 @@ public class VoucherResponseDto {
         @Schema(description = "QR 코드 UUID", example = "voucher_f8c9b7a3-xxxx-yyyy")
         private String qrCodeUuid;
 
-        @Schema(description = "유효기간까지 남은 일수", example = "D-90")
-        private String daysLeft;
+        @Schema(
+                description =
+                        "유효기간까지 남은 일수. 만약 유효기간이 지난 경우 `-1`이 반환됩니다. 오늘 만료되면 `0`이 반환되며, 그 외에는 유효기간까지"
+                                + " 남은 일수를 반환합니다.",
+                example = "90")
+        private int daysLeft;
     }
 
     @Getter
@@ -53,8 +60,8 @@ public class VoucherResponseDto {
         @Schema(description = "QR 이미지 Base64", example = "iVBORw0KGgoAAAANSUhEUgAAB4AAA...")
         private String qrCode;
 
-        @Schema(description = "유효기간까지 남은 일수", example = "D-90")
-        private String daysLeft;
+        @Schema(description = "유효기간까지 남은 일수", example = "90")
+        private int daysLeft;
     }
 
     @Getter
