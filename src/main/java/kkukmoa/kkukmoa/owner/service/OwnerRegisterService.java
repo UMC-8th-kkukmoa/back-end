@@ -68,10 +68,6 @@ public class OwnerRegisterService {
                         .region(region) // Region 연동(현 구조 유지)
                         .category(category)
                         .status(StoreStatus.PENDING) // 신청 = PENDING
-                        .address(request.getStoreAddress()) // 스냅샷(정책에 따라 유지/정규화 선택)
-                        .addressDetail(request.getStoreAddressDetail())
-                        .latitude(request.getLatitude())
-                        .longitude(request.getLongitude())
                         .build();
 
         storeRepository.save(store);

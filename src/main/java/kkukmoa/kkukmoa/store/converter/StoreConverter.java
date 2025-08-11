@@ -6,8 +6,9 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
-import kkukmoa.kkukmoa.store.dto.response.StoreSearchResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StorePagingResponseDto;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -25,10 +26,6 @@ public class StoreConverter {
                 .region(region)
                 .category(category)
                 .storeImage(request.getStoreImage())
-                .address(request.getAddress())
-                .addressDetail(request.getDetailAddress())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .build();
     }
 
@@ -82,8 +79,14 @@ public class StoreConverter {
                 .build();
     }
 
-    // 가게 검색 응답
-    public StoreSearchResponseDto toSearchDto(Store store) {
-        return StoreSearchResponseDto.builder().id(store.getId()).name(store.getName()).build();
+    public <T> StorePagingResponseDto<T> toStorePagingResponseDto(Page<T> page) {
+        return StorePagingResponseDto.<T>builder()
+                .stores(page.getContent())
+                .page(page.getNumber())
+                .totalPages(page.getTotalPages())
+                .totalElements((int) page.getTotalElements())
+                .isFirst(page.isFirst())
+                .isLast(page.isLast())
+                .build();
     }
 }
