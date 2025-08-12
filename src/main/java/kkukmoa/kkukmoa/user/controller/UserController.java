@@ -96,7 +96,8 @@ public class UserController {
         ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/exchange")
-    public  ResponseEntity<ApiResponse<TokenResponseDto>> exchange(@RequestParam("code") String code) {
+    public ResponseEntity<ApiResponse<TokenResponseDto>> exchange(
+            @RequestParam("code") String code) {
         TokenResponseDto tokens = authExchangeRepository.find(code);
 
         // 1회용 → 즉시 삭제
@@ -186,14 +187,15 @@ public class UserController {
         TokenResponseDto token = userCommandService.loginLocalUser(request);
         return ResponseEntity.ok(token);
     }
+
     @Operation(
             summary = "사용자의 UUID 생성",
-            description = """
-            이 API는 사용자의 UUID를 생성하거나, 이미 생성된 UUID를 반환합니다.
-            - 요청 시 사용자 UUID가 없으면 새로운 UUID가 생성됩니다.
-            - 성공적으로 UUID가 생성되거나 반환되면 ApiResponse에 담아 반환합니다.
-            """
-    )
+            description =
+                    """
+                    이 API는 사용자의 UUID를 생성하거나, 이미 생성된 UUID를 반환합니다.
+                    - 요청 시 사용자 UUID가 없으면 새로운 UUID가 생성됩니다.
+                    - 성공적으로 UUID가 생성되거나 반환되면 ApiResponse에 담아 반환합니다.
+                    """)
     @GetMapping("/uuid")
     public ResponseEntity<ApiResponse<String>> getUserUuid() {
         // 현재 로그인한 사용자의 UUID 생성 또는 반환
