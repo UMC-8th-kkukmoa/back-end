@@ -49,8 +49,8 @@ public class JwtTokenProvider {
     }
 
     public TokenResponseDto createToken(User user) {
-        // Claims claims = Jwts.claims().setSubject(user.getEmail());
-        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+         Claims claims = Jwts.claims().setSubject(user.getEmail());
+//        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
         Date now = new Date();
 
         String accessToken =
@@ -151,24 +151,14 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    /*    public Authentication getAuthentication(String token) {
-        String email = getEmailFromToken(token);
+    public Authentication getAuthentication(String token) {
+        String email = getSubjectFromToken(token); // sub에서 email 꺼냄
+//        Long userId = Long.parseLong(userIdString); // sub에서 userId 꺼냄
+
+        // email로 조회
         User user =
                 userRepository
                         .findByEmail(email)
-                        .orElseThrow(
-                                () -> new UserHandler(ErrorStatus.USER_NOT_FOUND)); // 이걸 한 번만 조회
-
-        // 여기서 User를 Principal로 넣는다!
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-    }*/
-    public Authentication getAuthentication(String token) {
-        String userIdString = getSubjectFromToken(token); // sub에서 userId 꺼냄
-        Long userId = Long.parseLong(userIdString);
-
-        User user =
-                userRepository
-                        .findById(userId)
                         .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
