@@ -106,7 +106,6 @@ public enum ErrorStatus implements BaseErrorCode {
     WEBSOCKET_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "WS4004", "인증 토큰이 필요합니다."),
     WEBSOCKET_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "WS4005", "인증 토큰이 유효하지 않습니다."),
     WEBSOCKET_LOGIN_REQUIRED(HttpStatus.FORBIDDEN, "WS4006", "로그인이 필요합니다."),
-
     ;
 
     private final HttpStatus httpStatus;

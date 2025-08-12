@@ -49,8 +49,8 @@ public class JwtTokenProvider {
     }
 
     public TokenResponseDto createToken(User user) {
-         Claims claims = Jwts.claims().setSubject(user.getEmail());
-//        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+        Claims claims = Jwts.claims().setSubject(user.getEmail());
+        //        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
         Date now = new Date();
 
         String accessToken =
@@ -153,7 +153,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getSubjectFromToken(token); // sub에서 email 꺼냄
-//        Long userId = Long.parseLong(userIdString); // sub에서 userId 꺼냄
+        //        Long userId = Long.parseLong(userIdString); // sub에서 userId 꺼냄
 
         // email로 조회
         User user =
