@@ -2,6 +2,8 @@ package kkukmoa.kkukmoa.config.websocket.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 import kkukmoa.kkukmoa.owner.dto.QrMessageDto;
 import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrGeneralTextDto;
 
@@ -46,7 +48,7 @@ public class QrWebSocketHandler extends TextWebSocketHandler {
             emailSessionMap.put(email, session);
             log.info("[+] afterConnectionEstablished :: " + email);
         } else {
-            // TODO: 로그인 안 되어있을 때 예외처리
+            throw new GeneralException(ErrorStatus.WEBSOCKET_LOGIN_REQUIRED);
         }
     }
 
