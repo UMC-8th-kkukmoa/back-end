@@ -203,5 +203,4 @@ public class UserController {
         // ApiResponse에 UUID를 담아 반환
         return ResponseEntity.ok(ApiResponse.onSuccess(uuid));
     }
-
 }
