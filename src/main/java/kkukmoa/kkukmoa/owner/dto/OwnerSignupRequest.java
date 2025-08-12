@@ -14,9 +14,9 @@ public class OwnerSignupRequest {
 
     // 로컬 로그인
 
-    @NotBlank(message = "전화번호는 필수입니다.")
-    @Schema(description = "사장님 전화번호", example = "01012345678")
-    private String phoneNumber;
+    @NotBlank(message = "이메일 입력은 필수입니다.")
+    @Schema(description = "사장님 이메일", example = "kkukadmin@naver.com")
+    private String email;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다.")
