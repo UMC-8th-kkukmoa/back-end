@@ -37,6 +37,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true, length = 255)
     private String profile_image;
 
+    @Column(nullable = true)
+    private String uuid; // uuid
+
     @Column(nullable = true, length = 20)
     private String phoneNumber; // 로컬 로그인용
 
