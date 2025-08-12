@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
 import kkukmoa.kkukmoa.common.util.AuthService;
@@ -9,6 +10,8 @@ import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
+import kkukmoa.kkukmoa.voucher.domain.Voucher;
+import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ public class OwnerQueryService {
 
     private final AuthService authService;
     private final StoreRepository storeRepository;
+    private final VoucherRepository voucherRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
     /**
@@ -87,5 +91,35 @@ public class OwnerQueryService {
         redisTemplate.opsForValue().set(qrStoreKey, storeId, 60, TimeUnit.SECONDS);
 
         log.info("새로 생성한 qrSource = {}", qrSource);
+    }
+
+    @Transactional(readOnly = true)
+    public OwnerQrResponseDto.QrTypeDto getQrType(String qrCode) {
+
+        // 요청받은 qr 코드 정보로 유형 구분
+        QrCodeType qrType = QrCodeType.getQrCodeTypeByQrPrefix(qrCode);
+
+        // 스탬프일 경우 예외 발생
+        if (qrType == QrCodeType.STAMP) {
+            throw new GeneralException(ErrorStatus.QR_INVALID_TYPE);
+        }
+
+        // 쿠폰 or 금액권 뭐지 될지 모르니 Object 객체로 우선 생성
+        Voucher voucher;
+
+        // 바우처일 경우 voucher 정보 조회 ( 남은 금액 조회 목적 )
+        if (qrType == QrCodeType.VOUCHER) {
+            voucher =
+                    voucherRepository
+                            .findByQrCodeUuid(qrCode)
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.VOUCHER_NOT_FOUND));
+        } else {
+            voucher = null;
+        }
+
+        // 남은 금액 조회
+        Integer remainValue = qrType == QrCodeType.VOUCHER ? voucher.getRemainingValue() : null;
+
+        return OwnerQrResponseDto.QrTypeDto.builder().type(qrType).balance(remainValue).build();
     }
 }

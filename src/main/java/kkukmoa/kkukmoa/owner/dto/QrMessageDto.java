@@ -19,14 +19,14 @@ public class QrMessageDto {
     }
 
     @Getter
-    @Builder // 사장이 QR 코드를 찍었을 때의 Dto
+    @Builder // 사장이 QR 코드를 찍었을 때 웹소켓으로 메시지 보내는 Dto
     public static class QrOwnerScanDto extends QrMessageDto {
+
+        @JsonProperty(value = "id")
+        private Long id;
 
         @JsonProperty(value = "is_success")
         private Boolean isSuccess;
-
-        @JsonProperty(value = "discount_amount")
-        private Integer discountAmount;
 
         @JsonProperty(value = "qr_info")
         private String qrInfo;

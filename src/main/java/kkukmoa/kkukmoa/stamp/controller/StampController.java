@@ -11,6 +11,7 @@ import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.couponDto.CouponResponseDto.couponListDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto;
 import kkukmoa.kkukmoa.stamp.dto.stampDto.StampResponseDto.StampListDto;
+import kkukmoa.kkukmoa.stamp.service.coupon.CouponCommandService;
 import kkukmoa.kkukmoa.stamp.service.coupon.CouponQueryService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampCommandService;
 import kkukmoa.kkukmoa.stamp.service.stamp.StampQueryService;
@@ -32,6 +33,7 @@ public class StampController {
     private final StampQueryService stampQueryService;
     private final CouponQueryService couponQueryService;
     private final StampCommandService stampCommandService;
+    private final CouponCommandService couponCommandService;
 
     @GetMapping
     @Operation(summary = "스탬프 목록 조회 API", description = "스탬프 타입을 입력하세요.")
