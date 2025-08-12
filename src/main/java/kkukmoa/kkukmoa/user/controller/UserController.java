@@ -14,8 +14,8 @@ import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.LocalLoginRequest;
-import kkukmoa.kkukmoa.user.dto.LocalSignupRequest;
+import kkukmoa.kkukmoa.user.dto.LocalLoginRequestDto;
+import kkukmoa.kkukmoa.user.dto.LocalSignupRequestDto;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
 import kkukmoa.kkukmoa.user.repository.AuthExchangeRepository;
@@ -175,7 +175,7 @@ public class UserController {
     @Operation(summary = "로컬 회원가입", description = "이메일/비밀번호로 일반 유저를 생성합니다.")
     @PostMapping("/signup/local")
     public ResponseEntity<ApiResponse<String>> signupLocal(
-            @Valid @RequestBody LocalSignupRequest request) {
+            @Valid @RequestBody LocalSignupRequestDto request) {
         userCommandService.registerLocalUser(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("유저 회원가입 성공"));
     }
@@ -183,7 +183,7 @@ public class UserController {
     @Operation(summary = "로컬 로그인", description = "이메일/비밀번호로 로그인하고 토큰을 발급받습니다.")
     @PostMapping("/login/local")
     public ResponseEntity<TokenResponseDto> loginLocal(
-            @Valid @RequestBody LocalLoginRequest request) {
+            @Valid @RequestBody LocalLoginRequestDto request) {
         TokenResponseDto token = userCommandService.loginLocalUser(request);
         return ResponseEntity.ok(token);
     }
