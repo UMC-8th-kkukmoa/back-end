@@ -7,10 +7,7 @@ import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.converter.UserConverter;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.KaKaoTokenResponseDto;
-import kkukmoa.kkukmoa.user.dto.KaKaoUserInfoResponseDto;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
-import kkukmoa.kkukmoa.user.dto.UserResponseDto;
+import kkukmoa.kkukmoa.user.dto.*;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
@@ -23,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -55,6 +53,8 @@ public class UserCommandService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final StringRedisTemplate redisTemplate;
+
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto.loginDto loginOrRegisterByKakao(String code) {
         KaKaoTokenResponseDto token = getKakaoToken(code);
@@ -161,4 +161,36 @@ public class UserCommandService {
 
         log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }
+
+
+    @Transactional
+    public void registerLocalUser(LocalSignupRequest request) {
+        // 1) 이메일 중복 체크
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
+        }
+
+        // 2) 사용자 생성 (시연용: 최소 필드만)
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword())) // 비밀번호는 반드시 해시
+                .socialType(SocialType.LOCAL)                           // 로컬 가입 표시
+                .roles(Set.of(UserType.USER))                           // 일반 유저 역할
+                .build();
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public TokenResponseDto loginLocalUser(LocalLoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return jwtTokenProvider.createToken(user);
+    }
+
 }

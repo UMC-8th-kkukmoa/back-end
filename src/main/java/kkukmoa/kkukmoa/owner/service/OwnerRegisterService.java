@@ -27,16 +27,10 @@ public class OwnerRegisterService {
     private final CategoryRepository categoryRepository;
     private final RegionService regionService; // ※ Region 로직은 그대로 유지
 
-    /**
-     * 입점 신청(PENDING) 생성 - 단일 Store 엔티티에 PENDING 상태로 저장한다. - 승인 전에는 merchantNumber는 null이며, owner는
-     * 신청자(User)로 설정한다.
-     */
+
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
         /* 1) 중복 신청 방지 정책
-         *    - 정책에 따라 PENDING만 막을지, 모든 상태(APPROVED/REJECTED 포함) 보유 시 막을지 결정.
-         *    - 간단히: 해당 신청자(applicant)로 이미 Store가 존재하면 예외.
-         *    - 필요하면 existsByApplicantAndStatus(...) 등으로 세분화 가능.
          */
         if (storeRepository.existsByOwner(user)) {
             throw new UserHandler(ErrorStatus.OWNER_REQUEST_ALREADY_SUBMITTED);
@@ -48,7 +42,7 @@ public class OwnerRegisterService {
                         .findByType(request.getCategory())
                         .orElseThrow(() -> new UserHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
-        /* 3) Region 연동 (현재 구조 유지: get-or-create) */
+        /* 3) Region 연동 */
         Region region =
                 regionService.createRegion(
                         request.getStoreAddress(),
@@ -73,7 +67,6 @@ public class OwnerRegisterService {
         storeRepository.save(store);
 
         /* 5) 신청자 롤 갱신 (대기 상태를 표현)
-         *    - 영속 상태면 dirty checking으로 반영됨
          */
         if (!user.getRoles().contains(UserType.PENDING_OWNER)) {
             user.getRoles().add(UserType.PENDING_OWNER);
