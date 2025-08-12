@@ -102,8 +102,7 @@ public class ReviewController {
     public ApiResponse<ReviewCursorResponse> getByCursor(
             @PathVariable Long storeId,
             @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         // 서비스는 header가 첫 페이지에서만 채워진 ReviewCursorResponse를 반환
         return ApiResponse.onSuccess(reviewCursorService.listByCursor(storeId, cursor, size));
     }

@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class OwnerRegisterService {
-    
+
     // 입점 신청 서비스
 
     // 기존 StoreRegistrationRepository 삭제 → 단일 Store로 전환

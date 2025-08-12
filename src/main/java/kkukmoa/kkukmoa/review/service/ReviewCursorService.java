@@ -11,14 +11,13 @@ import kkukmoa.kkukmoa.review.dto.ReviewSummaryDto;
 import kkukmoa.kkukmoa.review.repository.ReviewCursorRepository;
 import kkukmoa.kkukmoa.review.repository.ReviewRepository;
 import kkukmoa.kkukmoa.review.util.CursorCodec;
-
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +42,10 @@ public class ReviewCursorService {
         if (firstPage) {
             // 첫 로드: 최신순 페이지네이션 시작
             var pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-            reviews = reviewRepository
-                    .findByStoreIdOrderByCreatedAtDesc(storeId, pageable)
-                    .getContent();
+            reviews =
+                    reviewRepository
+                            .findByStoreIdOrderByCreatedAtDesc(storeId, pageable)
+                            .getContent();
         } else {
             // 다음 페이지: 커서 해석 -> "createdAt|id" 형태
             String raw = CursorCodec.decode(cursor);
@@ -78,8 +78,10 @@ public class ReviewCursorService {
         ReviewHeaderDto header = null;
         if (firstPage) {
             // 가게 정보 로딩 (예: StoreRepository)
-            Store store = storeRepository.findById(storeId)
-                    .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_NOT_FOUND));
+            Store store =
+                    storeRepository
+                            .findById(storeId)
+                            .orElseThrow(() -> new StoreHandler(ErrorStatus.STORE_NOT_FOUND));
 
             // 이미지 필드 네이밍은 프로젝트에 맞춰 교체 (예: getMainImageUrl / getThumbnailUrl 등)
             String imageUrl = store.getStoreImage();
@@ -88,7 +90,6 @@ public class ReviewCursorService {
 
         return new ReviewCursorResponse(header, page);
     }
-
 
     private ReviewSummaryDto toSummary(Review r) {
         return new ReviewSummaryDto(
