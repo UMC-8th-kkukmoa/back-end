@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
+import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.converter.UserConverter;
 import kkukmoa.kkukmoa.user.domain.User;
@@ -31,6 +32,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -39,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class UserCommandService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AuthService authService;
 
     @Value("${spring.kakao.client-id}")
     private String clientId;
@@ -161,4 +164,27 @@ public class UserCommandService {
 
         log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }
+
+
+    @Transactional
+    public String createUserUuid() {
+        // 현재 로그인한 사용자 가져오기
+        User user = authService.getCurrentUser();
+
+        // UUID가 없으면 새로 생성
+        if (user.getUuid() == null || user.getUuid().isEmpty()) {
+            String newUuid = UUID.randomUUID().toString();
+            user.setUuid(newUuid);
+
+            // 트랜잭션 내에서 엔티티 변경 사항 반영
+            userRepository.save(user); // 명시적으로 save() 호출
+
+            return newUuid;
+        }
+
+        // 이미 있으면 그대로 반환
+        return user.getUuid();
+    }
+
+
 }

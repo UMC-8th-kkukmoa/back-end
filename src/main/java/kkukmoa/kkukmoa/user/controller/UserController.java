@@ -93,14 +93,14 @@ public class UserController {
         ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/exchange")
-    public ResponseEntity<TokenResponseDto> exchange(@RequestParam("code") String code) {
+    public  ResponseEntity<ApiResponse<TokenResponseDto>> exchange(@RequestParam("code") String code) {
         TokenResponseDto tokens = authExchangeRepository.find(code);
 
         // 1회용 → 즉시 삭제
         authExchangeRepository.delete(code);
 
         // (선택) 여기서 RT 회전까지 수행해 내려가도 됨
-        return ResponseEntity.ok(tokens); // JSON 바디로 AT/RT 반환
+        return ResponseEntity.ok(ApiResponse.onSuccess(tokens)); // JSON 바디로 AT/RT 반환
     }
 
     @PostMapping("/logout")
@@ -155,16 +155,33 @@ public class UserController {
                     - 성공하면 accessToken과 refreshToken을 함께 반환합니다.
                     """)
     @ApiErrorCodeExamples({
-        ErrorStatus.REFRESH_TOKEN_REQUIRED, // 헤더 누락
-        ErrorStatus.REFRESH_TOKEN_INVALID, // 서명 불일치/만료
-        ErrorStatus.REFRESH_TOKEN_MISMATCH, // Redis 기준 불일치
-        ErrorStatus.USER_NOT_FOUND, // 토큰 사용자 없음
-        ErrorStatus.UNAUTHORIZED, // 그 외 인증 실패
+        ErrorStatus.REFRESH_TOKEN_REQUIRED,
+        ErrorStatus.REFRESH_TOKEN_INVALID,
+        ErrorStatus.REFRESH_TOKEN_MISMATCH,
+        ErrorStatus.USER_NOT_FOUND,
+        ErrorStatus.UNAUTHORIZED,
         ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/reissue")
-    public ResponseEntity<TokenResponseDto> reissue(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<TokenResponseDto>> reissue(HttpServletRequest request) {
         TokenResponseDto tokens = reissueService.reissue(request);
-        return ResponseEntity.ok(tokens);
+        return ResponseEntity.ok(ApiResponse.onSuccess(tokens));
     }
+
+    @Operation(
+            summary = "사용자의 UUID 생성",
+            description = """
+            이 API는 사용자의 UUID를 생성하거나, 이미 생성된 UUID를 반환합니다.
+            - 요청 시 사용자 UUID가 없으면 새로운 UUID가 생성됩니다.
+            - 성공적으로 UUID가 생성되거나 반환되면 ApiResponse에 담아 반환합니다.
+            """
+    )
+    @PostMapping("/uuid")
+    public ResponseEntity<ApiResponse<String>> getUserUuid() {
+        // 현재 로그인한 사용자의 UUID 생성 또는 반환
+        String uuid = userCommandService.createUserUuid();
+        // ApiResponse에 UUID를 담아 반환
+        return ResponseEntity.ok(ApiResponse.onSuccess(uuid));
+    }
+
 }
