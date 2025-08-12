@@ -35,6 +35,9 @@ public class OwnerQrResponseDto {
         @JsonProperty(value = "type")
         private QrCodeType type;
 
+        @JsonProperty(value = "balance")
+        private Integer balance;
+
     }
 
 }
