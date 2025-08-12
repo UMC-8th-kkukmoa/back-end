@@ -22,6 +22,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 카카오 API 관련 에러
     KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO5001", "카카오 API 호출에 실패했습니다."),
     // 사용자 관련 에러
+    DUPLICATION_DUPLICATION_EMAIL(HttpStatus.CONFLICT, "USER4003", "이미 사용 중인 이메일입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
     DUPLICATION_PHONE_NUMBER(HttpStatus.CONFLICT, "USER4005", "이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED, "USER_401", "비밀번호가 일치하지 않습니다."),
