@@ -22,6 +22,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // 카카오 API 관련 에러
     KAKAO_API_FAILED(HttpStatus.BAD_GATEWAY, "KAKAO5001", "카카오 API 호출에 실패했습니다."),
     // 사용자 관련 에러
+    DUPLICATION_DUPLICATION_EMAIL(HttpStatus.CONFLICT, "USER4003", "이미 사용 중인 이메일입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "유저를 찾을 수 없습니다."),
     DUPLICATION_PHONE_NUMBER(HttpStatus.CONFLICT, "USER4005", "이미 사용 중인 전화번호입니다."),
     PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED, "USER_401", "비밀번호가 일치하지 않습니다."),
@@ -57,6 +58,10 @@ public enum ErrorStatus implements BaseErrorCode {
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON400", "존재하지 않는 쿠폰입니다."),
     COUPON_INVALID_USED_PLACE(HttpStatus.BAD_REQUEST, "COUPON401", "올바르지 않은 사용처(사장)입니다."),
     COUPON_IS_USED(HttpStatus.BAD_REQUEST, "COUPON402", "이미 사용한 쿠폰입니다."),
+
+    // 리뷰 관련 에러
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R404", "리뷰가 존재하지 않습니다."),
+    TOO_MANY_IMAGES(HttpStatus.BAD_REQUEST, "R001", "이미지는 최대 5장까지 업로드할 수 있습니다."),
 
     // S3 관련 에러
     IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "S3_4001", "업로드 된 이미지가 존재하지 않습니다.."),

@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/images")
+@RequestMapping("/v1/images")
 @Tag(name = "Image API", description = "이미지 업로드 및 삭제 API")
 public class S3ImageController {
 
