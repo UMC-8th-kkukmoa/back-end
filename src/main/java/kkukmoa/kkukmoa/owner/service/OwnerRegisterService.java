@@ -27,7 +27,6 @@ public class OwnerRegisterService {
     private final CategoryRepository categoryRepository;
     private final RegionService regionService; // ※ Region 로직은 그대로 유지
 
-
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
         /* 1) 중복 신청 방지 정책

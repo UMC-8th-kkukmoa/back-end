@@ -70,7 +70,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "role", length = 30)
     private Set<UserType> roles = new HashSet<>();
 
-
     @Override
     public String getPassword() {
         return String.valueOf(this.password);

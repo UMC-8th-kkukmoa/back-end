@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.validation.Valid;
+
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
@@ -173,15 +173,16 @@ public class UserController {
 
     @Operation(summary = "로컬 회원가입", description = "이메일/비밀번호로 일반 유저를 생성합니다.")
     @PostMapping("/signup/local")
-    public ResponseEntity<ApiResponse<String>>
-    signupLocal(@Valid @RequestBody LocalSignupRequest request) {
+    public ResponseEntity<ApiResponse<String>> signupLocal(
+            @Valid @RequestBody LocalSignupRequest request) {
         userCommandService.registerLocalUser(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("유저 회원가입 성공"));
     }
 
     @Operation(summary = "로컬 로그인", description = "이메일/비밀번호로 로그인하고 토큰을 발급받습니다.")
     @PostMapping("/login/local")
-    public ResponseEntity<TokenResponseDto> loginLocal(@Valid @RequestBody LocalLoginRequest request) {
+    public ResponseEntity<TokenResponseDto> loginLocal(
+            @Valid @RequestBody LocalLoginRequest request) {
         TokenResponseDto token = userCommandService.loginLocalUser(request);
         return ResponseEntity.ok(token);
     }
