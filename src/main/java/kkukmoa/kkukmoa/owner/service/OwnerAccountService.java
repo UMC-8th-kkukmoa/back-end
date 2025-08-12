@@ -40,14 +40,14 @@ public class OwnerAccountService {
         }
 
         // 1. 중복 확인
-        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
-            throw new UserHandler(ErrorStatus.DUPLICATION_PHONE_NUMBER);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
         }
 
         // 2. 유저 생성
         User user =
                 User.builder()
-                        .phoneNumber(request.getPhoneNumber())
+                        .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .socialType(SocialType.LOCAL)
                         .agreeTerms(request.isAgreeTerms())
@@ -62,7 +62,7 @@ public class OwnerAccountService {
     public TokenResponseDto loginOwner(OwnerSignupRequest request) {
         User user =
                 userRepository
-                        .findByPhoneNumber(request.getPhoneNumber())
+                        .findByEmail(request.getEmail())
                         .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
