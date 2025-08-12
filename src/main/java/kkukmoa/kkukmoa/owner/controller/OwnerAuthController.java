@@ -8,9 +8,9 @@ import jakarta.validation.Valid;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
-import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
-import kkukmoa.kkukmoa.owner.dto.OwnerRegisterRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerRegisterRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.service.OwnerAccountService;
 import kkukmoa.kkukmoa.owner.service.OwnerRegisterService;
 import kkukmoa.kkukmoa.user.annotation.CurrentUser;
@@ -51,8 +51,7 @@ public class OwnerAuthController {
                 ErrorStatus.INTERNAL_SERVER_ERROR // 서버 오류(공통)
             })
     public ResponseEntity<ApiResponse<String>> registerOwner(
-            @RequestBody @Valid OwnerSignupRequest request
-            ) {
+            @RequestBody @Valid OwnerSignupRequest request) {
         ownerAccountService.registerLocalOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("사장님 회원가입 성공"));
     }

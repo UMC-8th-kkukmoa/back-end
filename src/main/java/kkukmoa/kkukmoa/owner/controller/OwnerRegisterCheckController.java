@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.service.OwnerRegisterCheckService;
 
 import lombok.RequiredArgsConstructor;

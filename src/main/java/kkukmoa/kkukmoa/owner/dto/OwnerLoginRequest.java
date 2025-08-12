@@ -22,6 +22,4 @@ public class OwnerLoginRequest {
     @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다.")
     @Schema(description = "비밀번호 (6자 이상)", example = "string")
     private String password;
-
-
 }

@@ -1,7 +1,7 @@
 package kkukmoa.kkukmoa.owner.service;
 
-import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
