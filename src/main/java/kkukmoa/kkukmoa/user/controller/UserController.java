@@ -196,7 +196,7 @@ public class UserController {
                     - 요청 시 사용자 UUID가 없으면 새로운 UUID가 생성됩니다.
                     - 성공적으로 UUID가 생성되거나 반환되면 ApiResponse에 담아 반환합니다.
                     """)
-    @PostMapping("/uuid")
+    @GetMapping("/uuid")
     public ResponseEntity<ApiResponse<String>> getUserUuid() {
         // 현재 로그인한 사용자의 UUID 생성 또는 반환
         String uuid = userCommandService.createUserUuid();

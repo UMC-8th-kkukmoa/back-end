@@ -100,7 +100,13 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 입점 신청 관련 에러
     STORE_REGISTRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4003", "존재하지 않는 입점 신청입니다."),
-    STORE_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "STORE4004", "이미 승인된 입점 신청입니다.");
+    STORE_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "STORE4004", "이미 승인된 입점 신청입니다."),
+
+    // 웹소켓 관련 에러
+    WEBSOCKET_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "WS4004", "인증 토큰이 필요합니다."),
+    WEBSOCKET_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "WS4005", "인증 토큰이 유효하지 않습니다."),
+    WEBSOCKET_LOGIN_REQUIRED(HttpStatus.FORBIDDEN, "WS4006", "로그인이 필요합니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;
