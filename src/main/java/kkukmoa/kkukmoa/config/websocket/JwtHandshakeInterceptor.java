@@ -40,8 +40,9 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            String userId = jwtTokenProvider.getSubjectFromToken(token);
-            attributes.put("userId", userId);
+            String email = jwtTokenProvider.getSubjectFromToken(token);
+            attributes.put("email", email);
+
         } else if(token == null){
             throw new GeneralException(ErrorStatus.WEBSOCKET_TOKEN_NOT_FOUND);
         } else{

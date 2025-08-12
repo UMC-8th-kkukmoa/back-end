@@ -44,6 +44,7 @@ public class QrWebSocketHandler extends TextWebSocketHandler {
         clientSessions.put(session.getId(), session);
 
         String email = (String) session.getAttributes().get("email");
+        log.info("[+] afterConnectionEstablished :: " + email);
         if (email != null) {
             emailSessionMap.put(email, session);
             log.info("[+] afterConnectionEstablished :: " + email);
