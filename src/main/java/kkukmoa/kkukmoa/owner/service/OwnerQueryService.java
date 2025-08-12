@@ -88,4 +88,21 @@ public class OwnerQueryService {
 
         log.info("새로 생성한 qrSource = {}", qrSource);
     }
+
+    @Transactional(readOnly = true)
+    public OwnerQrResponseDto.QrTypeDto getQrType(String qrCode) {
+
+        // 요청받은 qr 코드 정보로 유형 구분
+        int cutIndex = qrCode.indexOf("_");
+        String prefix = qrCode.substring(0, cutIndex + 1); // ex) "voucher_" , "coupon_", "stamp_"
+        QrCodeType qrType = QrCodeType.getQrCodeTypeByQrPrefix(prefix);
+
+        // 검증은 패스. 실제 사용 요청 API에서 처리하도록
+        // 오로지 유형 구분에만 집중
+
+        return OwnerQrResponseDto.QrTypeDto.builder()
+            .type(qrType)
+            .build();
+    }
+
 }

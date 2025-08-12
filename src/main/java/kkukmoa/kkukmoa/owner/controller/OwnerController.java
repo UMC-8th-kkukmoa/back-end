@@ -8,6 +8,7 @@ import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto.QrScanDto;
+import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto.QrTypeDto;
 import kkukmoa.kkukmoa.owner.service.OwnerCommandService;
 import kkukmoa.kkukmoa.owner.service.OwnerQueryService;
 
@@ -67,4 +68,25 @@ public class OwnerController {
         OwnerQrResponseDto.QrDto stamp = ownerQueryService.getStamp();
         return ApiResponse.onSuccess(stamp);
     }
+
+    @GetMapping("/qrcode/category")
+    @Operation(summary = "( 사장님 ) 스탬프 조회해서 QR 유형 구분",
+                description =
+                    """
+                        고객이 보여준 QR 유형을 반환합니다.\n
+                        유형에 따라 쿠폰사용/금액권사용 API를 호출해주세요.
+                    """
+    )
+    @ApiErrorCodeExamples(
+        value =  {ErrorStatus.AUTHENTICATION_FAILED}
+    )
+    public ApiResponse<OwnerQrResponseDto.QrTypeDto> getQrCode(@RequestParam("qr") String qrCode){
+
+        OwnerQrResponseDto.QrTypeDto qrType = ownerQueryService.getQrType(qrCode);
+
+        return ApiResponse.onSuccess(qrType);
+    }
+
+
+
 }
