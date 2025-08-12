@@ -1,7 +1,6 @@
 package kkukmoa.kkukmoa.voucher.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
@@ -61,6 +60,4 @@ public class VoucherController {
         var detail = voucherQueryService.getVoucherDetail(uuid);
         return ResponseEntity.ok(ApiResponse.onSuccess(detail));
     }
-
-
 }

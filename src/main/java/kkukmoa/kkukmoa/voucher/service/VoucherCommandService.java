@@ -76,35 +76,34 @@ public class VoucherCommandService {
     }
 
     /**
-     *
      * 사장님이 QR 코드 스캔 후, 금액권일 경우 호출할 API의 메서드
+     *
      * @param qrCode QR 정보
      * @param useAmount 차감할 금액
      * @return 응답 DTO
      */
     @Transactional
-    public VoucherResponseDto.VoucherDeductResponseDto useVoucher(
-            String qrCode, int useAmount) {
+    public VoucherResponseDto.VoucherDeductResponseDto useVoucher(String qrCode, int useAmount) {
 
         // 금액권 조회
         Voucher voucher =
-            voucherRepository
-                .findByQrCodeUuid(qrCode)
-                .orElseThrow(() -> new VoucherHandler(ErrorStatus.VOUCHER_NOT_FOUND));
+                voucherRepository
+                        .findByQrCodeUuid(qrCode)
+                        .orElseThrow(() -> new VoucherHandler(ErrorStatus.VOUCHER_NOT_FOUND));
         log.info("조회된 금액권 ID: {}", voucher.getId());
         log.info("조회된 금액권 잔액: {}", voucher.getRemainingValue());
 
         // 금액 검증
         if (useAmount <= 0) { // 금액권은 정수
             throw new VoucherHandler(ErrorStatus.VOUCHER_INVALID_AMOUNT);
-        }else if(useAmount > voucher.getRemainingValue()) { // 금액권 잔액 초과
+        } else if (useAmount > voucher.getRemainingValue()) { // 금액권 잔액 초과
             throw new VoucherHandler(ErrorStatus.VOUCHER_BALANCE_NOT_ENOUGH);
         }
 
         // QR 코드
         QrCodeType qrType = QrCodeType.getQrCodeTypeByQrPrefix(qrCode);
         // QR 코드 타입 검증
-        if(qrType != QrCodeType.VOUCHER) {
+        if (qrType != QrCodeType.VOUCHER) {
             throw new GeneralException(ErrorStatus.QR_INVALID_TYPE);
         }
 
@@ -119,13 +118,13 @@ public class VoucherCommandService {
 
         // Web Socket 메시지 Dto 생성
         QrOwnerScanDto messageDto =
-            QrOwnerScanDto.builder()
-                .id(voucher.getId())
-                .isSuccess(true)
-                .qrInfo(qrCode)
-                .qrType(qrType)
-                .redirectUri(qrType.getRedirectUri())
-                .build();
+                QrOwnerScanDto.builder()
+                        .id(voucher.getId())
+                        .isSuccess(true)
+                        .qrInfo(qrCode)
+                        .qrType(qrType)
+                        .redirectUri(qrType.getRedirectUri())
+                        .build();
 
         // 쿠폰 사용자에게 웹소켓으로 메시지 보냄. DTO 형태
         String userEmail = voucher.getUser().getEmail();

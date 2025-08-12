@@ -10,9 +10,9 @@ import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
 import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,7 +100,7 @@ public class OwnerQueryService {
         QrCodeType qrType = QrCodeType.getQrCodeTypeByQrPrefix(qrCode);
 
         // 스탬프일 경우 예외 발생
-        if(qrType == QrCodeType.STAMP){
+        if (qrType == QrCodeType.STAMP) {
             throw new GeneralException(ErrorStatus.QR_INVALID_TYPE);
         }
 
@@ -108,21 +108,18 @@ public class OwnerQueryService {
         Voucher voucher;
 
         // 바우처일 경우 voucher 정보 조회 ( 남은 금액 조회 목적 )
-        if(qrType == QrCodeType.VOUCHER) {
-            voucher = voucherRepository.findByQrCodeUuid(qrCode)
-                .orElseThrow( () -> new GeneralException(ErrorStatus.VOUCHER_NOT_FOUND));
-        }else {
+        if (qrType == QrCodeType.VOUCHER) {
+            voucher =
+                    voucherRepository
+                            .findByQrCodeUuid(qrCode)
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.VOUCHER_NOT_FOUND));
+        } else {
             voucher = null;
         }
 
         // 남은 금액 조회
-        Integer remainValue =
-            qrType == QrCodeType.VOUCHER ? voucher.getRemainingValue() : null;
+        Integer remainValue = qrType == QrCodeType.VOUCHER ? voucher.getRemainingValue() : null;
 
-        return OwnerQrResponseDto.QrTypeDto.builder()
-            .type(qrType)
-            .balance(remainValue)
-            .build();
+        return OwnerQrResponseDto.QrTypeDto.builder().type(qrType).balance(remainValue).build();
     }
-
 }

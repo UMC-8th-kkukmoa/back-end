@@ -1,9 +1,7 @@
 package kkukmoa.kkukmoa.voucher.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import kkukmoa.kkukmoa.common.enums.QrCodeType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -86,5 +84,4 @@ public class VoucherResponseDto {
         @Schema(description = "남은 금액", example = "3000")
         private int remainingValue;
     }
-
 }

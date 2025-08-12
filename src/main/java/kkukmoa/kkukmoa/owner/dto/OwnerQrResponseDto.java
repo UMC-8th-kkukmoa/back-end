@@ -30,14 +30,12 @@ public class OwnerQrResponseDto {
 
     @Getter
     @Builder
-    public static class QrTypeDto{
+    public static class QrTypeDto {
 
         @JsonProperty(value = "type")
         private QrCodeType type;
 
         @JsonProperty(value = "balance")
         private Integer balance;
-
     }
-
 }

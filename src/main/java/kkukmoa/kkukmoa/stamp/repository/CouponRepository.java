@@ -42,5 +42,4 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     List<Coupon> findByUser(@Param("user") User user);
 
     Optional<Coupon> findByQrCode(String qrCode);
-    
 }
