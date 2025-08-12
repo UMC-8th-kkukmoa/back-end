@@ -1,7 +1,7 @@
 package kkukmoa.kkukmoa.owner.service;
 
+import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerRegisterCheckResponse;
-import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
@@ -23,7 +23,7 @@ public class OwnerRegisterCheckService {
     private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public OwnerRegisterCheckResponse checkPending(OwnerSignupRequest req) {
+    public OwnerRegisterCheckResponse checkPending(OwnerLoginRequest req) {
         // 1) 사용자 조회 (이메일이 로그인 ID)
         User user = userRepository.findByEmail(req.getEmail()).orElse(null);
 

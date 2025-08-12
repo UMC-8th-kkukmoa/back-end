@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
-import kkukmoa.kkukmoa.owner.dto.LocalSignupRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerRegisterRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.service.OwnerAccountService;
@@ -51,8 +51,7 @@ public class OwnerAuthController {
                 ErrorStatus.INTERNAL_SERVER_ERROR // 서버 오류(공통)
             })
     public ResponseEntity<ApiResponse<String>> registerOwner(
-            @RequestBody @Valid LocalSignupRequest request // DTO 통일: LocalSignupRequest
-            ) {
+            @RequestBody @Valid OwnerSignupRequest request) {
         ownerAccountService.registerLocalOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("사장님 회원가입 성공"));
     }
@@ -61,7 +60,7 @@ public class OwnerAuthController {
     @Operation(summary = "사장님 로그인", description = "전화번호와 비밀번호로 사장님 계정을 로그인합니다.")
     @ApiErrorCodeExamples(value = {ErrorStatus.USER_NOT_FOUND, ErrorStatus.PASSWORD_NOT_MATCH})
     public ResponseEntity<ApiResponse<TokenResponseDto>> loginOwner(
-            @RequestBody @Valid OwnerSignupRequest request) {
+            @RequestBody @Valid OwnerLoginRequest request) {
         TokenResponseDto token = ownerAccountService.loginOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess(token));
     }
