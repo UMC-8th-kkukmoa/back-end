@@ -58,6 +58,8 @@ public class SecurityConfig {
                                                 "/v1/users/oauth/kakao",
                                                 "/v1/users/reissue",
                                                 "/v1/users/exchange",
+                                                "/v1/users/signup/local",
+                                                "/v1/users/login/local",
                                                 "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
