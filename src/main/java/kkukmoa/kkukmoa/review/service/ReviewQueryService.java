@@ -23,12 +23,6 @@ public class ReviewQueryService {
 
     private final ReviewRepository reviewRepository;
 
-    public Page<ReviewSummaryDto> getByStore(Long storeId, Pageable pageable) {
-        return reviewRepository
-                .findByStoreIdOrderByCreatedAtDesc(storeId, pageable)
-                .map(this::toSummary);
-    }
-
     public CreateReviewResponse getCreateResponse(Long id) {
         Review r =
                 reviewRepository

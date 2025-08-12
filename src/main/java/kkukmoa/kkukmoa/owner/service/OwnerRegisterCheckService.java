@@ -24,8 +24,8 @@ public class OwnerRegisterCheckService {
     private final PasswordEncoder passwordEncoder;
 
     public OwnerRegisterCheckResponse checkPending(OwnerSignupRequest req) {
-        // 1) 사용자 조회 (연락처가 로그인 ID)
-        User user = userRepository.findByPhoneNumber(req.getPhoneNumber()).orElse(null);
+        // 1) 사용자 조회 (이메일이 로그인 ID)
+        User user = userRepository.findByEmail(req.getEmail()).orElse(null);
 
         // 2) 비밀번호 검증 (보안상 상세 사유 노출 금지)
         if (user == null || !passwordEncoder.matches(req.getPassword(), user.getPassword())) {

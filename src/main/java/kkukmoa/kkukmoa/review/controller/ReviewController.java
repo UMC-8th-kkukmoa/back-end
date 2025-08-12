@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.review.dto.CreateReviewResponse;
-import kkukmoa.kkukmoa.review.dto.CursorPage;
-import kkukmoa.kkukmoa.review.dto.ReviewCardDto;
-import kkukmoa.kkukmoa.review.dto.ReviewSummaryDto;
+import kkukmoa.kkukmoa.review.dto.*;
 import kkukmoa.kkukmoa.review.service.PreviewService;
 import kkukmoa.kkukmoa.review.service.ReviewCommandService;
 import kkukmoa.kkukmoa.review.service.ReviewCursorService;
@@ -102,10 +99,12 @@ public class ReviewController {
                         content = @Content(mediaType = "application/json"))
             })
     @GetMapping("/cursor")
-    public ApiResponse<CursorPage<ReviewSummaryDto>> getByCursor(
+    public ApiResponse<ReviewCursorResponse> getByCursor(
             @PathVariable Long storeId,
             @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        // 서비스는 header가 첫 페이지에서만 채워진 ReviewCursorResponse를 반환
         return ApiResponse.onSuccess(reviewCursorService.listByCursor(storeId, cursor, size));
     }
 }
