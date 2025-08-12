@@ -3,8 +3,8 @@ package kkukmoa.kkukmoa.owner.service;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
-import kkukmoa.kkukmoa.owner.dto.LocalSignupRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
@@ -30,7 +30,7 @@ public class OwnerAccountService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void registerLocalOwner(LocalSignupRequest request) {
+    public void registerLocalOwner(OwnerSignupRequest request) {
         // 0. 약관 동의 여부 확인
         if (!request.isAgreeTerms()) {
             throw new UserHandler(ErrorStatus.TERMS_NOT_AGREED);
@@ -59,7 +59,7 @@ public class OwnerAccountService {
     }
 
     @Transactional
-    public TokenResponseDto loginOwner(OwnerSignupRequest request) {
+    public TokenResponseDto loginOwner(OwnerLoginRequest request) {
         User user =
                 userRepository
                         .findByEmail(request.getEmail())
