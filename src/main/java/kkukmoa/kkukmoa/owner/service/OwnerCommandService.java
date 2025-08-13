@@ -14,7 +14,6 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;

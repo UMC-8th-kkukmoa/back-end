@@ -14,13 +14,11 @@ import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.service.OwnerCommandService;
 import kkukmoa.kkukmoa.user.annotation.CurrentUser;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
-
 import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -176,23 +175,25 @@ public class JwtTokenProvider {
 
         List<String> roles = extractRoles(user); // ["ROLE_OWNER", "ROLE_USER"] 형태
 
-        String accessToken = Jwts.builder()
-                .setClaims(claims)
-                .claim("uid", user.getId())           // 식별자/조회 편의용
-                .claim("email", user.getEmail())      // 참고용(권한 판단은 DB 기준)
-                .claim("roles", roles)                // ★ 액세스 토큰에 roles 포함
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String accessToken =
+                Jwts.builder()
+                        .setClaims(claims)
+                        .claim("uid", user.getId()) // 식별자/조회 편의용
+                        .claim("email", user.getEmail()) // 참고용(권한 판단은 DB 기준)
+                        .claim("roles", roles) // ★ 액세스 토큰에 roles 포함
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
+                        .signWith(key, SignatureAlgorithm.HS256)
+                        .compact();
 
-        String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .claim("rand", UUID.randomUUID().toString()) // 재사용 방지용 랜덤 값
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String refreshToken =
+                Jwts.builder()
+                        .setClaims(claims)
+                        .claim("rand", UUID.randomUUID().toString()) // 재사용 방지용 랜덤 값
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                        .signWith(key, SignatureAlgorithm.HS256)
+                        .compact();
 
         long expiration = getExpiration(refreshToken); // 남은 만료 ms
         refreshTokenRepository.saveToken(user.getId(), refreshToken, expiration); // RT는 Redis 등에 저장
@@ -203,9 +204,8 @@ public class JwtTokenProvider {
     /** UserType → "ROLE_*" 문자열 리스트로 변환 */
     private List<String> extractRoles(User user) {
         return user.getRoles().stream()
-                .map(UserType::getRoleName)  // 예: UserType.OWNER -> "ROLE_OWNER"
+                .map(UserType::getRoleName) // 예: UserType.OWNER -> "ROLE_OWNER"
                 .distinct()
                 .toList();
     }
-
 }
