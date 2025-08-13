@@ -9,8 +9,8 @@ import kkukmoa.kkukmoa.admin.dto.PendingStoreSummary;
 import kkukmoa.kkukmoa.admin.service.AdminCommandService;
 import kkukmoa.kkukmoa.admin.service.AdminQueryService;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-
 import kkukmoa.kkukmoa.owner.dto.response.OwnerRegisterResponse;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -55,8 +55,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')") // 관리자만 접근
     public ApiResponse<PageDto<PendingStoreSummary>> pending(
             @Parameter(description = "0부터 시작") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "기본 9, 최대 50") @RequestParam(defaultValue = "9") int size
-    ) {
+            @Parameter(description = "기본 9, 최대 50") @RequestParam(defaultValue = "9") int size) {
         Page<PendingStoreSummary> result = adminQueryService.listPending(page, size);
         return ApiResponse.onSuccess(PageDto.from(result)); // 표준 응답 래퍼로 감싸기
     }
@@ -64,9 +63,7 @@ public class AdminController {
     @Operation(summary = "입점신청 단건 상세(대기 중)", description = "PENDING 상태의 특정 신청을 상세 조회합니다.")
     @GetMapping("/pending/{storeId}")
     public ApiResponse<OwnerRegisterResponse> getPendingDetail(
-            @Parameter(description = "스토어 ID", example = "137")
-            @PathVariable Long storeId
-    ) {
+            @Parameter(description = "스토어 ID", example = "137") @PathVariable Long storeId) {
         OwnerRegisterResponse dto = adminQueryService.getPendingDetail(storeId);
         return ApiResponse.onSuccess(dto);
     }

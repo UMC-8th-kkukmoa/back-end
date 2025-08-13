@@ -9,10 +9,10 @@ import kkukmoa.kkukmoa.review.dto.request.CreateReviewResponse;
 import kkukmoa.kkukmoa.review.dto.response.*;
 import kkukmoa.kkukmoa.review.repository.ReviewCursorRepository;
 import kkukmoa.kkukmoa.review.repository.ReviewRepository;
-
 import kkukmoa.kkukmoa.review.util.CursorCodec;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageRequest;
@@ -36,9 +36,7 @@ public class ReviewQueryService {
     private final StoreRepository storeRepository;
 
     /**
-     * [리뷰 작성 직후 응답 데이터 생성]
-     * - 리뷰 ID로 Review 엔티티 조회
-     * - CreateReviewResponse DTO로 변환하여 반환
+     * [리뷰 작성 직후 응답 데이터 생성] - 리뷰 ID로 Review 엔티티 조회 - CreateReviewResponse DTO로 변환하여 반환
      *
      * @param id 생성된 리뷰의 ID
      * @return 리뷰 생성 결과 DTO
@@ -58,9 +56,7 @@ public class ReviewQueryService {
     }
 
     /**
-     * [리뷰 요약 변환]
-     * - Review 엔티티를 ReviewSummaryDto로 변환
-     * - 작성자 닉네임은 표시용으로 포함
+     * [리뷰 요약 변환] - Review 엔티티를 ReviewSummaryDto로 변환 - 작성자 닉네임은 표시용으로 포함
      *
      * @param r Review 엔티티
      * @return ReviewSummaryDto
@@ -76,12 +72,10 @@ public class ReviewQueryService {
     }
 
     /**
-     * [리뷰 미리보기 조회]
-     * - 지정된 가게의 최신 리뷰 중 일부(limit)만 조회
-     * - 대표 이미지(첫 번째 이미지)와 내용 일부(snippet)만 포함
+     * [리뷰 미리보기 조회] - 지정된 가게의 최신 리뷰 중 일부(limit)만 조회 - 대표 이미지(첫 번째 이미지)와 내용 일부(snippet)만 포함
      *
      * @param storeId 대상 가게 ID
-     * @param limit   가져올 리뷰 개수
+     * @param limit 가져올 리뷰 개수
      * @return ReviewCardDto 리스트
      */
     public List<ReviewCardDto> getPreview(Long storeId, int limit) {
@@ -100,11 +94,9 @@ public class ReviewQueryService {
     }
 
     /**
-     * [리뷰 내용 요약]
-     * - 지정된 길이(len)까지만 잘라서 표시
-     * - 길이를 초과하면 "..." 추가
+     * [리뷰 내용 요약] - 지정된 길이(len)까지만 잘라서 표시 - 길이를 초과하면 "..." 추가
      *
-     * @param s   원본 문자열
+     * @param s 원본 문자열
      * @param len 최대 길이
      * @return 요약 문자열
      */
@@ -114,8 +106,7 @@ public class ReviewQueryService {
     }
 
     /**
-     * [가게별 리뷰 개수 조회]
-     * - storeId 기준 리뷰 총 개수 반환
+     * [가게별 리뷰 개수 조회] - storeId 기준 리뷰 총 개수 반환
      *
      * @param storeId 가게 ID
      * @return 리뷰 개수
@@ -125,15 +116,12 @@ public class ReviewQueryService {
     }
 
     /**
-     * [커서 기반 리뷰 목록 조회]
-     * - 무한 스크롤 방식 지원
-     * - 첫 페이지 여부에 따라 처리 분기
-     * - 커서는 "createdAt|id" 형식의 문자열을 Base64 인코딩하여 전달/해석
-     * - 첫 페이지에는 리뷰 목록 + 가게 헤더 정보 포함
+     * [커서 기반 리뷰 목록 조회] - 무한 스크롤 방식 지원 - 첫 페이지 여부에 따라 처리 분기 - 커서는 "createdAt|id" 형식의 문자열을 Base64
+     * 인코딩하여 전달/해석 - 첫 페이지에는 리뷰 목록 + 가게 헤더 정보 포함
      *
      * @param storeId 대상 가게 ID
-     * @param cursor  다음 페이지 시작점 식별자 (null이면 첫 페이지)
-     * @param size    페이지 크기
+     * @param cursor 다음 페이지 시작점 식별자 (null이면 첫 페이지)
+     * @param size 페이지 크기
      * @return ReviewCursorResponse (리뷰 목록, 다음 커서, 헤더)
      */
     public ReviewCursorResponse listByCursor(Long storeId, String cursor, int size) {

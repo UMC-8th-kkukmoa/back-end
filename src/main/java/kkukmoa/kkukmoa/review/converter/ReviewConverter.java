@@ -14,6 +14,5 @@ public class ReviewConverter {
                 r.getContent(),
                 r.getImages().stream().map(ReviewImage::getImageUrl).toList(),
                 r.getCreatedAt());
-
     }
 }

@@ -47,10 +47,9 @@ public enum ErrorStatus implements BaseErrorCode {
     OWNER_INVALID_SCAN(HttpStatus.BAD_REQUEST, "OWNER4006", "사장님은 스탬프 적립 QR을 스캔할 수 없습니다."),
     OWNER_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4007", "사장님 소유의 가게가 없습니다."),
     OWNER_CANNOT_ACCESS(HttpStatus.FORBIDDEN, "OWNER4008", "사장님만 접근할 수 있는 기능입니다."),
-    
+
     // 관리자 관련 에러
     STORE_PENDING_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN0001", "입점신청 승인 대기 중인 상태의 매장이 없습니다."),
-
 
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),

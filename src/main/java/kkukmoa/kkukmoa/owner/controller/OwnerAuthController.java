@@ -32,7 +32,6 @@ public class OwnerAuthController {
 
     private final OwnerCommandService ownerCommandService;
 
-
     @PostMapping("/register")
     @Operation(
             summary = "사장님 회원가입",

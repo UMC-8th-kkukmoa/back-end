@@ -6,16 +6,16 @@ import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
 import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.common.util.QrCodeUtil;
-import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
 import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
 import kkukmoa.kkukmoa.owner.dto.response.OwnerRegisterCheckResponse;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
+import kkukmoa.kkukmoa.user.repository.UserRepository;
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
 import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
 
-import kkukmoa.kkukmoa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -131,10 +131,8 @@ public class OwnerQueryService {
     }
 
     /**
-     * [비로그인/로그인 공통 진입점] 연락처/비밀번호를 받아 PENDING 여부를 확인합니다.
-     * - 이메일을 로그인 ID로 사용한다고 가정합니다.
-     * - 사용자 조회 및 비밀번호 검증 후, 해당 사용자의 PENDING 존재 여부만 반환합니다.
-     * - 보안상으로 "존재/불일치"를 구분하지 않고 동일 메시지를 제공합니다.
+     * [비로그인/로그인 공통 진입점] 연락처/비밀번호를 받아 PENDING 여부를 확인합니다. - 이메일을 로그인 ID로 사용한다고 가정합니다. - 사용자 조회 및 비밀번호
+     * 검증 후, 해당 사용자의 PENDING 존재 여부만 반환합니다. - 보안상으로 "존재/불일치"를 구분하지 않고 동일 메시지를 제공합니다.
      */
     @Transactional(readOnly = true)
     public OwnerRegisterCheckResponse checkPending(OwnerLoginRequest req) {
@@ -154,31 +152,26 @@ public class OwnerQueryService {
 
         // 4) 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";
-        return OwnerRegisterCheckResponse.builder()
-                .pending(hasPending)
-                .message(message)
-                .build();
+        return OwnerRegisterCheckResponse.builder().pending(hasPending).message(message).build();
     }
 
     /**
-     * [로그인 사용자 전용] 이미 인증된 userId 기준으로 PENDING 여부만 확인합니다.
-     * - 소셜/일반 로그인 공통 사용.
-     * - 비밀번호 검증 없음(이미 인증된 컨텍스트).
+     * [로그인 사용자 전용] 이미 인증된 userId 기준으로 PENDING 여부만 확인합니다. - 소셜/일반 로그인 공통 사용. - 비밀번호 검증 없음(이미 인증된
+     * 컨텍스트).
      */
     @Transactional(readOnly = true)
     public OwnerRegisterCheckResponse checkPendingForUser(Long userId) {
         // 1) 사용자 존재 검증
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
         // 2) PENDING 존재 여부 확인
         boolean hasPending = storeRepository.existsPending(user.getId());
 
         // 3) 메시지 구성
         String message = hasPending ? "현재 신청이 검토 중입니다." : "진행 중인 신청이 없습니다.";
-        return OwnerRegisterCheckResponse.builder()
-                .pending(hasPending)
-                .message(message)
-                .build();
+        return OwnerRegisterCheckResponse.builder().pending(hasPending).message(message).build();
     }
 }

@@ -41,8 +41,7 @@ public class OwnerRegisterCheckController {
     @GetMapping("/owners/registrations/check-pending")
     @PreAuthorize("isAuthenticated()")
     public ApiResponse<OwnerRegisterCheckResponse> checkPendingLogin(
-            @AuthenticationPrincipal(expression = "id") Long userId
-            ) {
+            @AuthenticationPrincipal(expression = "id") Long userId) {
         return ApiResponse.onSuccess(service.checkPendingForUser(userId));
     }
 }

@@ -1,34 +1,24 @@
 package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.CouponHandler;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
-import kkukmoa.kkukmoa.common.enums.QrCodeType;
-import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
-import kkukmoa.kkukmoa.config.websocket.handler.QrWebSocketHandler;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
-import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerRegisterRequest;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
-import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.region.service.RegionService;
-import kkukmoa.kkukmoa.stamp.domain.Coupon;
-import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
-import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,11 +44,8 @@ public class OwnerCommandService {
     private final JwtTokenProvider jwtTokenProvider;
 
     /**
-     * [로컬 사장님 회원가입]
-     * - 약관 동의 필수 체크
-     * - 이메일 중복 검사
-     * - 비밀번호 암호화 후 USER 엔티티 저장
-     * - 초기 권한: PENDING_OWNER (승인 대기)
+     * [로컬 사장님 회원가입] - 약관 동의 필수 체크 - 이메일 중복 검사 - 비밀번호 암호화 후 USER 엔티티 저장 - 초기 권한: PENDING_OWNER (승인
+     * 대기)
      */
     @Transactional
     public void registerLocalOwner(OwnerSignupRequest request) {
@@ -89,12 +76,7 @@ public class OwnerCommandService {
         userRepository.save(user);
     }
 
-    /**
-     * [사장님 로그인]
-     * - 이메일 기반 사용자 조회
-     * - 비밀번호 검증
-     * - Access Token + Refresh Token 발급 및 저장
-     */
+    /** [사장님 로그인] - 이메일 기반 사용자 조회 - 비밀번호 검증 - Access Token + Refresh Token 발급 및 저장 */
     @Transactional
     public TokenResponseDto loginOwner(OwnerLoginRequest request) {
         User user =
@@ -110,12 +92,8 @@ public class OwnerCommandService {
     }
 
     /**
-     * [입점 신청 처리]
-     * - 신청자(User)와 매장 정보(OwnerRegisterRequest)로 Store 생성
-     * - 중복 신청 방지
-     * - 카테고리/지역 정보 연동
-     * - Store 상태: PENDING
-     * - 신청자 권한에 PENDING_OWNER 추가
+     * [입점 신청 처리] - 신청자(User)와 매장 정보(OwnerRegisterRequest)로 Store 생성 - 중복 신청 방지 - 카테고리/지역 정보 연동 -
+     * Store 상태: PENDING - 신청자 권한에 PENDING_OWNER 추가
      */
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
