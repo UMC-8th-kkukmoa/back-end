@@ -173,9 +173,14 @@ public class UserCommandService {
         }
 
         // 닉네임 중복 체크
-        if (userRepository.existsByNickname(request.getNickname())) {
-            throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
+        String nick = request.getNickname();
+        if (nick == null || nick.trim().isEmpty()) {
+            throw new UserHandler(ErrorStatus.INVALID_PARAMETER);
         }
+        if (userRepository.existsByNicknameIgnoreCase(nick.trim())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_NICKNAME); // 전용 코드
+        }
+
 
         // 사용자 생성 (시연용: 최소 필드만)
         User user =
