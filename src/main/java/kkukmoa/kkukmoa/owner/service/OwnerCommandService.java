@@ -14,7 +14,7 @@ import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
+import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
@@ -78,7 +78,7 @@ public class OwnerCommandService {
 
     /** [사장님 로그인] - 이메일 기반 사용자 조회 - 비밀번호 검증 - Access Token + Refresh Token 발급 및 저장 */
     @Transactional
-    public TokenResponseDto loginOwner(OwnerLoginRequest request) {
+    public TokenWithRolesResponseDto loginOwner(OwnerLoginRequest request) {
         User user =
                 userRepository
                         .findByEmail(request.getEmail())
@@ -88,7 +88,7 @@ public class OwnerCommandService {
             throw new UserHandler(ErrorStatus.PASSWORD_NOT_MATCH);
         }
 
-        return jwtTokenProvider.createToken(user); // access + refresh token 발급 및 저장
+        return jwtTokenProvider.createTokenWithRoles(user); // access + refresh token 발급 및 저장
     }
 
     /**

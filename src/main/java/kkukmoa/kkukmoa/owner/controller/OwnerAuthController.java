@@ -14,7 +14,7 @@ import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
 import kkukmoa.kkukmoa.owner.service.OwnerCommandService;
 import kkukmoa.kkukmoa.user.annotation.CurrentUser;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
+import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,9 +57,9 @@ public class OwnerAuthController {
     @PostMapping("/login")
     @Operation(summary = "사장님 로그인", description = "전화번호와 비밀번호로 사장님 계정을 로그인합니다.")
     @ApiErrorCodeExamples(value = {ErrorStatus.USER_NOT_FOUND, ErrorStatus.PASSWORD_NOT_MATCH})
-    public ResponseEntity<ApiResponse<TokenResponseDto>> loginOwner(
+    public ResponseEntity<ApiResponse<TokenWithRolesResponseDto>> loginOwner(
             @RequestBody @Valid OwnerLoginRequest request) {
-        TokenResponseDto token = ownerCommandService.loginOwner(request);
+        TokenWithRolesResponseDto token = ownerCommandService.loginOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess(token));
     }
 
