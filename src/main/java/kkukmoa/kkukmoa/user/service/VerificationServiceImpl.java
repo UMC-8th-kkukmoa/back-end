@@ -3,7 +3,9 @@ package kkukmoa.kkukmoa.user.service;
 import kkukmoa.kkukmoa.common.util.RedisUtil;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.dto.VerificationConfirmResponseDto;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

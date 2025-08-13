@@ -225,10 +225,7 @@ public class JwtTokenProvider {
     }
 
     public Map<String, Object> parseClaims(String token) {
-        Jws<Claims> jws = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+        Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         return jws.getBody();
     }
 }

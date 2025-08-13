@@ -1,13 +1,16 @@
 package kkukmoa.kkukmoa.user.service;
 
 import jakarta.transaction.Transactional;
+
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.SignupRequestDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,17 +45,19 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
-        User user = User.builder()
-                .email(email)
-                .password(encoder.encode(req.password()))
-                .nickname(req.nickname())
-                .socialType(provider)
-                .build();
+        User user =
+                User.builder()
+                        .email(email)
+                        .password(encoder.encode(req.password()))
+                        .nickname(req.nickname())
+                        .socialType(provider)
+                        .build();
 
         user.addRole(UserType.USER);
 
         userRepository.save(user);
     }
+
     private void validateSignupToken(String token, String email) {
         if (token == null || token.isBlank()) {
             throw new IllegalArgumentException("이메일 인증이 필요합니다.");

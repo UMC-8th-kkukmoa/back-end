@@ -181,7 +181,6 @@ public class UserCommandService {
             throw new UserHandler(ErrorStatus.DUPLICATION_NICKNAME); // 전용 코드
         }
 
-
         // 사용자 생성 (시연용: 최소 필드만)
         User user =
                 User.builder()

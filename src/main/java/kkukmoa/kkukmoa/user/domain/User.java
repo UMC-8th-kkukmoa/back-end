@@ -38,8 +38,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true)
     private LocalDate birthday; // 생년월일
 
-//    @Column(nullable = true, length = 255)
-//    private String profile_image;
+    //    @Column(nullable = true, length = 255)
+    //    private String profile_image;
 
     @Column(nullable = true)
     private String uuid; // uuid
@@ -47,8 +47,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true, length = 20)
     private String phoneNumber; // 로컬 로그인용
 
-    @Column
-    private String password; // 로컬 로그인용 (소셜은 null 가능)
+    @Column private String password; // 로컬 로그인용 (소셜은 null 가능)
 
     @Column(nullable = false)
     @Builder.Default

@@ -35,7 +35,8 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request) {
 
-        Region region = regionService.createRegion(
+        Region region =
+                regionService.createRegion(
                         request.getAddress(),
                         request.getDetailAddress(),
                         request.getLatitude(),
