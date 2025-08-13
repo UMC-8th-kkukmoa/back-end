@@ -40,4 +40,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
               WHERE c.user = :user AND c.status = kkukmoa.kkukmoa.stamp.enums.CouponStatus.UNUSED
             """)
     List<Coupon> findByUser(@Param("user") User user);
+
+    Optional<Coupon> findByQrCode(String qrCode);
 }

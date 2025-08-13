@@ -69,6 +69,9 @@ public class VoucherResponseDto {
     @Schema(description = "금액권 사용 차감 응답 DTO")
     public static class VoucherDeductResponseDto {
 
+        @Schema(description = "금액권 ID", example = "1")
+        private Long voucherId;
+
         @Schema(description = "금액권 이름", example = "금액권 5,000원권")
         private String name;
 

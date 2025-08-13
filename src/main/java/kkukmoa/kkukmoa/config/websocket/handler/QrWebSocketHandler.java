@@ -120,7 +120,7 @@ public class QrWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    public void sendMessageToEmail(String email, String message) {
+    private void sendMessageToEmail(String email, String message) {
         QrGeneralTextDto messageDto = QrGeneralTextDto.builder().message(message).build();
         sendMessageToEmail(email, messageDto);
     }

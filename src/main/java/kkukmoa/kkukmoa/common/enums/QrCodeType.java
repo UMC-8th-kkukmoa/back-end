@@ -19,9 +19,15 @@ public enum QrCodeType {
     @Getter private final String qrPrefix;
     private final String redirectUri;
 
-    public static QrCodeType getQrCodeTypeByQrPrefix(String qrPrefix) {
+    public static QrCodeType getQrCodeTypeByQrPrefix(String qrCode) {
+
+        // QR 정보에서 QR 유형 정보 추출
+        int cutIndex = qrCode.indexOf("_");
+        String prefix = qrCode.substring(0, cutIndex + 1); // ex) "voucher_" , "coupon_", "stamp_"
+
+        // 찾아서 반환
         return Arrays.stream(values())
-                .filter(type -> type.getQrPrefix().equals(qrPrefix))
+                .filter(type -> type.getQrPrefix().equals(prefix))
                 .findFirst()
                 .orElseThrow(() -> new QrHandler(ErrorStatus.QR_INVALID));
     }
