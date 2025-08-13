@@ -1,4 +1,3 @@
 package kkukmoa.kkukmoa.user.dto;
 
-public record VerificationConfirmResponseDto(String signupToken, long expiresInSec) {
-}
+public record VerificationConfirmResponseDto(String signupToken, long expiresInSec) {}

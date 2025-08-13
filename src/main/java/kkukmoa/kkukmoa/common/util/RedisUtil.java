@@ -1,8 +1,8 @@
 package kkukmoa.kkukmoa.common.util;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -47,9 +47,7 @@ public class RedisUtil {
         return String.format("%06d", SECURE_RANDOM.nextInt(1_000_000));
     }
 
-    /**
-     * 기존 OTP가 살아있으면 새로 쓰지 않음(NX). true=저장 성공, false=기존 있음
-     */
+    /** 기존 OTP가 살아있으면 새로 쓰지 않음(NX). true=저장 성공, false=기존 있음 */
     public boolean saveEmailOtpNx(String email, String code, Duration ttl) {
         Boolean ok = template.opsForValue().setIfAbsent(otpKey(email), code, ttl);
         return Boolean.TRUE.equals(ok);
@@ -77,6 +75,7 @@ public class RedisUtil {
         template.expire(triesKey(email), ttl);
         return v == null ? 0 : v;
     }
+
     public void clearTries(String email) {
         delete(triesKey(email));
     }

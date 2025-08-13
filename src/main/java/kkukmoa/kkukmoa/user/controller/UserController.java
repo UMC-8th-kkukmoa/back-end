@@ -12,15 +12,15 @@ import jakarta.validation.Valid;
 import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.user.service.RegistrationService;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.*;
 import kkukmoa.kkukmoa.user.repository.AuthExchangeRepository;
+import kkukmoa.kkukmoa.user.service.RegistrationService;
 import kkukmoa.kkukmoa.user.service.ReissueService;
 import kkukmoa.kkukmoa.user.service.UserCommandService;
-
 import kkukmoa.kkukmoa.user.service.VerificationService;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpHeaders;
@@ -173,13 +173,13 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.onSuccess(tokens));
     }
 
-//    @Operation(summary = "로컬 회원가입", description = "이메일/비밀번호로 일반 유저를 생성합니다.")
-//    @PostMapping("/signup/local")
-//    public ResponseEntity<ApiResponse<String>> signupLocal(
-//            @Valid @RequestBody LocalSignupRequestDto request) {
-//        userCommandService.registerLocalUser(request);
-//        return ResponseEntity.ok(ApiResponse.onSuccess("유저 회원가입 성공"));
-//    }
+    //    @Operation(summary = "로컬 회원가입", description = "이메일/비밀번호로 일반 유저를 생성합니다.")
+    //    @PostMapping("/signup/local")
+    //    public ResponseEntity<ApiResponse<String>> signupLocal(
+    //            @Valid @RequestBody LocalSignupRequestDto request) {
+    //        userCommandService.registerLocalUser(request);
+    //        return ResponseEntity.ok(ApiResponse.onSuccess("유저 회원가입 성공"));
+    //    }
 
     @Operation(summary = "로컬 로그인", description = "이메일/비밀번호로 로그인하고 토큰을 발급받습니다.")
     @PostMapping("/login/local")
@@ -208,44 +208,46 @@ public class UserController {
     @PostMapping("/verification/request")
     @Operation(
             summary = "이메일 인증 요청 (OTP 발송)",
-            description = """
-                사용자가 입력한 이메일로 인증용 OTP 코드를 발송합니다.
-                
-                - 이메일 형식 검증 후 인증 코드를 생성합니다.
-                - 발송된 코드는 제한 시간 동안만 유효합니다.
-                - 클라이언트는 이후 /verification/confirm API로 코드를 검증해야 합니다.
-                """
-    )
+            description =
+                    """
+                    사용자가 입력한 이메일로 인증용 OTP 코드를 발송합니다.
+
+                    - 이메일 형식 검증 후 인증 코드를 생성합니다.
+                    - 발송된 코드는 제한 시간 동안만 유효합니다.
+                    - 클라이언트는 이후 /verification/confirm API로 코드를 검증해야 합니다.
+                    """)
     public ResponseEntity<Void> request(@Valid @RequestBody VerificationRequestDto req) {
         verificationService.requestOtp(req.email());
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/verification/confirm")
     @Operation(
             summary = "이메일 인증 코드 검증",
-            description = """
-                /verification/request API로 발송한 OTP 코드를 검증합니다.
-                
-                - 이메일과 인증 코드를 함께 요청해야 합니다.
-                - 코드가 일치하고 유효기간 내라면 인증에 성공합니다.
-                - 성공 시 VerificationConfirmResponseDto를 반환합니다.
-                """
-    )
-    public ResponseEntity<VerificationConfirmResponseDto> confirm(@Valid @RequestBody VerificationConfirmDto req) {
+            description =
+                    """
+                    /verification/request API로 발송한 OTP 코드를 검증합니다.
+
+                    - 이메일과 인증 코드를 함께 요청해야 합니다.
+                    - 코드가 일치하고 유효기간 내라면 인증에 성공합니다.
+                    - 성공 시 VerificationConfirmResponseDto를 반환합니다.
+                    """)
+    public ResponseEntity<VerificationConfirmResponseDto> confirm(
+            @Valid @RequestBody VerificationConfirmDto req) {
         return ResponseEntity.ok(verificationService.confirm(req.email(), req.code()));
     }
 
     @PostMapping("/signup")
     @Operation(
             summary = "회원가입 (이메일 인증 완료 후)",
-            description = """
-                이메일 인증을 완료한 사용자의 회원가입을 처리합니다.
-                
-                - 인증이 완료된 이메일이어야 회원가입이 가능합니다.
-                - 요청 바디에 포함된 정보로 신규 회원을 생성합니다.
-                - 성공 시 200 OK를 반환합니다.
-                """
-    )
+            description =
+                    """
+                    이메일 인증을 완료한 사용자의 회원가입을 처리합니다.
+
+                    - 인증이 완료된 이메일이어야 회원가입이 가능합니다.
+                    - 요청 바디에 포함된 정보로 신규 회원을 생성합니다.
+                    - 성공 시 200 OK를 반환합니다.
+                    """)
     public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequestDto req) {
         registrationService.signup(req);
         return ResponseEntity.ok().build();
