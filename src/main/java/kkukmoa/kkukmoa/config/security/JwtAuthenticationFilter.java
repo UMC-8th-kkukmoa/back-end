@@ -18,14 +18,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    //    private final BlacklistRepository blacklistRepository;
-
-    //    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, BlacklistRepository
-    // blacklistRepository) {
-    //        this.jwtTokenProvider = jwtTokenProvider;
-    //        this.blacklistRepository = blacklistRepository;
-    //
-    //    }
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }

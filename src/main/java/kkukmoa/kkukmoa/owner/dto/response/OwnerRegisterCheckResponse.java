@@ -1,4 +1,4 @@
-package kkukmoa.kkukmoa.owner.dto;
+package kkukmoa.kkukmoa.owner.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

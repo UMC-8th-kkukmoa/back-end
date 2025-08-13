@@ -1,4 +1,4 @@
-package kkukmoa.kkukmoa.review.dto;
+package kkukmoa.kkukmoa.review.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
