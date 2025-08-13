@@ -31,6 +31,7 @@ public enum ErrorStatus implements BaseErrorCode {
     REFRESH_TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "TOKEN4001", "Refresh Token이 필요합니다."),
     REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN4002", "유효하지 않은 Refresh Token입니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "TOKEN4003", "저장된 Refresh Token과 일치하지 않습니다."),
+    DUPLICATION_NICKNAME(HttpStatus.CONFLICT, "U004", "이미 사용 중인 닉네임입니다."),
     // 교환코드 관련 에러
     EXCHANGE_CODE_DUPLICATE(HttpStatus.CONFLICT, "OAUTH4090", "이미 사용 중인 교환코드입니다."),
     EXCHANGE_CODE_INVALID(HttpStatus.BAD_REQUEST, "OAUTH4001", "유효하지 않거나 만료된 교환코드입니다."),
@@ -47,6 +48,9 @@ public enum ErrorStatus implements BaseErrorCode {
     OWNER_INVALID_SCAN(HttpStatus.BAD_REQUEST, "OWNER4006", "사장님은 스탬프 적립 QR을 스캔할 수 없습니다."),
     OWNER_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4007", "사장님 소유의 가게가 없습니다."),
     OWNER_CANNOT_ACCESS(HttpStatus.FORBIDDEN, "OWNER4008", "사장님만 접근할 수 있는 기능입니다."),
+
+    // 관리자 관련 에러
+    STORE_PENDING_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN0001", "입점신청 승인 대기 중인 상태의 매장이 없습니다."),
 
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),

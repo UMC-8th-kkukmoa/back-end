@@ -10,7 +10,6 @@ import lombok.Getter;
 public class StoreDetailResponseDto {
     private Long storeId;
     private String name;
-    private int reviewCount;
     private String categoryName;
     private String merchantNumber;
     private String address;

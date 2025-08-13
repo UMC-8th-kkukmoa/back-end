@@ -32,6 +32,16 @@ public class ReviewCommandService {
     private final StoreRepository storeRepository;
     private final S3ImageService s3ImageService;
 
+    /**
+     * [리뷰 작성 + 이미지 업로드] - 작성자 ID, 가게 ID, 내용, 이미지 파일을 받아 리뷰를 생성합니다. - 이미지가 있으면 S3에 업로드 후
+     * ReviewImage로 연동합니다. - 이미지 개수 제한 및 유효성 검증 포함.
+     *
+     * @param userId 리뷰 작성자 ID
+     * @param storeId 리뷰 대상 가게 ID
+     * @param content 리뷰 내용
+     * @param images 업로드할 이미지 리스트 (null 가능)
+     * @return 생성된 리뷰의 ID
+     */
     public Long createWithImages(
             Long userId, Long storeId, String content, List<MultipartFile> images) {
         // 1) 작성자/가게 참조

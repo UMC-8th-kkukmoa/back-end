@@ -1,4 +1,4 @@
-package kkukmoa.kkukmoa.owner.dto;
+package kkukmoa.kkukmoa.owner.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

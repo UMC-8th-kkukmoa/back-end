@@ -8,14 +8,13 @@ import jakarta.validation.Valid;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
-import kkukmoa.kkukmoa.owner.dto.OwnerLoginRequest;
-import kkukmoa.kkukmoa.owner.dto.OwnerRegisterRequest;
-import kkukmoa.kkukmoa.owner.dto.OwnerSignupRequest;
-import kkukmoa.kkukmoa.owner.service.OwnerAccountService;
-import kkukmoa.kkukmoa.owner.service.OwnerRegisterService;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerRegisterRequest;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
+import kkukmoa.kkukmoa.owner.service.OwnerCommandService;
 import kkukmoa.kkukmoa.user.annotation.CurrentUser;
 import kkukmoa.kkukmoa.user.domain.User;
-import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
+import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,8 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "사장님 회원가입/입점신청 API", description = "사장님 회원가입 및 로그인")
 public class OwnerAuthController {
 
-    private final OwnerAccountService ownerAccountService;
-    private final OwnerRegisterService ownerRegisterService;
+    private final OwnerCommandService ownerCommandService;
 
     @PostMapping("/register")
     @Operation(
@@ -52,16 +50,16 @@ public class OwnerAuthController {
             })
     public ResponseEntity<ApiResponse<String>> registerOwner(
             @RequestBody @Valid OwnerSignupRequest request) {
-        ownerAccountService.registerLocalOwner(request);
+        ownerCommandService.registerLocalOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("사장님 회원가입 성공"));
     }
 
     @PostMapping("/login")
     @Operation(summary = "사장님 로그인", description = "전화번호와 비밀번호로 사장님 계정을 로그인합니다.")
     @ApiErrorCodeExamples(value = {ErrorStatus.USER_NOT_FOUND, ErrorStatus.PASSWORD_NOT_MATCH})
-    public ResponseEntity<ApiResponse<TokenResponseDto>> loginOwner(
+    public ResponseEntity<ApiResponse<TokenWithRolesResponseDto>> loginOwner(
             @RequestBody @Valid OwnerLoginRequest request) {
-        TokenResponseDto token = ownerAccountService.loginOwner(request);
+        TokenWithRolesResponseDto token = ownerCommandService.loginOwner(request);
         return ResponseEntity.ok(ApiResponse.onSuccess(token));
     }
 
@@ -75,7 +73,7 @@ public class OwnerAuthController {
     public ResponseEntity<ApiResponse<String>> registerStore(
             @RequestBody @Valid OwnerRegisterRequest request, @CurrentUser User user) {
 
-        ownerRegisterService.applyStoreRegistration(user, request);
+        ownerCommandService.applyStoreRegistration(user, request);
         return ResponseEntity.ok(ApiResponse.onSuccess("입점 신청이 완료되었습니다."));
     }
 }

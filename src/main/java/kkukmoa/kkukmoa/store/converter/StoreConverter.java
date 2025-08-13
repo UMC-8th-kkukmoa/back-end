@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.store.converter;
 
 import kkukmoa.kkukmoa.category.domain.Category;
+import kkukmoa.kkukmoa.owner.dto.response.OwnerRegisterResponse;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
@@ -52,7 +53,6 @@ public class StoreConverter {
                 .latitude(store.getRegion().getLatitude())
                 .longitude(store.getRegion().getLongitude())
                 .categoryName(categoryName)
-                .reviewCount(0) // 리뷰 미구현 → 0
                 .distance(distance)
                 .build();
     }
@@ -62,7 +62,6 @@ public class StoreConverter {
         return StoreDetailResponseDto.builder()
                 .storeId(store.getId())
                 .name(store.getName())
-                .reviewCount(0) // 리뷰 미구현 → 0
                 .categoryName(
                         store.getCategory() != null
                                 ? store.getCategory().getType().getDisplayName()
@@ -87,6 +86,20 @@ public class StoreConverter {
                 .totalElements((int) page.getTotalElements())
                 .isFirst(page.isFirst())
                 .isLast(page.isLast())
+                .build();
+    }
+
+    public OwnerRegisterResponse toAdminResponse(Store store) {
+        Region region = store.getRegion();
+
+        return OwnerRegisterResponse.builder()
+                .storeName(store.getName())
+                .storePhoneNumber(store.getNumber())
+                .storeImageUrl(store.getStoreImage())
+                .openingHours(store.getOpeningHours())
+                .closingHours(store.getClosingHours())
+                .storeAddress(region != null ? region.getAddress() : null)
+                .storeAddressDetail(region != null ? region.getDetailAddress() : null)
                 .build();
     }
 }

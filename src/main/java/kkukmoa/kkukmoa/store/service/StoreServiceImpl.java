@@ -35,8 +35,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreIdResponseDto createStore(StoreRequestDto request) {
 
-        //        request.parseTimes();
-
         Region region =
                 regionService.createRegion(
                         request.getAddress(),

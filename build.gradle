@@ -76,6 +76,8 @@ dependencies {
 
 	// hibernate-spatial 의존성 추가
 	implementation 'org.hibernate:hibernate-spatial:6.6.18.Final'
+
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
