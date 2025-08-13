@@ -45,23 +45,28 @@ public class Voucher extends BaseEntity {
     private Payment payment;
 
     public void deductValue(int amount) {
+        // 값 없으면 기본값 설정
         if (remainingValue == null) {
             remainingValue = value;
         }
 
+        // 수량 없으면 예외 발생
         if (amount <= 0) {
             throw new VoucherHandler(ErrorStatus.VOUCHER_INVALID_AMOUNT);
         }
 
+        // 잔액 부족 시 예외 발생
         if (remainingValue < amount) {
             throw new VoucherHandler(ErrorStatus.VOUCHER_BALANCE_NOT_ENOUGH);
         }
 
+        // 금액 차감
         this.remainingValue -= amount;
 
-        if (this.remainingValue == 0) {
+        // 금액권 상태 변경
+        if (this.remainingValue == 0) { // 금액 소진 시 상태 'USED' 로 상태 변경
             this.status = CouponStatus.USED;
-        } else if (this.remainingValue < this.value) {
+        } else if (this.remainingValue < this.value) { // 'IN_USE' 로 상태 변경
             this.status = CouponStatus.IN_USE;
         }
     }

@@ -9,6 +9,8 @@ import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
+import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
+import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -52,12 +55,13 @@ public class JwtTokenProvider {
 
     public TokenResponseDto createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
-        //        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
         Date now = new Date();
+        List<String> roles = extractRoles(user);
 
         String accessToken =
                 Jwts.builder()
                         .setClaims(claims)
+                        .claim("roles", roles)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                         .signWith(key, SignatureAlgorithm.HS256)
@@ -135,15 +139,6 @@ public class JwtTokenProvider {
         }
     }
 
-    /*    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject(); 수정
-    }*/
-
     public String getSubjectFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -155,9 +150,6 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getSubjectFromToken(token); // sub에서 email 꺼냄
-        //        Long userId = Long.parseLong(userIdString); // sub에서 userId 꺼냄
-
-        // email로 조회
         User user =
                 userRepository
                         .findByEmail(email)
@@ -176,6 +168,47 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid JWT Token");
         }
+    }
+
+    public TokenWithRolesResponseDto createTokenWithRoles(User user) {
+        // subject는 가급적 userId 기반 권장 (이메일 변경 이슈 방지). 기존 스타일을 그대로 쓰고 싶다면 이메일 유지도 가능.
+        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+        Date now = new Date();
+
+        List<String> roles = extractRoles(user); // ["ROLE_OWNER", "ROLE_USER"] 형태
+
+        String accessToken =
+                Jwts.builder()
+                        .setClaims(claims)
+                        .claim("uid", user.getId()) // 식별자/조회 편의용
+                        .claim("email", user.getEmail()) // 참고용(권한 판단은 DB 기준)
+                        .claim("roles", roles) // ★ 액세스 토큰에 roles 포함
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
+                        .signWith(key, SignatureAlgorithm.HS256)
+                        .compact();
+
+        String refreshToken =
+                Jwts.builder()
+                        .setClaims(claims)
+                        .claim("rand", UUID.randomUUID().toString()) // 재사용 방지용 랜덤 값
+                        .setIssuedAt(now)
+                        .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                        .signWith(key, SignatureAlgorithm.HS256)
+                        .compact();
+
+        long expiration = getExpiration(refreshToken); // 남은 만료 ms
+        refreshTokenRepository.saveToken(user.getId(), refreshToken, expiration); // RT는 Redis 등에 저장
+
+        return TokenWithRolesResponseDto.of(accessToken, refreshToken, roles);
+    }
+
+    /** UserType → "ROLE_*" 문자열 리스트로 변환 */
+    private List<String> extractRoles(User user) {
+        return user.getRoles().stream()
+                .map(UserType::getRoleName) // 예: UserType.OWNER -> "ROLE_OWNER"
+                .distinct()
+                .toList();
     }
 
     public String issueSignupToken(String email, String jti, Duration ttl) {

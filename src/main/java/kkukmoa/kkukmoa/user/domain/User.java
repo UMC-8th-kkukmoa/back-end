@@ -101,11 +101,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        if (this.socialType == SocialType.LOCAL) {
-            return this.phoneNumber;
-        } else {
-            return this.email;
-        }
+        return this.email;
     }
 
     public Long getUserId() {

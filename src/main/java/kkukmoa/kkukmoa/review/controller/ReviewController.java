@@ -7,13 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
-import kkukmoa.kkukmoa.review.dto.CreateReviewResponse;
-import kkukmoa.kkukmoa.review.dto.CursorPage;
-import kkukmoa.kkukmoa.review.dto.ReviewCardDto;
-import kkukmoa.kkukmoa.review.dto.ReviewSummaryDto;
-import kkukmoa.kkukmoa.review.service.PreviewService;
+import kkukmoa.kkukmoa.review.dto.request.CreateReviewResponse;
+import kkukmoa.kkukmoa.review.dto.response.CursorPage;
+import kkukmoa.kkukmoa.review.dto.response.ReviewCardDto;
+import kkukmoa.kkukmoa.review.dto.response.ReviewCursorResponse;
 import kkukmoa.kkukmoa.review.service.ReviewCommandService;
-import kkukmoa.kkukmoa.review.service.ReviewCursorService;
 import kkukmoa.kkukmoa.review.service.ReviewQueryService;
 import kkukmoa.kkukmoa.user.annotation.CurrentUser;
 import kkukmoa.kkukmoa.user.domain.User;
@@ -34,8 +32,6 @@ public class ReviewController {
 
     private final ReviewCommandService reviewCommandService;
     private final ReviewQueryService reviewQueryService;
-    private final ReviewCursorService reviewCursorService;
-    private final PreviewService previewService;
 
     @Operation(summary = "리뷰 생성 API", description = "가게에 대해 리뷰를 작성합니다. 이미지는 최대 5장까지 업로드 가능합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -53,13 +49,13 @@ public class ReviewController {
     @GetMapping("/preview")
     public ApiResponse<List<ReviewCardDto>> getPreview(
             @PathVariable Long storeId, @RequestParam(defaultValue = "2") int limit) {
-        return ApiResponse.onSuccess(previewService.getPreview(storeId, limit));
+        return ApiResponse.onSuccess(reviewQueryService.getPreview(storeId, limit));
     }
 
     @Operation(summary = "가게 리뷰 총 개수 API", description = "상세 화면의 '(리뷰 N개)' 표시에 사용됩니다.")
     @GetMapping("/count")
     public ApiResponse<Long> getCount(@PathVariable Long storeId) {
-        return ApiResponse.onSuccess(previewService.countByStore(storeId));
+        return ApiResponse.onSuccess(reviewQueryService.countByStore(storeId));
     }
 
     @Operation(
@@ -102,10 +98,11 @@ public class ReviewController {
                         content = @Content(mediaType = "application/json"))
             })
     @GetMapping("/cursor")
-    public ApiResponse<CursorPage<ReviewSummaryDto>> getByCursor(
+    public ApiResponse<ReviewCursorResponse> getByCursor(
             @PathVariable Long storeId,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "10") int size) {
-        return ApiResponse.onSuccess(reviewCursorService.listByCursor(storeId, cursor, size));
+        // 서비스는 header가 첫 페이지에서만 채워진 ReviewCursorResponse를 반환
+        return ApiResponse.onSuccess(reviewQueryService.listByCursor(storeId, cursor, size));
     }
 }

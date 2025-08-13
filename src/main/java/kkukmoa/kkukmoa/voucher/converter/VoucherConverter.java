@@ -44,6 +44,7 @@ public class VoucherConverter {
     public static VoucherResponseDto.VoucherDeductResponseDto toDeductDto(
             Voucher voucher, int useAmount) {
         return VoucherResponseDto.VoucherDeductResponseDto.builder()
+                .voucherId(voucher.getId())
                 .name(voucher.getVoucherName())
                 .usedAmount(useAmount)
                 .validDays(voucher.getValidDays())

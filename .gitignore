@@ -33,7 +33,7 @@
 hs_err_pid*
 replay_pid*
 
-# Gradle Build Cache
+# Gradle Bugild Cache
 .gradle/
 build/
 /build/
