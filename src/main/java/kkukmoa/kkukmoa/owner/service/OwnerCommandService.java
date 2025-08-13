@@ -1,15 +1,25 @@
 package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
+import kkukmoa.kkukmoa.apiPayload.exception.handler.CouponHandler;
+import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
+import kkukmoa.kkukmoa.common.enums.QrCodeType;
+import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
+import kkukmoa.kkukmoa.config.websocket.handler.QrWebSocketHandler;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerRegisterRequest;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
+import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
 import kkukmoa.kkukmoa.region.domain.Region;
 import kkukmoa.kkukmoa.region.service.RegionService;
+import kkukmoa.kkukmoa.stamp.domain.Coupon;
+import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
+import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
