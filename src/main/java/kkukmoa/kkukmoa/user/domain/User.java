@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,8 +35,11 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true, length = 255)
     private String nickname; // 닉네임
 
-    @Column(nullable = true, length = 255)
-    private String profile_image;
+    @Column(nullable = true)
+    private LocalDate birthday; // 생년월일
+
+    //    @Column(nullable = true, length = 255)
+    //    private String profile_image;
 
     @Column(nullable = true)
     private String uuid; // uuid
@@ -43,14 +47,19 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = true, length = 20)
     private String phoneNumber; // 로컬 로그인용
 
-    @Column(nullable = true)
-    private String password; // 로컬 로그인용 (소셜은 null 가능)
+    @Column private String password; // 로컬 로그인용 (소셜은 null 가능)
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean agreeTerms = false; // 서비스 이용약관 동의 여부
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean agreePrivacy = false; // 개인정보 처리방침 동의 여부
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
@@ -71,7 +80,18 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role", length = 30)
+    @Builder.Default
     private Set<UserType> roles = new HashSet<>();
+
+    public void addRole(UserType role) {
+        if (this.roles == null) this.roles = new HashSet<>();
+        this.roles.add(role);
+    }
+
+    @PrePersist
+    private void prePersist() {
+        if (this.roles == null) this.roles = new HashSet<>();
+    }
 
     @Override
     public String getPassword() {

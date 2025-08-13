@@ -53,7 +53,6 @@ public class StoreConverter {
                 .latitude(store.getRegion().getLatitude())
                 .longitude(store.getRegion().getLongitude())
                 .categoryName(categoryName)
-                .reviewCount(0) // 리뷰 미구현 → 0
                 .distance(distance)
                 .build();
     }
@@ -63,7 +62,6 @@ public class StoreConverter {
         return StoreDetailResponseDto.builder()
                 .storeId(store.getId())
                 .name(store.getName())
-                .reviewCount(0) // 리뷰 미구현 → 0
                 .categoryName(
                         store.getCategory() != null
                                 ? store.getCategory().getType().getDisplayName()
