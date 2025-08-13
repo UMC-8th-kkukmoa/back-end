@@ -1,5 +1,6 @@
 package kkukmoa.kkukmoa.store.repository;
 
+import kkukmoa.kkukmoa.admin.dto.PendingStoreSummary;
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
@@ -132,4 +133,17 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     }
 
     boolean existsByOwner(User owner);
+
+    @Query("""
+        select s.id as storeId,
+               u.email as ownerEmail,
+               s.createdAt as appliedAt
+        from Store s
+        join s.owner u
+        where s.status = :status
+        order by s.createdAt desc
+    """)
+    Page<PendingStoreSummary> findByStatus(@Param("status") StoreStatus status, Pageable pageable);
+
+    Optional<Store> findByIdAndStatus(Long id, StoreStatus status);
 }

@@ -18,12 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -50,12 +52,13 @@ public class JwtTokenProvider {
 
     public TokenResponseDto createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
-        //        Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
         Date now = new Date();
+        List<String> roles = extractRoles(user);
 
         String accessToken =
                 Jwts.builder()
                         .setClaims(claims)
+                        .claim("roles", roles)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                         .signWith(key, SignatureAlgorithm.HS256)
@@ -133,15 +136,6 @@ public class JwtTokenProvider {
         }
     }
 
-    /*    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject(); 수정
-    }*/
-
     public String getSubjectFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -153,9 +147,6 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getSubjectFromToken(token); // sub에서 email 꺼냄
-        //        Long userId = Long.parseLong(userIdString); // sub에서 userId 꺼냄
-
-        // email로 조회
         User user =
                 userRepository
                         .findByEmail(email)
@@ -174,5 +165,13 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid JWT Token");
         }
+    }
+
+    // 권한 추출 문자열
+    private static List<String> extractRoles(User user) {
+        return user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .distinct()
+                .toList();
     }
 }

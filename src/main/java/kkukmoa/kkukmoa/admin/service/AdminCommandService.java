@@ -7,9 +7,7 @@ import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.enums.UserType;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +15,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
-public class StoreApprovalService {
+public class AdminCommandService {
 
     private final StoreRepository storeRepository;
+
 
     @Transactional
     public void approve(Long storeId) {
