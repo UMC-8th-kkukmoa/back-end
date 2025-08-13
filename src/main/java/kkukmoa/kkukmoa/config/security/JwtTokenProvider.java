@@ -23,7 +23,9 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -174,5 +176,26 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid JWT Token");
         }
+    }
+
+    public String issueSignupToken(String email, String jti, Duration ttl) {
+        long now = System.currentTimeMillis();
+        return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setSubject(email)
+                .setId(jti)
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + ttl.toMillis()))
+                .claim("purpose", "signup")
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public Map<String, Object> parseClaims(String token) {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+        return jws.getBody();
     }
 }

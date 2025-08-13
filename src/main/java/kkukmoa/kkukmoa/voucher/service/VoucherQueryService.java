@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class VoucherQueryService {
     // "voucher_"
 
     /** 내 금액권 목록 조회 */
+    @Transactional(readOnly = true)
     public List<VoucherResponseDto.VoucherListResponseDto> getMyVouchers() {
         User user = authService.getCurrentUser();
 
