@@ -19,7 +19,7 @@
 - Framework: Spring Boot
 - Build Tool: Gradle
 - Database: MySQL
-- Deploy: GitHub Actions, AWS
+- Deploy: GitHub Actions, AWS, Docker
 
 
 ## 서버 아키텍처
