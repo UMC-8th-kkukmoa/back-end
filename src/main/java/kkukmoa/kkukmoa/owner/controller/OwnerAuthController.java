@@ -18,7 +18,11 @@ import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/v1/owners")
 @Tag(name = "사장님 회원가입/입점신청 API", description = "사장님 회원가입 및 로그인")
+@Slf4j
 public class OwnerAuthController {
 
     private final OwnerCommandService ownerCommandService;
@@ -72,6 +77,9 @@ public class OwnerAuthController {
             })
     public ResponseEntity<ApiResponse<String>> registerStore(
             @RequestBody @Valid OwnerRegisterRequest request, @CurrentUser User user) {
+
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("PRINCIPAL={}, AUTHORITIES={}", auth.getName(), auth.getAuthorities());
 
         ownerCommandService.applyStoreRegistration(user, request);
         return ResponseEntity.ok(ApiResponse.onSuccess("입점 신청이 완료되었습니다."));
