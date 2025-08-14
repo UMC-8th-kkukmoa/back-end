@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.payment.controller;
 
-import org.springframework.ui.Model;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -68,6 +67,4 @@ public class PaymentController {
         Payment payment = paymentService.confirm(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("결제 성공: " + payment.getId()));
     }
-
-
 }
