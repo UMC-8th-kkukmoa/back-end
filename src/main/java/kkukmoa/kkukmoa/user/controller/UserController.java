@@ -103,23 +103,7 @@ public class UserController {
             summary = "로그아웃 API",
             description =
                     "Access Token으로 인증 후 Refresh Token을 삭제하고 Access Token을 블랙리스트에 등록합니다.\n"
-                            + "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.",
-            responses = {
-                @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                        responseCode = "200",
-                        description = "성공적으로 로그아웃 처리됨",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ApiResponse.class))),
-                @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                        responseCode = "401",
-                        description = "인증 실패 (Access Token이 유효하지 않거나 Refresh Token 불일치)",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ErrorReasonDto.class)))
-            })
+                            + "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.")
     @ApiErrorCodeExamples(value = {ErrorStatus.AUTHENTICATION_FAILED})
     public ApiResponse<String> logout(
             @Parameter(hidden = true) @AuthenticationPrincipal User user,
