@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "토스 결제 API", description = "토스 결제 API 입니다.")
+@Tag(name = "토스 결제 위젯 API", description = "토스 결제 위젯 API 입니다.")
 @Slf4j
 @RequiredArgsConstructor
 @Controller
