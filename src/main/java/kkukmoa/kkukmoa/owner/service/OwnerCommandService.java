@@ -120,6 +120,7 @@ public class OwnerCommandService {
         Store store =
                 Store.builder()
                         .owner(user) // 신청자
+                        .merchantNumber(request.getMerchantNumber())
                         .name(request.getStoreName()) // 매장명
                         .number(request.getStorePhoneNumber()) // 대표 전화
                         .storeImage(request.getStoreImageUrl()) // 이미지 URL

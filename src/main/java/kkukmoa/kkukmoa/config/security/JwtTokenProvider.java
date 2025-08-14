@@ -214,9 +214,9 @@ public class JwtTokenProvider {
         String accessToken =
                 Jwts.builder()
                         .setClaims(claims)
-                        .claim("uid", user.getId()) // 식별자/조회 편의용
-                        .claim("email", user.getEmail()) // 참고용(권한 판단은 DB 기준)
-                        .claim("roles", roles) // ★ 액세스 토큰에 roles 포함
+                        .claim("uid", user.getId())
+                        .claim("email", user.getEmail())
+                        .claim("roles", roles)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                         .signWith(key, SignatureAlgorithm.HS256)
@@ -231,8 +231,8 @@ public class JwtTokenProvider {
                         .signWith(key, SignatureAlgorithm.HS256)
                         .compact();
 
-        long expiration = getExpiration(refreshToken); // 남은 만료 ms
-        refreshTokenRepository.saveToken(user.getId(), refreshToken, expiration); // RT는 Redis 등에 저장
+        long expiration = getExpiration(refreshToken);
+        refreshTokenRepository.saveToken(user.getId(), refreshToken, expiration);
 
         return TokenWithRolesResponseDto.of(accessToken, refreshToken, roles);
     }
