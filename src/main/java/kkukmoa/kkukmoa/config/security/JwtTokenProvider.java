@@ -20,16 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -148,7 +148,7 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public Authentication getAuthentication(String token) {
+    /*public Authentication getAuthentication(String token) {
         String email = getSubjectFromToken(token); // sub에서 email 꺼냄
         User user =
                 userRepository
@@ -156,6 +156,40 @@ public class JwtTokenProvider {
                         .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }*/
+
+    public Authentication getAuthentication(String token) {
+        // 1. 토큰 파싱 및 클레임 추출
+        Claims claims =
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+        // 2. 이메일(혹은 userId) 꺼내기
+        String email = claims.get("email", String.class);
+        if (email == null) {
+            // 기존 방식처럼 subject를 email로 쓰는 경우
+            email = claims.getSubject();
+        }
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        // 3. roles 클레임 꺼내기
+        Object rolesObj = claims.get("roles");
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        if (rolesObj instanceof List<?> rolesList) {
+            authorities =
+                    rolesList.stream()
+                            .filter(Objects::nonNull)
+                            .map(Object::toString)
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+        }
+
+        // 4. Authentication 객체 생성
+        return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
 
     public long getExpiration(String token) {

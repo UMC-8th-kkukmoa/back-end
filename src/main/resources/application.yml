@@ -65,6 +65,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
 cors:
   allowed-origins: https://kkukmoa.shop,http://*.localhost:8080,http://*.localhost:8081
 
@@ -74,3 +75,5 @@ aws:
     secret-key: ${AWS_SECRET_KEY}
     region: ${AWS_REGION}
     bucket: ${AWS_S3_BUCKET}
+
+
