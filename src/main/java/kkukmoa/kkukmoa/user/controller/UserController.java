@@ -2,14 +2,11 @@ package kkukmoa.kkukmoa.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
