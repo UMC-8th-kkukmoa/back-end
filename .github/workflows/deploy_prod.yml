@@ -39,6 +39,7 @@ jobs:
           printf '%s\n' 'REDIRECT_URI=${{ secrets.REDIRECT_URI }}' >> .env
           printf '%s\n' 'MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' >> .env
           printf '%s\n' 'MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> .env
+          printf '%s\n' 'TOSS_CLIENT_KEY=${{ secrets.TOSS_CLIENT_KEY }}' >> .env
 
 
       - name: 빌드 (bootJar만 수행)
