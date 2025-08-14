@@ -136,7 +136,6 @@ public class UserCommandService {
 
                             String uniqueNickname = nickname + getRandomNumber(4);
 
-
                             User newUser =
                                     User.builder()
                                             .email(email)
