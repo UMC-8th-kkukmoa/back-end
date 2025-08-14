@@ -64,6 +64,7 @@ public class SecurityConfig {
                                                 "/v1/users/login/local",
                                                 "/v1/users/verification/**",
                                                 "/v1/users/signup",
+                                                "/v1/users/nickname/exists",
                                                 "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
