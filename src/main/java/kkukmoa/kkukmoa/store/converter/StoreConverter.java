@@ -32,7 +32,7 @@ public class StoreConverter {
     private static final DateTimeFormatter TF = DateTimeFormatter.ofPattern("HH:mm");
 
     // 가게 목록 조회 응답
-    public StoreListResponseDto toStoreListResponseDto(Store store, double distance) {
+    public StoreListResponseDto toStoreListResponseDto(Store store, double distance, boolean liked) {
         String opening =
                 store.getOpeningHours() != null ? store.getOpeningHours().format(TF) : null;
         String closing =
@@ -54,6 +54,7 @@ public class StoreConverter {
                 .categoryName(categoryName)
                 .reviewCount(0) // 리뷰 미구현 → 0
                 .distance(distance)
+                .liked(liked)
                 .build();
     }
 

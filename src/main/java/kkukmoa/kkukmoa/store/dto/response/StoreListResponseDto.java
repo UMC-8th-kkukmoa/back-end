@@ -18,4 +18,5 @@ public class StoreListResponseDto {
     private String categoryName;
     private Integer reviewCount;
     private Double distance;
+    private Boolean liked;
 }

@@ -17,9 +17,11 @@ import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.*;
 import kkukmoa.kkukmoa.store.service.StoreService;
 
+import kkukmoa.kkukmoa.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +50,7 @@ public class StoreController {
                 @Parameter(name = "size", description = "한 페이지 당 가게 개수")
             })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStores(
+            @AuthenticationPrincipal User user,
             @RequestParam
                     @DecimalMin(value = "-90.0", message = "위도는 -90.0 이상이어야 합니다")
                     @DecimalMax(value = "90.0", message = "위도는 90.0 이하여야 합니다")
@@ -59,7 +62,9 @@ public class StoreController {
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
 
-        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, page, size));
+        Long userId = (user == null) ? null : user.getUserId();
+
+        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, page, size, userId));
     }
 
     @GetMapping("/{storeId}")
@@ -78,13 +83,17 @@ public class StoreController {
                 @Parameter(name = "size", description = "한 페이지 당 가게 개수")
             })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> getStoresByCategory(
+            @AuthenticationPrincipal User user,
             @RequestParam CategoryType categoryType,
             @RequestParam double latitude,
             @RequestParam double longitude,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
+
+        Long userId = (user == null) ? null : user.getUserId();
+
         return ApiResponse.onSuccess(
-                storeService.getStoresByCategory(categoryType, latitude, longitude, page, size));
+                storeService.getStoresByCategory(categoryType, latitude, longitude, page, size, userId));
     }
 
     @GetMapping("/search")
@@ -95,6 +104,7 @@ public class StoreController {
                 @Parameter(name = "size", description = "한 페이지 당 가게 개수")
             })
     public ApiResponse<StorePagingResponseDto<StoreListResponseDto>> searchStores(
+            @AuthenticationPrincipal User user,
             @RequestParam
                     @NotBlank(message = "검색어는 필수입니다.")
                     @Size(min = 1, max = 50, message = "검색어는 1~50자 이내여야 합니다.")
@@ -103,8 +113,11 @@ public class StoreController {
             @RequestParam double longitude,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
+
+        Long userId = (user == null) ? null : user.getUserId();
+
         return ApiResponse.onSuccess(
-                storeService.searchStoresByName(name, latitude, longitude, page, size));
+                storeService.searchStoresByName(name, latitude, longitude, page, size, userId));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
