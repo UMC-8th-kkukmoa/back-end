@@ -37,6 +37,8 @@ jobs:
           printf '%s\n' 'REDIS_HOST=${{ secrets.REDIS_HOST }}' >> .env
           printf '%s\n' 'REDIS_PORT=${{ secrets.REDIS_PORT }}' >> .env
           printf '%s\n' 'REDIRECT_URI=${{ secrets.REDIRECT_URI }}' >> .env
+          printf '%s\n' 'MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' >> .env
+          printf '%s\n' 'MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> .env
 
 
       - name: 빌드 (bootJar만 수행)
