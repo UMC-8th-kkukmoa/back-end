@@ -12,9 +12,11 @@ import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.voucher.converter.VoucherConverter;
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
+import kkukmoa.kkukmoa.voucher.domain.VoucherUsage;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
 
+import kkukmoa.kkukmoa.voucher.repository.VoucherUsageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +34,7 @@ import java.util.List;
 public class VoucherCommandService {
 
     private final VoucherRepository voucherRepository;
+    private final VoucherUsageRepository voucherUsageRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final QrWebSocketHandler qrWebSocketHandler;
 
@@ -115,6 +118,10 @@ public class VoucherCommandService {
 
         voucher.deductValue(useAmount); // 금액권 사용
         voucherRepository.save(voucher); // 금액권의 바뀐 정보 저장
+
+        // 금액권 사용 내역 저장
+        VoucherUsage usage = VoucherUsage.of(voucher, voucher.getUser(), useAmount);
+        voucherUsageRepository.save(usage);
 
         // Web Socket 메시지 Dto 생성
         QrOwnerScanDto messageDto =

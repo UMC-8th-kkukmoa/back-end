@@ -225,7 +225,7 @@ public class UserCommandService {
             user.setUuid(newUuid);
 
             // 트랜잭션 내에서 엔티티 변경 사항 반영
-            userRepository.save(user); // 명시적으로 save() 호출
+            userRepository.save(user);
 
             return newUuid;
         }
