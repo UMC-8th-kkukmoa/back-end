@@ -6,6 +6,7 @@
 <div align="center">
 <img width="4500" height="3000" alt="Image" src="https://github.com/user-attachments/assets/2c897dc7-521a-4676-994a-bd66de52ebf3" />
 </div>
+
 #### 주요 기능
 - 디지털 금액권 구매 및 사용: 원하는 금액의 e-금액권을 구매하여 입점 매장에서 자유롭게 사용합니다.
 - 자동 스탬프 적립 시스템: 결제 내역과 연동되어 스탬프가 자동으로 적립됩니다.
