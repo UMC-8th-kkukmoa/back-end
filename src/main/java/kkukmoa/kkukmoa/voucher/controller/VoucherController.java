@@ -74,5 +74,4 @@ public class VoucherController {
         }
         return "toss"; // templates/toss.html (Thymeleaf 등)
     }
-
 }
