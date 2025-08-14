@@ -31,6 +31,7 @@ public enum ErrorStatus implements BaseErrorCode {
     REFRESH_TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "TOKEN4001", "Refresh Token이 필요합니다."),
     REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN4002", "유효하지 않은 Refresh Token입니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "TOKEN4003", "저장된 Refresh Token과 일치하지 않습니다."),
+    DUPLICATION_NICKNAME(HttpStatus.CONFLICT, "U004", "이미 사용 중인 닉네임입니다."),
     // 교환코드 관련 에러
     EXCHANGE_CODE_DUPLICATE(HttpStatus.CONFLICT, "OAUTH4090", "이미 사용 중인 교환코드입니다."),
     EXCHANGE_CODE_INVALID(HttpStatus.BAD_REQUEST, "OAUTH4001", "유효하지 않거나 만료된 교환코드입니다."),
@@ -48,16 +49,20 @@ public enum ErrorStatus implements BaseErrorCode {
     OWNER_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "OWNER4007", "사장님 소유의 가게가 없습니다."),
     OWNER_CANNOT_ACCESS(HttpStatus.FORBIDDEN, "OWNER4008", "사장님만 접근할 수 있는 기능입니다."),
 
+    // 관리자 관련 에러
+    STORE_PENDING_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN0001", "입점신청 승인 대기 중인 상태의 매장이 없습니다."),
+
     // 인증 관련 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "AUTH4010", "인증에 실패했습니다."),
     // QR 코드 관련 에러
-    QR_CANNOT_GENERATION(HttpStatus.BAD_REQUEST, "QR400", "QR 코드 생성에 실패했습니다."),
-    QR_INVALID(HttpStatus.NOT_FOUND, "QR401", "유효하지 않는 QR 코드입니다."),
+    QR_CANNOT_GENERATION(HttpStatus.BAD_REQUEST, "QR4000", "QR 코드 생성에 실패했습니다."),
+    QR_INVALID(HttpStatus.NOT_FOUND, "QR4001", "유효하지 않는 QR 코드입니다."),
+    QR_INVALID_TYPE(HttpStatus.NOT_FOUND, "QR4002", "올바르지 않은 QR 코드 유형입니다."),
 
     // 쿠폰 관련 에러
-    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON400", "존재하지 않는 쿠폰입니다."),
-    COUPON_INVALID_USED_PLACE(HttpStatus.BAD_REQUEST, "COUPON401", "올바르지 않은 사용처(사장)입니다."),
-    COUPON_IS_USED(HttpStatus.BAD_REQUEST, "COUPON402", "이미 사용한 쿠폰입니다."),
+    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON4000", "존재하지 않는 쿠폰입니다."),
+    COUPON_INVALID_USED_PLACE(HttpStatus.BAD_REQUEST, "COUPON4001", "올바르지 않은 사용처(사장)입니다."),
+    COUPON_IS_USED(HttpStatus.BAD_REQUEST, "COUPON4002", "이미 사용한 쿠폰입니다."),
 
     // 리뷰 관련 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R404", "리뷰가 존재하지 않습니다."),
@@ -87,7 +92,7 @@ public enum ErrorStatus implements BaseErrorCode {
     VOUCHER_NOT_FOUND(HttpStatus.NOT_FOUND, "VOUCHER4001", "금액권을 찾을 수 없습니다."),
     VOUCHER_ALREADY_USED(HttpStatus.BAD_REQUEST, "VOUCHER4002", "이미 사용된 금액권입니다."),
     VOUCHER_BALANCE_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "VOUCHER4004", "금액권 잔액이 부족합니다."),
-    VOUCHER_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "VOUCHER4001", "차감 금액은 0보다 커야 합니다."),
+    VOUCHER_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "VOUCHER4005", "차감 금액은 0보다 커야 합니다."),
     // 가게 관련 에러
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4001", "존재하지 않는 가게입니다."),
     STORE_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE4002", "존재하지 않는 가게 카테고리입니다."),

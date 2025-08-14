@@ -1,119 +1,142 @@
 package kkukmoa.kkukmoa.owner.service;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.CouponHandler;
-import kkukmoa.kkukmoa.apiPayload.exception.handler.QrHandler;
-import kkukmoa.kkukmoa.common.enums.QrCodeType;
-import kkukmoa.kkukmoa.common.util.AuthService;
-import kkukmoa.kkukmoa.config.websocket.handler.QrWebSocketHandler;
-import kkukmoa.kkukmoa.owner.dto.OwnerQrResponseDto;
-import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
-import kkukmoa.kkukmoa.stamp.domain.Coupon;
-import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
-import kkukmoa.kkukmoa.stamp.repository.CouponRepository;
+import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
+import kkukmoa.kkukmoa.category.domain.Category;
+import kkukmoa.kkukmoa.category.repository.CategoryRepository;
+import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerRegisterRequest;
+import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
+import kkukmoa.kkukmoa.region.domain.Region;
+import kkukmoa.kkukmoa.region.service.RegionService;
+import kkukmoa.kkukmoa.store.domain.Store;
+import kkukmoa.kkukmoa.store.enums.StoreStatus;
+import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
+import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
+import kkukmoa.kkukmoa.user.enums.SocialType;
+import kkukmoa.kkukmoa.user.enums.UserType;
+import kkukmoa.kkukmoa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OwnerCommandService {
 
-    private final AuthService authService;
-    private final QrWebSocketHandler qrWebSocketHandler;
-    private final CouponRepository couponRepository;
+    private final RegionService regionService;
 
-    // 사장님이 QR 스캔 메서드
-    @Transactional(readOnly = false)
-    public OwnerQrResponseDto.QrScanDto scanQrCode(String qrInfo) {
+    private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
 
-        // QR 정보에서 QR 유형 정보 추출
-        int cutIndex = qrInfo.indexOf("_");
-        String prefix = qrInfo.substring(0, cutIndex + 1); // ex) "voucher_" , "coupon_", "stamp_"
-        QrCodeType qrType = QrCodeType.getQrCodeTypeByQrPrefix(prefix);
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-        // 쿠폰&금액권 사용 성공 여부
-        int discountAmount = 0;
-        String userEmail = "";
+    private final JwtTokenProvider jwtTokenProvider;
 
-        // 쿠폰 종류에 따른 가격 차감 처리
-        if (qrType == QrCodeType.COUPON) { // 쿠폰
-
-            // 필요한 정보 조회
-            Coupon coupon =
-                    couponRepository
-                            .findByQrFetchUserAndStore(
-                                    qrInfo) // 쿠폰 + 유저 + 가게 + 가게사장 fetch join 하여 조회
-                            .orElseThrow(
-                                    () -> new CouponHandler(ErrorStatus.COUPON_NOT_FOUND)); // 쿠폰 조회
-            userEmail += coupon.getUser().getEmail(); // 쿠폰 소유자의 이메일 조회
-
-            // 동작
-            discountAmount = coupon.getDiscountAmount(); // 차감 금액 설정
-            useCoupon(coupon); // 쿠폰 사용
-
-        } else if (qrType == QrCodeType.VOUCHER) { // 금액권
-
-            // TODO: 금액권 로직 작성하면 됩니다. 더 좋은 로직 있으면 공유좀...
-
-        } else { // 스탬프
-            throw new QrHandler(ErrorStatus.OWNER_INVALID_SCAN); // 사장은 스탬프 QR 스캔할 수 없음
+    /**
+     * [로컬 사장님 회원가입] - 약관 동의 필수 체크 - 이메일 중복 검사 - 비밀번호 암호화 후 USER 엔티티 저장 - 초기 권한: PENDING_OWNER (승인
+     * 대기)
+     */
+    @Transactional
+    public void registerLocalOwner(OwnerSignupRequest request) {
+        // 0. 약관 동의 여부 확인
+        if (!request.isAgreeTerms()) {
+            throw new UserHandler(ErrorStatus.TERMS_NOT_AGREED);
+        }
+        if (!request.isAgreePrivacy()) {
+            throw new UserHandler(ErrorStatus.PRIVACY_NOT_AGREED);
         }
 
-        // Web Socket 메시지 Dto 생성
-        QrOwnerScanDto messageDto =
-                QrOwnerScanDto.builder()
-                        .isSuccess(true)
-                        .qrInfo(qrInfo)
-                        .qrType(qrType)
-                        .discountAmount(discountAmount)
-                        .redirectUri(qrType.getRedirectUri())
+        // 1. 중복 확인
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
+        }
+
+        // 2. 유저 생성
+        User user =
+                User.builder()
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .socialType(SocialType.LOCAL)
+                        .agreeTerms(request.isAgreeTerms())
+                        .agreePrivacy(request.isAgreePrivacy())
+                        .roles(Set.of(UserType.PENDING_OWNER)) // owner 승인 대기 role 부여
                         .build();
 
-        // 쿠폰 사용자에게 웹소켓으로 메시지 보냄. DTO 형태
-        qrWebSocketHandler.sendMessageToEmail(userEmail, messageDto);
+        userRepository.save(user);
+    }
 
-        return OwnerQrResponseDto.QrScanDto.builder()
-                .discountAmount(discountAmount)
-                .qrType(qrType)
-                .build();
+    /** [사장님 로그인] - 이메일 기반 사용자 조회 - 비밀번호 검증 - Access Token + Refresh Token 발급 및 저장 */
+    @Transactional
+    public TokenWithRolesResponseDto loginOwner(OwnerLoginRequest request) {
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new UserHandler(ErrorStatus.PASSWORD_NOT_MATCH);
+        }
+
+        return jwtTokenProvider.createTokenWithRoles(user); // access + refresh token 발급 및 저장
     }
 
     /**
-     * 사장이 사용자의 쿠폰 QR 코드 인식 후의 처리입니다. 사장검증 -> 쿠폰 유효성 검사( 사용여부 ) -> 쿠폰 사용 처리 ( 상태 변경, 금액 차감 )
-     *
-     * @param 'coupon_uuid' 형태의 QR 정보
-     * @return 쿠폰 사용 성공 여부 반환
+     * [입점 신청 처리] - 신청자(User)와 매장 정보(OwnerRegisterRequest)로 Store 생성 - 중복 신청 방지 - 카테고리/지역 정보 연동 -
+     * Store 상태: PENDING - 신청자 권한에 PENDING_OWNER 추가
      */
-    private void useCoupon(Coupon coupon) {
-
-        // 쿠폰이 속한 가게의 사장
-        User couponOwner = coupon.getStore().getOwner();
-        log.info("조회된 쿠폰 ID : {}", coupon.getId());
-        log.info("조회된 쿠폰 상태 : {}", coupon.getStatus());
-        log.info("쿠폰 가게 사장님 정보 : {}", couponOwner.getEmail());
-
-        // 사장 검증
-        Long currentLoginOwnerId = authService.getCurrentUserId();
-        log.info("현재 로그인된 사장님 정보 : {}", authService.getCurrentUserEmail());
-
-        // 사장 ID 비교
-        if (!couponOwner.getId().equals(currentLoginOwnerId)) {
-            throw new CouponHandler(ErrorStatus.COUPON_INVALID_USED_PLACE);
+    @Transactional
+    public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
+        /* 1) 중복 신청 방지 정책
+         */
+        if (storeRepository.existsByOwner(user)) {
+            throw new UserHandler(ErrorStatus.OWNER_REQUEST_ALREADY_SUBMITTED);
         }
 
-        // 쿠폰 유효성 검사
-        if (coupon.getStatus().equals(CouponStatus.USED)) {
-            throw new CouponHandler(ErrorStatus.COUPON_IS_USED);
-        }
+        /* 2) 카테고리 조회 (요청 displayName → enum → 엔티티) */
+        Category category =
+                categoryRepository
+                        .findByType(request.getCategory())
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.STORE_CATEGORY_NOT_FOUND));
 
-        // 쿠폰 사용 처리
-        coupon.use();
-        log.info("쿠폰 사용 성공 : Coupon Id = {}", coupon.getId());
+        /* 3) Region 연동 */
+        Region region =
+                regionService.createRegion(
+                        request.getStoreAddress(),
+                        request.getStoreAddressDetail(),
+                        request.getLatitude(),
+                        request.getLongitude());
+
+        Store store =
+                Store.builder()
+                        .owner(user) // 신청자
+                        .name(request.getStoreName()) // 매장명
+                        .number(request.getStorePhoneNumber()) // 대표 전화
+                        .storeImage(request.getStoreImageUrl()) // 이미지 URL
+                        .openingHours(request.getOpeningHours())
+                        .closingHours(request.getClosingHours())
+                        .qrUrl(null) //
+                        .region(region) //
+                        .category(category)
+                        .status(StoreStatus.PENDING) // 신청 = PENDING
+                        .build();
+
+        storeRepository.save(store);
+
+        /* 5) 신청자 롤 갱신 (대기 상태를 표현)
+         */
+        if (!user.getRoles().contains(UserType.PENDING_OWNER)) {
+            user.getRoles().add(UserType.PENDING_OWNER);
+        }
     }
 }

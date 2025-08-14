@@ -70,10 +70,7 @@ public class UserCommandService {
                         .map(KaKaoUserInfoResponseDto.KakaoAccount.Profile::getNickName)
                         .orElse("카카오사용자");
 
-        TokenResponseDto tokenResponseDto =
-                TokenResponseDto.of(token.getAccessToken(), token.getRefreshToken());
-
-        return isnewUser(email, nickname, tokenResponseDto);
+        return isnewUser(email, nickname);
     }
 
     public KaKaoTokenResponseDto getKakaoToken(String code) {
@@ -116,19 +113,26 @@ public class UserCommandService {
     }
 
     /** 신규 유저인지 확인하고 가입 or 로그인 처리 */
-    public UserResponseDto.loginDto isnewUser(
-            String email, String nickname, TokenResponseDto tokenResponseDto) {
+    public UserResponseDto.loginDto isnewUser(String email, String nickname) {
         return userRepository
                 .findByEmail(email)
                 .map(
                         user -> {
                             log.info("기존 유저 로그인: {}", user.getEmail());
+
+                            // 기본 role이 비어 있으면 USER 추가
+                            if (user.getRoles() == null || user.getRoles().isEmpty()) {
+                                user.addRole(UserType.USER);
+                                userRepository.save(user);
+                            }
+
                             TokenResponseDto token = jwtTokenProvider.createToken(user);
                             return userConverter.toLoginDto(user, false, token);
                         })
                 .orElseGet(
                         () -> {
                             log.info("신규 유저 회원가입: {}", email);
+
                             User newUser =
                                     User.builder()
                                             .email(email)
@@ -140,6 +144,7 @@ public class UserCommandService {
                                             .build();
 
                             userRepository.save(newUser);
+
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);
                             return userConverter.toLoginDto(newUser, true, token);
                         });
@@ -166,17 +171,28 @@ public class UserCommandService {
     }
 
     @Transactional
-    public void registerLocalUser(LocalSignupRequest request) {
-        // 1) 이메일 중복 체크
+    public void registerLocalUser(LocalSignupRequestDto request) {
+        // 이메일 중복 체크
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
         }
 
-        // 2) 사용자 생성 (시연용: 최소 필드만)
+        // 닉네임 중복 체크
+        String nick = request.getNickname();
+        if (nick == null || nick.trim().isEmpty()) {
+            throw new UserHandler(ErrorStatus.INVALID_PARAMETER);
+        }
+        if (userRepository.existsByNicknameIgnoreCase(nick.trim())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_NICKNAME); // 전용 코드
+        }
+
+        // 사용자 생성 (시연용: 최소 필드만)
         User user =
                 User.builder()
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword())) // 비밀번호는 반드시 해시
+                        .nickname(request.getNickname())
+                        .birthday(request.getBirthday())
                         .socialType(SocialType.LOCAL) // 로컬 가입 표시
                         .roles(Set.of(UserType.USER)) // 일반 유저 역할
                         .build();
@@ -185,7 +201,7 @@ public class UserCommandService {
     }
 
     @Transactional
-    public TokenResponseDto loginLocalUser(LocalLoginRequest request) {
+    public TokenResponseDto loginLocalUser(LocalLoginRequestDto request) {
         User user =
                 userRepository
                         .findByEmail(request.getEmail())

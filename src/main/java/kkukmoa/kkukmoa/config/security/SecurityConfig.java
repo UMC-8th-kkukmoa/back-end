@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -60,6 +62,8 @@ public class SecurityConfig {
                                                 "/v1/users/exchange",
                                                 "/v1/users/signup/local",
                                                 "/v1/users/login/local",
+                                                "/v1/users/verification/**",
+                                                "/v1/users/signup",
                                                 "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
@@ -101,5 +105,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // ADMIN > OWNER > PENDING_OWNER > USER
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+        String rules =
+                """
+                ROLE_ADMIN > ROLE_OWNER
+                ROLE_OWNER > ROLE_PENDING_OWNER
+                ROLE_PENDING_OWNER > ROLE_USER
+                """;
+        hierarchy.setHierarchy(rules);
+        return hierarchy;
     }
 }

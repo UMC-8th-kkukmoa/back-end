@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
-public class StoreApprovalService {
+public class AdminCommandService {
 
     private final StoreRepository storeRepository;
 

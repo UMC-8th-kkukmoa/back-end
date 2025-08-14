@@ -16,7 +16,6 @@ public class StoreListResponseDto {
     private Double latitude;
     private Double longitude;
     private String categoryName;
-    private Integer reviewCount;
     private Double distance;
     private Boolean liked;
 }
