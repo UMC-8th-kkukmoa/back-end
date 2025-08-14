@@ -1,31 +1,16 @@
 package kkukmoa.kkukmoa.common.util.s3.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
-import kkukmoa.kkukmoa.common.util.s3.service.S3ImageService;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
-//@RestController
-//@RequiredArgsConstructor
-//@Slf4j
-//@RequestMapping("/v1/images")
-//@Tag(name = "Image API", description = "이미지 업로드 및 삭제 API")
-//public class S3ImageController {
+// @RestController
+// @RequiredArgsConstructor
+// @Slf4j
+// @RequestMapping("/v1/images")
+// @Tag(name = "Image API", description = "이미지 업로드 및 삭제 API")
+// public class S3ImageController {
 //
 //    private final S3ImageService s3ImageService;
 //
@@ -43,7 +28,8 @@ import java.nio.charset.StandardCharsets;
 //                                                @Schema(
 //                                                        type = "string",
 //                                                        example =
-//                                                                "https://your-bucket.s3.ap-northeast-2.amazonaws.com/store/uuid.jpg"))),
+//
+// "https://your-bucket.s3.ap-northeast-2.amazonaws.com/store/uuid.jpg"))),
 //                @ApiResponse(
 //                        responseCode = "400",
 //                        description = "잘못된 파일(확장자 오류, 용량 초과, 비어있는 파일 등)",
@@ -80,7 +66,8 @@ import java.nio.charset.StandardCharsets;
 //                                                        type = "string",
 //                                                        example =
 //                                                                "이미지 삭제 완료:"
-//                                                                    + " https://your-bucket.s3..."))),
+//                                                                    + "
+// https://your-bucket.s3..."))),
 //                @ApiResponse(
 //                        responseCode = "400",
 //                        description = "URL 파싱 오류 또는 잘못된 요청",
@@ -106,10 +93,12 @@ import java.nio.charset.StandardCharsets;
 //                        name = "imageUrl",
 //                        description =
 //                                "전체 이미지 주소 (예:"
-//                                    + " https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/uuid.jpg)",
+//                                    + "
+// https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/uuid.jpg)",
 //                        required = true,
 //                        example =
-//                                "https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/abc.jpg")
+//
+// "https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/abc.jpg")
 //            },
 //            responses = {
 //                @ApiResponse(
@@ -122,7 +111,8 @@ import java.nio.charset.StandardCharsets;
 //                                                @Schema(
 //                                                        type = "string",
 //                                                        example =
-//                                                                "https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/abc.jpg"))),
+//
+// "https://kkukmoa-static-files.s3.ap-northeast-2.amazonaws.com/review/abc.jpg"))),
 //                @ApiResponse(
 //                        responseCode = "404",
 //                        description = "이미지를 찾을 수 없음 (존재하지 않는 키)",
@@ -140,4 +130,4 @@ import java.nio.charset.StandardCharsets;
 //        String realImageUrl = s3ImageService.getImage(decodedUrl);
 //        return ResponseEntity.ok(realImageUrl);
 //    }
-//}
+// }
