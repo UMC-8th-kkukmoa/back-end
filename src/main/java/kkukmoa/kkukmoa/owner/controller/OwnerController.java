@@ -44,7 +44,7 @@ public class OwnerController {
                     """)
     @ApiErrorCodeExamples(
             value = {ErrorStatus.AUTHENTICATION_FAILED, ErrorStatus.OWNER_STORE_NOT_FOUND})
-    @PreAuthorize("hasAuthority('OWNER')")
+//    @PreAuthorize("hasAuthority('USER')")
     public ApiResponse<OwnerQrResponseDto.QrDto> getStampQrCode() {
         OwnerQrResponseDto.QrDto stamp = ownerQueryService.getStamp();
         return ApiResponse.onSuccess(stamp);
@@ -65,7 +65,7 @@ public class OwnerController {
         ErrorStatus.QR_INVALID_TYPE,
         ErrorStatus.VOUCHER_NOT_FOUND
     })
-    @PreAuthorize("hasAuthority('OWNER')")
+//    @PreAuthorize("hasAuthority('OWNER')")
     public ApiResponse<OwnerQrResponseDto.QrTypeDto> getQrCode(
             @RequestParam("qr-uuid") String qrCode) {
 
@@ -95,7 +95,7 @@ public class OwnerController {
         ErrorStatus.AUTHENTICATION_FAILED
     })
     @PatchMapping("/use/voucher/{qr-uuid}")
-    @PreAuthorize("hasAuthority('OWNER')")
+//    @PreAuthorize("hasAuthority('OWNER')")
     public ApiResponse<VoucherResponseDto.VoucherDeductResponseDto> useVoucher(
             @Parameter(
                             description =
@@ -126,7 +126,7 @@ public class OwnerController {
         ErrorStatus.COUPON_INVALID_USED_PLACE,
         ErrorStatus.COUPON_IS_USED
     })
-    @PreAuthorize("hasAuthority('OWNER')")
+//    @PreAuthorize("hasAuthority('OWNER')")
     public ApiResponse<CouponUseDto> useCoupon(
             @Parameter(
                             description =
