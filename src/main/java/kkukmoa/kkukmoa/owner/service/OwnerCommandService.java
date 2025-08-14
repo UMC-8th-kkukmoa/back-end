@@ -98,9 +98,10 @@ public class OwnerCommandService {
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
 
-        user = userRepository.findById(user.getId())
-                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-
+        user =
+                userRepository
+                        .findById(user.getId())
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         /* 1) 중복 신청 방지 정책
          */
@@ -141,6 +142,6 @@ public class OwnerCommandService {
 
         /* 5) 신청자 롤 갱신 (대기 상태를 표현)
          */
-            user.getRoles().add(UserType.PENDING_OWNER);
+        user.getRoles().add(UserType.PENDING_OWNER);
     }
 }
