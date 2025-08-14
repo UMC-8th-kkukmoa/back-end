@@ -94,9 +94,7 @@ public class StoreServiceImpl implements StoreService {
         Page<Store> stores =
                 storeRepository.findWithinRadiusPoint(latitude, longitude, 3000, pageable);
 
-        List<Long> storeIds = stores.stream()
-                .map(Store::getId)
-                .toList();
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
         Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
 
@@ -148,7 +146,12 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
-            CategoryType categoryType, double latitude, double longitude, int page, int size, Long userId) {
+            CategoryType categoryType,
+            double latitude,
+            double longitude,
+            int page,
+            int size,
+            Long userId) {
 
         Category category =
                 categoryRepository
@@ -161,9 +164,7 @@ public class StoreServiceImpl implements StoreService {
                 storeRepository.findWithinRadiusPointByCategory(
                         category.getId(), latitude, longitude, 3000, pageable);
 
-        List<Long> storeIds = stores.stream()
-                .map(Store::getId)
-                .toList();
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
         Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
 
@@ -195,9 +196,7 @@ public class StoreServiceImpl implements StoreService {
                 storeRepository.findWithinRadiusPointByName(
                         name, latitude, longitude, 3000, pageable);
 
-        List<Long> storeIds = stores.stream()
-                .map(Store::getId)
-                .toList();
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
         Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
 

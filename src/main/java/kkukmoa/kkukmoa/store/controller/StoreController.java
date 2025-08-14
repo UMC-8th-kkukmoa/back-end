@@ -16,8 +16,8 @@ import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.*;
 import kkukmoa.kkukmoa.store.service.StoreService;
-
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -64,7 +64,8 @@ public class StoreController {
 
         Long userId = (user == null) ? null : user.getUserId();
 
-        return ApiResponse.onSuccess(storeService.getStores(latitude, longitude, page, size, userId));
+        return ApiResponse.onSuccess(
+                storeService.getStores(latitude, longitude, page, size, userId));
     }
 
     @GetMapping("/{storeId}")
@@ -93,7 +94,8 @@ public class StoreController {
         Long userId = (user == null) ? null : user.getUserId();
 
         return ApiResponse.onSuccess(
-                storeService.getStoresByCategory(categoryType, latitude, longitude, page, size, userId));
+                storeService.getStoresByCategory(
+                        categoryType, latitude, longitude, page, size, userId));
     }
 
     @GetMapping("/search")
