@@ -50,6 +50,7 @@ spring:
       port: 6379
   toss:
     secret-key: ${TOSS_SECRET_KEY}
+    client-key: ${TOSS_CLIENT_KEY}
   servlet:
     multipart:
       enabled: true

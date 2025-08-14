@@ -13,6 +13,8 @@ import kkukmoa.kkukmoa.voucher.service.VoucherQueryService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,4 +66,13 @@ public class VoucherController {
         var detail = voucherQueryService.getVoucherDetail(uuid);
         return ResponseEntity.ok(ApiResponse.onSuccess(detail));
     }
+
+    @GetMapping("/payment")
+    public String securedTossPage(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccessDeniedException("접근 권한 없음");
+        }
+        return "toss"; // templates/toss.html (Thymeleaf 등)
+    }
+
 }
