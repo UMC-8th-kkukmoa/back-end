@@ -13,8 +13,6 @@ import kkukmoa.kkukmoa.user.dto.TokenWithRolesResponseDto;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.RefreshTokenRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -161,11 +160,8 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         // 1. 토큰 파싱 및 클레임 추출
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims =
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 
         // 2. 이메일(혹은 userId) 꺼내기
         String email = claims.get("email", String.class);
@@ -174,20 +170,22 @@ public class JwtTokenProvider {
             email = claims.getSubject();
         }
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
-
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
 
         // 3. roles 클레임 꺼내기
         Object rolesObj = claims.get("roles");
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         if (rolesObj instanceof List<?> rolesList) {
-            authorities = rolesList.stream()
-                    .filter(Objects::nonNull)
-                    .map(Object::toString)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            authorities =
+                    rolesList.stream()
+                            .filter(Objects::nonNull)
+                            .map(Object::toString)
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
         }
 
         // 4. Authentication 객체 생성

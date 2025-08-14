@@ -123,6 +123,4 @@ public class SecurityConfig {
         hierarchy.setHierarchy(rules);
         return hierarchy;
     }
-
-
 }

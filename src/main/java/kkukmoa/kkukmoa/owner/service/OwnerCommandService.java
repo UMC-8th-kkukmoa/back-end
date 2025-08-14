@@ -133,8 +133,6 @@ public class OwnerCommandService {
 
         storeRepository.save(store);
 
-
-
         /* 5) 신청자 롤 갱신 (대기 상태를 표현)
          */
         if (!user.getRoles().contains(UserType.PENDING_OWNER)) {
