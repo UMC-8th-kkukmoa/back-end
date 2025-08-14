@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +12,6 @@ import jakarta.validation.constraints.Size;
 
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
-import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
 import kkukmoa.kkukmoa.store.dto.response.*;
 import kkukmoa.kkukmoa.store.service.StoreService;
 import kkukmoa.kkukmoa.user.domain.User;
@@ -33,12 +31,12 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
     private final StoreService storeService;
 
-    @PostMapping
-    @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
-    public ApiResponse<StoreIdResponseDto> createStore(
-            @RequestBody @Valid StoreRequestDto request) {
-        return ApiResponse.onSuccess(storeService.createStore(request));
-    }
+    //    @PostMapping
+    //    @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
+    //    public ApiResponse<StoreIdResponseDto> createStore(
+    //            @RequestBody @Valid StoreRequestDto request) {
+    //        return ApiResponse.onSuccess(storeService.createStore(request));
+    //    }
 
     @GetMapping
     @Operation(
