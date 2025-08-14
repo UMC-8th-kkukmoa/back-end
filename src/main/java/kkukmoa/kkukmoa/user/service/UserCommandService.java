@@ -29,6 +29,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -133,10 +134,12 @@ public class UserCommandService {
                         () -> {
                             log.info("신규 유저 회원가입: {}", email);
 
+                            String uniqueNickname = nickname + getRandomNumber(4);
+
                             User newUser =
                                     User.builder()
                                             .email(email)
-                                            .nickname(nickname)
+                                            .nickname(uniqueNickname)
                                             .socialType(SocialType.KAKAO)
                                             .agreeTerms(false)
                                             .agreePrivacy(false)
@@ -148,6 +151,12 @@ public class UserCommandService {
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);
                             return userConverter.toLoginDto(newUser, true, token);
                         });
+    }
+
+    private String getRandomNumber(int length) {
+        int max = (int) Math.pow(10, length);
+        int number = new Random().nextInt(max);
+        return String.format("%0" + length + "d", number);
     }
 
     @Transactional
