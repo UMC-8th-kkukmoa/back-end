@@ -1,5 +1,6 @@
 package kkukmoa.kkukmoa.payment.controller;
 
+import org.springframework.ui.Model;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -15,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "토스 결제 API", description = "토스 결제 API 입니다.")
 @Slf4j
@@ -70,4 +68,6 @@ public class PaymentController {
         Payment payment = paymentService.confirm(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("결제 성공: " + payment.getId()));
     }
+
+
 }

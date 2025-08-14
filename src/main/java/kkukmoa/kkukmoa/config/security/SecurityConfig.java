@@ -54,6 +54,8 @@ public class SecurityConfig {
                                 request.requestMatchers(
                                                 "/",
                                                 "/home",
+                                                "/v1/payments/toss/test",
+                                                "/v1/payments/toss",
                                                 "/swagger-ui/**",
                                                 "/v3/api-docs/**",
                                                 "/v3/api-docs/**",
@@ -93,6 +95,7 @@ public class SecurityConfig {
             configuration.addAllowedOriginPattern(origin.trim());
         }
         configuration.addAllowedOrigin("https://kkukmoa.shop");
+        configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8081");
         configuration.addAllowedOrigin("kkukmoa://oauth");
         configuration.addAllowedMethod("*");
