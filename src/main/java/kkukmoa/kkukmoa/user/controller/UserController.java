@@ -16,10 +16,7 @@ import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.*;
 import kkukmoa.kkukmoa.user.repository.AuthExchangeRepository;
-import kkukmoa.kkukmoa.user.service.RegistrationService;
-import kkukmoa.kkukmoa.user.service.ReissueService;
-import kkukmoa.kkukmoa.user.service.UserCommandService;
-import kkukmoa.kkukmoa.user.service.VerificationService;
+import kkukmoa.kkukmoa.user.service.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +40,7 @@ public class UserController {
 
     private final UserCommandService userCommandService;
     private final AuthExchangeRepository authExchangeRepository;
+    private final AuthExchangeService authExchangeService;
     private final ReissueService reissueService;
     private final VerificationService verificationService;
     private final RegistrationService registrationService;
@@ -66,13 +64,11 @@ public class UserController {
         ErrorStatus.INTERNAL_SERVER_ERROR
     })
     public ResponseEntity<Void> callback(@RequestParam("code") String kakaoCode) {
-        // 1) 카카오 로그인 처리 & 토큰쌍 생성(AT/RT)
-        UserResponseDto.loginDto login = userCommandService.loginOrRegisterByKakao(kakaoCode);
-        TokenResponseDto tokens = login.getTokenResponseDto(); // accessToken, refreshToken 포함
+        // 1) 카카오 로그인 처리 & 토큰 생성(AT/RT)
+        UserResponseDto.loginDto loginDto = userCommandService.loginOrRegisterByKakao(kakaoCode);
 
-        // 2) 1회용 교환코드 생성 & 저장 (TTL 예: 60초)
-        String exchangeCode = UUID.randomUUID().toString();
-        authExchangeRepository.save(exchangeCode, tokens, Duration.ofSeconds(60));
+        // 2) 1회용 교환코드 생성 & 저장
+        String exchangeCode = authExchangeService.createAndStoreExchangeCode(loginDto);
 
         // 3) 앱으로는 교환코드만 전달
         String redirectUri =
@@ -97,17 +93,12 @@ public class UserController {
         ErrorStatus.INTERNAL_SERVER_ERROR
     })
     @PostMapping("/exchange")
-    public ResponseEntity<ApiResponse<TokenResponseDto>> exchange(
+    public ResponseEntity<ApiResponse<UserResponseDto.loginDto>> exchange(
             @RequestParam("code") String code) {
-        TokenResponseDto tokens = authExchangeRepository.find(code);
 
-        // 1회용 → 즉시 삭제
-        authExchangeRepository.delete(code);
-
-        // (선택) 여기서 RT 회전까지 수행해 내려가도 됨
-        return ResponseEntity.ok(ApiResponse.onSuccess(tokens)); // JSON 바디로 AT/RT 반환
+        UserResponseDto.loginDto loginDto = authExchangeService.exchangeLogin(code);
+        return ResponseEntity.ok(ApiResponse.onSuccess(loginDto));
     }
-
     @PostMapping("/logout")
     @Operation(
             summary = "로그아웃 API",

@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static kkukmoa.kkukmoa.user.enums.UserType.resolveRole;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -70,10 +72,7 @@ public class UserCommandService {
                         .map(KaKaoUserInfoResponseDto.KakaoAccount.Profile::getNickName)
                         .orElse("카카오사용자");
 
-        TokenResponseDto tokenResponseDto =
-                TokenResponseDto.of(token.getAccessToken(), token.getRefreshToken());
-
-        return isnewUser(email, nickname, tokenResponseDto);
+        return isnewUser(email, nickname);
     }
 
     public KaKaoTokenResponseDto getKakaoToken(String code) {
@@ -116,34 +115,41 @@ public class UserCommandService {
     }
 
     /** 신규 유저인지 확인하고 가입 or 로그인 처리 */
-    public UserResponseDto.loginDto isnewUser(
-            String email, String nickname, TokenResponseDto tokenResponseDto) {
+    public UserResponseDto.loginDto isnewUser(String email, String nickname) {
         return userRepository
                 .findByEmail(email)
-                .map(
-                        user -> {
-                            log.info("기존 유저 로그인: {}", user.getEmail());
-                            TokenResponseDto token = jwtTokenProvider.createToken(user);
-                            return userConverter.toLoginDto(user, false, token);
-                        })
-                .orElseGet(
-                        () -> {
-                            log.info("신규 유저 회원가입: {}", email);
-                            User newUser =
-                                    User.builder()
-                                            .email(email)
-                                            .nickname(nickname)
-                                            .socialType(SocialType.KAKAO)
-                                            .agreeTerms(false)
-                                            .agreePrivacy(false)
-                                            .roles(Set.of(UserType.USER))
-                                            .build();
+                .map(user -> {
+                    log.info("기존 유저 로그인: {}", user.getEmail());
 
-                            userRepository.save(newUser);
-                            TokenResponseDto token = jwtTokenProvider.createToken(newUser);
-                            return userConverter.toLoginDto(newUser, true, token);
-                        });
+                    // 기본 role이 비어 있으면 USER 추가
+                    if (user.getRoles() == null || user.getRoles().isEmpty()) {
+                        user.addRole(UserType.USER);
+                        userRepository.save(user);
+                    }
+
+                    TokenResponseDto token = jwtTokenProvider.createToken(user);
+                    return userConverter.toLoginDto(user, false, token);
+                })
+                .orElseGet(() -> {
+                    log.info("신규 유저 회원가입: {}", email);
+
+                    User newUser = User.builder()
+                            .email(email)
+                            .nickname(nickname)
+                            .socialType(SocialType.KAKAO)
+                            .agreeTerms(false)
+                            .agreePrivacy(false)
+                            .roles(Set.of(UserType.USER))
+                            .build();
+
+                    userRepository.save(newUser);
+
+                    TokenResponseDto token = jwtTokenProvider.createToken(newUser);
+                    return userConverter.toLoginDto(newUser, true, token);
+                });
     }
+
+
 
     @Transactional
     public void logout(User user, String refreshToken, String accessToken) {
