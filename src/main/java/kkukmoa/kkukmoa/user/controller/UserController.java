@@ -246,9 +246,8 @@ public class UserController {
     @GetMapping("/nickname/exists")
     @Operation(summary = "닉네임 중복 확인 API", description = "로컬 회원가입 시, 닉네임 중복 확인을 합니다.")
     public ResponseEntity<ApiResponse<Boolean>> nicknameExists(
-            @Parameter(description = "중복 확인할 닉네임", required = true)
-            @RequestParam("nickname") String nickname
-    ) {
+            @Parameter(description = "중복 확인할 닉네임", required = true) @RequestParam("nickname")
+                    String nickname) {
         boolean exists = userCommandService.isNicknameTaken(nickname);
         return ResponseEntity.ok(ApiResponse.onSuccess(exists));
     }
