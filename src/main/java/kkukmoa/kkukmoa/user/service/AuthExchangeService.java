@@ -9,7 +9,9 @@ import kkukmoa.kkukmoa.user.dto.TokenResponseDto;
 import kkukmoa.kkukmoa.user.dto.UserResponseDto;
 import kkukmoa.kkukmoa.user.repository.AuthExchangeRepository;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -45,10 +47,12 @@ public class AuthExchangeService {
         // 3. subject 추출
         String subject = jwtTokenProvider.getSubjectFromToken(tokens.getAccessToken());
 
-        User user = userRepository.findByEmail(subject)
-                .orElseThrow(() -> new TokenHandler(ErrorStatus.EXCHANGE_CODE_DESERIALIZE_FAIL));
+        User user =
+                userRepository
+                        .findByEmail(subject)
+                        .orElseThrow(
+                                () -> new TokenHandler(ErrorStatus.EXCHANGE_CODE_DESERIALIZE_FAIL));
 
         return userConverter.toLoginDto(user, false, tokens);
     }
 }
-

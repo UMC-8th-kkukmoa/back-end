@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.user.dto;
 
-import kkukmoa.kkukmoa.user.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

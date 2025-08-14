@@ -13,7 +13,6 @@ public class TokenResponseDto {
     private final String accessToken;
     private final String refreshToken;
 
-
     public static TokenResponseDto of(final String accessToken, final String refreshToken) {
         return new TokenResponseDto(accessToken, refreshToken);
     }

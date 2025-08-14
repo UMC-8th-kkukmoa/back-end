@@ -29,8 +29,6 @@ import org.springframework.web.util.UriUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -99,6 +97,7 @@ public class UserController {
         UserResponseDto.loginDto loginDto = authExchangeService.exchangeLogin(code);
         return ResponseEntity.ok(ApiResponse.onSuccess(loginDto));
     }
+
     @PostMapping("/logout")
     @Operation(
             summary = "로그아웃 API",

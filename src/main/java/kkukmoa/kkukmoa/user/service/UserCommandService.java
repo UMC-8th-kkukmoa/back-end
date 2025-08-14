@@ -33,8 +33,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static kkukmoa.kkukmoa.user.enums.UserType.resolveRole;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -118,38 +116,39 @@ public class UserCommandService {
     public UserResponseDto.loginDto isnewUser(String email, String nickname) {
         return userRepository
                 .findByEmail(email)
-                .map(user -> {
-                    log.info("기존 유저 로그인: {}", user.getEmail());
+                .map(
+                        user -> {
+                            log.info("기존 유저 로그인: {}", user.getEmail());
 
-                    // 기본 role이 비어 있으면 USER 추가
-                    if (user.getRoles() == null || user.getRoles().isEmpty()) {
-                        user.addRole(UserType.USER);
-                        userRepository.save(user);
-                    }
+                            // 기본 role이 비어 있으면 USER 추가
+                            if (user.getRoles() == null || user.getRoles().isEmpty()) {
+                                user.addRole(UserType.USER);
+                                userRepository.save(user);
+                            }
 
-                    TokenResponseDto token = jwtTokenProvider.createToken(user);
-                    return userConverter.toLoginDto(user, false, token);
-                })
-                .orElseGet(() -> {
-                    log.info("신규 유저 회원가입: {}", email);
+                            TokenResponseDto token = jwtTokenProvider.createToken(user);
+                            return userConverter.toLoginDto(user, false, token);
+                        })
+                .orElseGet(
+                        () -> {
+                            log.info("신규 유저 회원가입: {}", email);
 
-                    User newUser = User.builder()
-                            .email(email)
-                            .nickname(nickname)
-                            .socialType(SocialType.KAKAO)
-                            .agreeTerms(false)
-                            .agreePrivacy(false)
-                            .roles(Set.of(UserType.USER))
-                            .build();
+                            User newUser =
+                                    User.builder()
+                                            .email(email)
+                                            .nickname(nickname)
+                                            .socialType(SocialType.KAKAO)
+                                            .agreeTerms(false)
+                                            .agreePrivacy(false)
+                                            .roles(Set.of(UserType.USER))
+                                            .build();
 
-                    userRepository.save(newUser);
+                            userRepository.save(newUser);
 
-                    TokenResponseDto token = jwtTokenProvider.createToken(newUser);
-                    return userConverter.toLoginDto(newUser, true, token);
-                });
+                            TokenResponseDto token = jwtTokenProvider.createToken(newUser);
+                            return userConverter.toLoginDto(newUser, true, token);
+                        });
     }
-
-
 
     @Transactional
     public void logout(User user, String refreshToken, String accessToken) {

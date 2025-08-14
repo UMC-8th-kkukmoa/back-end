@@ -3,7 +3,6 @@ package kkukmoa.kkukmoa.user.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -13,7 +12,6 @@ public enum UserType {
     PENDING_OWNER("ROLE_PENDING_OWNER"), // 입점 신청 중
     OWNER("ROLE_OWNER"), // 입점 승인
     ADMIN("ROLE_ADMIN");
-
 
     private final String roleName;
 
@@ -26,5 +24,4 @@ public enum UserType {
 
         return UserType.USER.getRoleName();
     }
-
 }
