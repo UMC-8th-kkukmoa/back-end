@@ -33,12 +33,12 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
     private final StoreService storeService;
 
-    @PostMapping
-    @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
-    public ApiResponse<StoreIdResponseDto> createStore(
-            @RequestBody @Valid StoreRequestDto request) {
-        return ApiResponse.onSuccess(storeService.createStore(request));
-    }
+//    @PostMapping
+//    @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
+//    public ApiResponse<StoreIdResponseDto> createStore(
+//            @RequestBody @Valid StoreRequestDto request) {
+//        return ApiResponse.onSuccess(storeService.createStore(request));
+//    }
 
     @GetMapping
     @Operation(
