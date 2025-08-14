@@ -39,7 +39,7 @@ public class OwnerRegisterCheckController {
 
     @Operation(summary = "PENDING 존재여부 확인 (로그인)", description = "현재 로그인한 사용자 기준 PENDING 상태 여부 반환")
     @GetMapping("/owners/registrations/check-pending")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('PENDING_OWNER')")
     public ApiResponse<OwnerRegisterCheckResponse> checkPendingLogin(
             @AuthenticationPrincipal(expression = "id") Long userId) {
         return ApiResponse.onSuccess(service.checkPendingForUser(userId));
