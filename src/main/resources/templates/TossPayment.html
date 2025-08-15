@@ -152,6 +152,14 @@
 <button class="btn primary w-100" id="payment-button" style="margin-top: 30px;">결제하기</button>
 
 <script th:inline="javascript">
+
+    function formatToKoreanWon(amount) {
+        if (amount >= 10000) {
+            return `${amount / 10000}만원권`;
+        }
+        return `${amount.toLocaleString()}원권`;
+    }
+
     const token = /*[[${token}]]*/ "";
     const unitPrice = /*[[${unitPrice}]]*/ 0;
     const quantity  = /*[[${quantity}]]*/ 0;
@@ -202,7 +210,7 @@
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    orderName: `꾹모아 금액권 ${unitPrice}원권`,
+                        orderName: `꾹모아 금액권 ${formattedAmount}`,
                     amount: baseAmount,
                     voucherUnitPrice: unitPrice,
                     voucherQuantity: quantity
@@ -229,6 +237,7 @@
 
 
         })
+
     }
 
 
