@@ -236,12 +236,12 @@
             const storedToken = localStorage.getItem("kkukmoa_token");
             console.log("결제 승인 요청:", storedToken)
 
+            const headers = { "Content-Type": "application/json" };
+            if (storedToken) headers["Authorization"] = storedToken;
+
             const confirmRes = await fetch("https://kkukmoa.shop/v1/payments/confirm", {
                 method: "POST",
-                headers: {
-                    "Authorization": storedToken || "",
-                    "Content-Type": "application/json"
-                },
+                headers,
                 body: JSON.stringify({
                     paymentKey,
                     orderId,
