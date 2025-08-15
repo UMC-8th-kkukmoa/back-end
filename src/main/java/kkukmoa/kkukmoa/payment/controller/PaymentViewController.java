@@ -38,7 +38,4 @@ public class PaymentViewController {
         model.addAttribute("quantity", quantity);
         return "TossPayment";
     }
-
-
-
 }
