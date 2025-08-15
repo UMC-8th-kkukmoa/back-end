@@ -29,7 +29,6 @@ public class OwnerQrResponseDto {
 
         @JsonProperty(value = "store_name")
         private String storeName;
-
     }
 
     @Getter
