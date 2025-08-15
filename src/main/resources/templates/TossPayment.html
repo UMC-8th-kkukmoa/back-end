@@ -221,8 +221,8 @@
             await widgets.requestPayment({
                 orderId: prepareData.orderId,
                 orderName: prepareData.orderName,
-                successUrl: window.location.href,
-                failUrl: window.location.href + "?fail=true",
+                successUrl: `${window.location.origin}${window.location.pathname}?paymentKey=${prepareData.paymentKey}&orderId=${prepareData.orderId}&amount=${prepareData.amount}&token=${encodeURIComponent(token)}`,
+                failUrl: `${window.location.href}?fail=true`
             });
         });
 
@@ -231,28 +231,25 @@
         const paymentKey = params.get("paymentKey");
         const orderId = params.get("orderId");
         const amount = parseInt(params.get("amount") || "0", 10);
+        const tokenParam = params.get("token");
+        const tokenToUse = tokenParam || localStorage.getItem("kkukmoa_token");
 
-        if (paymentKey && orderId && amount) {
-            const storedToken = localStorage.getItem("kkukmoa_token");
-            console.log("결제 승인 요청:", storedToken)
-
-
-            const headers = {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${storedToken}`
-            };
-
+        if (paymentKey && orderId && amount && tokenToUse) {
+            console.log("결제 승인 요청:", tokenToUse);
 
             const confirmRes = await fetch("https://kkukmoa.shop/v1/payments/confirm", {
                 method: "POST",
-                headers,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${tokenToUse}`
+                },
                 body: JSON.stringify({
                     paymentKey,
                     orderId,
                     amount,
                     voucherUnitPrice: unitPrice,
                     voucherQuantity: quantity
-                }),
+                })
             });
 
             const confirmJson = await confirmRes.json();
