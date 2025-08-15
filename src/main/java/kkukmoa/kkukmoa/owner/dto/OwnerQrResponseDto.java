@@ -26,6 +26,10 @@ public class OwnerQrResponseDto {
 
         @JsonProperty(value = "qrcode")
         private String qrCode;
+
+        @JsonProperty(value = "store_name")
+        private String storeName;
+
     }
 
     @Getter
