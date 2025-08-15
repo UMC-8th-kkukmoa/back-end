@@ -32,8 +32,7 @@ public class OwnerRegisterCheckController {
                     """)
     @GetMapping("/public/registrations/check-pending")
     public ApiResponse<OwnerRegisterCheckResponse> checkPending(
-            @Valid @RequestParam String email,
-            @RequestParam String password) {
+            @Valid @RequestParam String email, @RequestParam String password) {
         OwnerLoginRequest request = new OwnerLoginRequest(email, password);
         return ApiResponse.onSuccess(service.checkPending(request));
     }
