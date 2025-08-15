@@ -220,9 +220,12 @@
             await widgets.requestPayment({
                 orderId: prepareData.orderId,
                 orderName: prepareData.orderName,
-                successUrl: `${window.location.origin}/payment/TossSuccess.html`,
-                failUrl: `${window.location.origin}/payment/fail.html`
+                successUrl: `https://kkukmoa.shop/v1/payments/toss/success?token=${encodeURIComponent(token)}&unitPrice=${unitPrice}&quantity=${quantity}`,
+                failUrl: `https://kkukmoa.shop/v1/payments/toss/fail`,
             });
+
+
+
 
 
         })

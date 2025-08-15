@@ -2,6 +2,7 @@ package kkukmoa.kkukmoa.common.util;
 
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
+import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
 
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
-
+    private final JwtTokenProvider jwtTokenProvider;
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -32,6 +33,12 @@ public class AuthService {
         }
 
         return user;
+    }
+    public User getUserFromToken(String token) {
+        String email = jwtTokenProvider.getSubjectFromToken(token); // 여기 사용
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
     }
 
     public Long getCurrentUserId() {
