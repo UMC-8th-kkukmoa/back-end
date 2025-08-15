@@ -73,20 +73,32 @@ public class PaymentCommandService {
     }
 
     @Transactional
+    public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req, String token) {
+        log.info("[결제 확인: 토큰 기반] orderId: {}", req.getOrderId());
+
+        User user = authService.getUserFromToken(token);
+        return internalConfirm(req, user);
+    }
+
+    @Transactional
     public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req) {
+        log.info("[결제 확인: 인증 유저 기반] orderId: {}", req.getOrderId());
+
+        User user = authService.getCurrentUser(); // 🔐 기존 방식 유지
+        return internalConfirm(req, user);
+    }
+
+    private Payment internalConfirm(PaymentRequestDto.PaymentConfirmRequestDto req, User user) {
         log.info("[결제 확인] 요청 orderId: {}, amount: {}", req.getOrderId(), req.getAmount());
 
         // 1. Redis에서 사전 저장된 결제 정보 조회
         PaymentRequestDto.PaymentPrepareRequestDto prepare =
                 redisRepository
                         .findByOrderId(req.getOrderId())
-                        .orElseThrow(
-                                () -> {
-                                    log.error(
-                                            "[결제 확인 실패] Redis에서 orderId={} 정보 없음",
-                                            req.getOrderId());
-                                    return new PaymentHandler(ErrorStatus.PAYMENT_INFO_NOT_FOUND);
-                                });
+                        .orElseThrow(() -> {
+                            log.error("[결제 확인 실패] Redis에서 orderId={} 정보 없음", req.getOrderId());
+                            return new PaymentHandler(ErrorStatus.PAYMENT_INFO_NOT_FOUND);
+                        });
 
         // 2. 금액 무결성 검증
         if (req.getAmount() != prepare.getAmount()) {
@@ -95,31 +107,28 @@ public class PaymentCommandService {
         }
 
         // 3. Toss 결제 승인 요청
-        log.info(
-                "[Toss 요청] paymentKey={}, orderId={}, amount={}",
-                req.getPaymentKey(),
-                req.getOrderId(),
-                req.getAmount());
+        log.info("[Toss 요청] paymentKey={}, orderId={}, amount={}",
+                req.getPaymentKey(), req.getOrderId(), req.getAmount());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String encodedKey =
-                Base64.getEncoder()
-                        .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
+        String encodedKey = Base64.getEncoder()
+                .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
         headers.set("Authorization", "Basic " + encodedKey);
 
-        Map<String, Object> body =
-                Map.of(
-                        "paymentKey", req.getPaymentKey(),
-                        "orderId", req.getOrderId(),
-                        "amount", req.getAmount());
+        Map<String, Object> body = Map.of(
+                "paymentKey", req.getPaymentKey(),
+                "orderId", req.getOrderId(),
+                "amount", req.getAmount()
+        );
 
         HttpEntity<?> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<TossPaymentConfirmResponseDto> response =
-                restTemplate.postForEntity(
-                        "https://api.tosspayments.com/v1/payments/confirm",
-                        entity,
-                        TossPaymentConfirmResponseDto.class);
+
+        ResponseEntity<TossPaymentConfirmResponseDto> response = restTemplate.postForEntity(
+                "https://api.tosspayments.com/v1/payments/confirm",
+                entity,
+                TossPaymentConfirmResponseDto.class
+        );
 
         TossPaymentConfirmResponseDto res = response.getBody();
         if (res == null) {
@@ -128,7 +137,6 @@ public class PaymentCommandService {
         }
 
         // 4. 결제 정보 저장
-        User user = authService.getCurrentUser();
         Payment payment = PaymentConverter.toEntity(prepare, user);
         payment.updateFromTossResponse(res);
         paymentRepository.save(payment);
@@ -137,11 +145,8 @@ public class PaymentCommandService {
         int unitPrice = prepare.getVoucherUnitPrice();
         int quantity = prepare.getVoucherQuantity();
 
-        log.info(
-                "[금액권 발급 시도] orderId={}, unitPrice={}, quantity={}",
-                req.getOrderId(),
-                unitPrice,
-                quantity);
+        log.info("[금액권 발급 시도] orderId={}, unitPrice={}, quantity={}",
+                req.getOrderId(), unitPrice, quantity);
         voucherCommandService.issueVouchersByQr(unitPrice, quantity, user, payment);
 
         return payment;
