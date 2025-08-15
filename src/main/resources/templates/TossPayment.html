@@ -155,23 +155,24 @@
     const token = /*[[${token}]]*/ "";
     const unitPrice = /*[[${unitPrice}]]*/ 0;
     const quantity  = /*[[${quantity}]]*/ 0;
+
     if (token) {
         localStorage.setItem("kkukmoa_token", token);
     }
+
     main();
 
     async function main() {
         const button = document.getElementById("payment-button");
         const baseAmount = unitPrice * quantity;
 
-        // 토스 위젯 초기화
         const clientKey = /*[[${clientKey}]]*/ "";
         const tossPayments = TossPayments(clientKey);
 
         // customerKey 생성
         const customerKey = await fetch("https://kkukmoa.shop/v1/users/uuid", {
             method: "GET",
-            headers: { "Authorization": token }
+            headers: { "Authorization": `Bearer ${token}` }
         })
             .then(res => res.json())
             .then(data => "user_" + data.result)
@@ -185,7 +186,6 @@
 
         const widgets = tossPayments.widgets({ customerKey });
 
-        // 결제 금액 세팅
         await widgets.setAmount({ currency: "KRW", value: baseAmount });
 
         await Promise.all([
@@ -193,13 +193,13 @@
             widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
         ]);
 
-        // 결제 버튼 클릭 이벤트
+        // 결제 요청
         button.addEventListener("click", async function () {
             const prepareRes = await fetch("https://kkukmoa.shop/v1/payments/prepare", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": token
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     orderName: `꾹모아 금액권 ${unitPrice}원권`,
@@ -221,9 +221,10 @@
             await widgets.requestPayment({
                 orderId: prepareData.orderId,
                 orderName: prepareData.orderName,
-                successUrl: `${window.location.origin}${window.location.pathname}?paymentKey=${prepareData.paymentKey}&orderId=${prepareData.orderId}&amount=${prepareData.amount}&token=${encodeURIComponent(token)}`,
+                successUrl: `${window.location.origin}${window.location.pathname}?orderId=${prepareData.orderId}&amount=${prepareData.amount}&token=${encodeURIComponent(token)}&unitPrice=${unitPrice}&quantity=${quantity}`,
                 failUrl: `${window.location.href}?fail=true`
             });
+
         });
 
         // 결제 승인 처리
@@ -231,6 +232,8 @@
         const paymentKey = params.get("paymentKey");
         const orderId = params.get("orderId");
         const amount = parseInt(params.get("amount") || "0", 10);
+        const unitPriceParam = parseInt(params.get("unitPrice") || "0", 10);
+        const quantityParam = parseInt(params.get("quantity") || "1", 10);
         const tokenParam = params.get("token");
         const tokenToUse = tokenParam || localStorage.getItem("kkukmoa_token");
 
@@ -247,8 +250,8 @@
                     paymentKey,
                     orderId,
                     amount,
-                    voucherUnitPrice: unitPrice,
-                    voucherQuantity: quantity
+                    voucherUnitPrice: unitPriceParam,
+                    voucherQuantity: quantityParam
                 })
             });
 
@@ -264,5 +267,6 @@
         }
     }
 </script>
+
 </body>
 </html>
