@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 request.requestMatchers(
                                                 "/",
                                                 "/home",
+                                                "/payment/**",
                                                 "/v1/payments/toss/**",
                                                 "/swagger-ui/**",
                                                 "/v3/api-docs/**",
