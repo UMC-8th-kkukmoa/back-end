@@ -91,7 +91,7 @@ public class PaymentController {
 
         try {
             paymentService.confirm(confirmDto, token);
-            response.sendRedirect("kkukmoa://app/myGiftCard/MyGiftCardScreen");
+            response.sendRedirect("kkukmoa://myGiftCard/MyGiftCardList");
         } catch (Exception e) {
             response.sendRedirect(
                     "kkukmoa://app/paymentFail?message="
