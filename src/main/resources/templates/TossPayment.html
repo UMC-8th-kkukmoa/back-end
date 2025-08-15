@@ -167,7 +167,7 @@
         const tossPayments = TossPayments(clientKey);
 
         // customerKey 생성
-        const customerKey = await fetch("/v1/users/uuid", {
+        const customerKey = await fetch("https://kkukmoa.shop/v1/users/uuid", {
             method: "GET",
             headers: { "Authorization": token }
         })
@@ -193,7 +193,7 @@
 
         // 결제 버튼 클릭 이벤트
         button.addEventListener("click", async function () {
-            const prepareRes = await fetch("/v1/payments/prepare", {
+            const prepareRes = await fetch("https://kkukmoa.shop/v1/payments/prepare", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -231,7 +231,7 @@
         const amount = parseInt(params.get("amount") || "0", 10);
 
         if (paymentKey && orderId && amount) {
-            const confirmRes = await fetch("/v1/payments/confirm", {
+            const confirmRes = await fetch("https://kkukmoa.shop/v1/payments/confirm", {
                 method: "POST",
                 headers: {
                     "Authorization": token,
