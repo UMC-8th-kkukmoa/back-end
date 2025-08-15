@@ -155,7 +155,9 @@
     const token = /*[[${token}]]*/ "";
     const unitPrice = /*[[${unitPrice}]]*/ 0;
     const quantity  = /*[[${quantity}]]*/ 0;
-
+    if (token) {
+        localStorage.setItem("kkukmoa_token", token);
+    }
     main();
 
     async function main() {
@@ -231,10 +233,13 @@
         const amount = parseInt(params.get("amount") || "0", 10);
 
         if (paymentKey && orderId && amount) {
+            const storedToken = localStorage.getItem("kkukmoa_token");
+            console.log("결제 승인 요청:", storedToken)
+
             const confirmRes = await fetch("https://kkukmoa.shop/v1/payments/confirm", {
                 method: "POST",
                 headers: {
-                    "Authorization": token,
+                    "Authorization": storedToken || "",
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
