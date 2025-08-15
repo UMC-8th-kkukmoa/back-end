@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
@@ -30,6 +31,7 @@ import java.net.URLEncoder;
 public class PaymentController {
     private final PaymentCommandService paymentService;
     private final PaymentConverter paymentConverter;
+
     @Operation(
             summary = "결제 준비 API",
             description =
@@ -72,6 +74,7 @@ public class PaymentController {
         Payment payment = paymentService.confirm(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("결제 성공: " + payment.getId()));
     }
+
     @GetMapping("/toss/success")
     public void tossPaymentSuccess(
             @RequestParam String paymentKey,
@@ -80,23 +83,19 @@ public class PaymentController {
             @RequestParam(required = false) Integer unitPrice,
             @RequestParam(required = false) Integer quantity,
             @RequestParam String token,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response)
+            throws IOException {
 
-        PaymentRequestDto.PaymentConfirmRequestDto confirmDto = PaymentConverter.toConfirmDto(
-                paymentKey,
-                orderId,
-                amount,
-                unitPrice,
-                quantity
-        );
+        PaymentRequestDto.PaymentConfirmRequestDto confirmDto =
+                PaymentConverter.toConfirmDto(paymentKey, orderId, amount, unitPrice, quantity);
 
         try {
             paymentService.confirm(confirmDto, token);
             response.sendRedirect("kkukmoa://app/myGiftCard/MyGiftCardScreen");
         } catch (Exception e) {
-            response.sendRedirect("kkukmoa://app/paymentFail?message=" + URLEncoder.encode(e.getMessage(), "UTF-8"));
+            response.sendRedirect(
+                    "kkukmoa://app/paymentFail?message="
+                            + URLEncoder.encode(e.getMessage(), "UTF-8"));
         }
     }
-
-
 }
