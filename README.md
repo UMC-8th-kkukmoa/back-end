@@ -25,6 +25,9 @@
 ## 서버 아키텍처
 ![Image](https://github.com/user-attachments/assets/8644b074-c7ca-4840-a19d-44832d01a13b)
 
+## DB 다이어그램
+<img width="990" height="1179" alt="db다이어그램 최종" src="https://github.com/user-attachments/assets/1ccaa643-9e44-44d0-814f-8a2561446073" />
+
 
 ##  프로젝트 구조
 #### 도메인형

@@ -73,7 +73,22 @@ public class PaymentCommandService {
     }
 
     @Transactional
+    public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req, String token) {
+        log.info("[결제 확인: 토큰 기반] orderId: {}", req.getOrderId());
+
+        User user = authService.getUserFromToken(token);
+        return internalConfirm(req, user);
+    }
+
+    @Transactional
     public Payment confirm(PaymentRequestDto.PaymentConfirmRequestDto req) {
+        log.info("[결제 확인: 인증 유저 기반] orderId: {}", req.getOrderId());
+
+        User user = authService.getCurrentUser(); // 🔐 기존 방식 유지
+        return internalConfirm(req, user);
+    }
+
+    private Payment internalConfirm(PaymentRequestDto.PaymentConfirmRequestDto req, User user) {
         log.info("[결제 확인] 요청 orderId: {}, amount: {}", req.getOrderId(), req.getAmount());
 
         // 1. Redis에서 사전 저장된 결제 정보 조회
@@ -115,6 +130,7 @@ public class PaymentCommandService {
                         "amount", req.getAmount());
 
         HttpEntity<?> entity = new HttpEntity<>(body, headers);
+
         ResponseEntity<TossPaymentConfirmResponseDto> response =
                 restTemplate.postForEntity(
                         "https://api.tosspayments.com/v1/payments/confirm",
@@ -128,7 +144,6 @@ public class PaymentCommandService {
         }
 
         // 4. 결제 정보 저장
-        User user = authService.getCurrentUser();
         Payment payment = PaymentConverter.toEntity(prepare, user);
         payment.updateFromTossResponse(res);
         paymentRepository.save(payment);

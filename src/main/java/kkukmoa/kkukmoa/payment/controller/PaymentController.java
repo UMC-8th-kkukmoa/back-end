@@ -3,9 +3,12 @@ package kkukmoa.kkukmoa.payment.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
+import kkukmoa.kkukmoa.payment.converter.PaymentConverter;
 import kkukmoa.kkukmoa.payment.domain.Payment;
 import kkukmoa.kkukmoa.payment.dto.request.PaymentRequestDto;
 import kkukmoa.kkukmoa.payment.dto.response.PaymentPrepareResponseDto;
@@ -17,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+
 @Tag(name = "토스 결제 API", description = "토스 결제 API 입니다.")
 @Slf4j
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/payments")
 public class PaymentController {
     private final PaymentCommandService paymentService;
+    private final PaymentConverter paymentConverter;
 
     @Operation(
             summary = "결제 준비 API",
@@ -66,5 +73,29 @@ public class PaymentController {
         log.info("Confirm 호출됨: {}", request);
         Payment payment = paymentService.confirm(request);
         return ResponseEntity.ok(ApiResponse.onSuccess("결제 성공: " + payment.getId()));
+    }
+
+    @GetMapping("/toss/success")
+    public void tossPaymentSuccess(
+            @RequestParam String paymentKey,
+            @RequestParam String orderId,
+            @RequestParam int amount,
+            @RequestParam(required = false) Integer unitPrice,
+            @RequestParam(required = false) Integer quantity,
+            @RequestParam String token,
+            HttpServletResponse response)
+            throws IOException {
+
+        PaymentRequestDto.PaymentConfirmRequestDto confirmDto =
+                PaymentConverter.toConfirmDto(paymentKey, orderId, amount, unitPrice, quantity);
+
+        try {
+            paymentService.confirm(confirmDto, token);
+            response.sendRedirect("kkukmoa://app/myGiftCard/MyGiftCardScreen");
+        } catch (Exception e) {
+            response.sendRedirect(
+                    "kkukmoa://app/paymentFail?message="
+                            + URLEncoder.encode(e.getMessage(), "UTF-8"));
+        }
     }
 }
