@@ -234,8 +234,11 @@
         const amount = parseInt(params.get("amount") || "0", 10);
         const unitPriceParam = parseInt(params.get("unitPrice") || "0", 10);
         const quantityParam = parseInt(params.get("quantity") || "1", 10);
+
+// token 확보 우선순위: 쿼리 → sessionStorage → localStorage
         const tokenParam = params.get("token");
-        const tokenToUse = tokenParam || localStorage.getItem("kkukmoa_token");
+        const tokenFromStorage = sessionStorage.getItem("kkukmoa_token") || localStorage.getItem("kkukmoa_token");
+        const tokenToUse = tokenParam || tokenFromStorage;
 
         if (paymentKey && orderId && amount && tokenToUse) {
             console.log("결제 승인 요청:", tokenToUse);
@@ -259,13 +262,18 @@
 
             if (!confirmRes.ok) {
                 console.error("결제 승인 실패:", confirmJson.message);
+                alert("결제 승인 실패: " + confirmJson.message);
                 return;
             }
 
             console.log("결제 승인 성공:", confirmJson);
             window.location.href = "kkukmoa://app/myGiftCard/MyGiftCardList";
+        } else if (!tokenToUse) {
+            console.error("토큰 누락으로 결제 승인 불가");
+            alert("인증 정보가 만료되었거나 누락되어 결제 승인을 진행할 수 없습니다.");
         }
     }
+
 </script>
 
 </body>
