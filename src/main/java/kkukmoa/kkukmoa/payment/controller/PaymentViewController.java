@@ -27,14 +27,11 @@ public class PaymentViewController {
             @RequestHeader(name = "Authorization") String authHeader,
             @RequestParam("unitPrice") int unitPrice,
             @RequestParam("quantity") int quantity,
-            Model model
-    ) {
+            Model model) {
         model.addAttribute("token", authHeader);
         model.addAttribute("clientKey", tossClientKey);
         model.addAttribute("unitPrice", unitPrice);
         model.addAttribute("quantity", quantity);
         return "TossPayment";
     }
-
-
 }
