@@ -28,10 +28,30 @@ public class PaymentViewController {
             @RequestParam("unitPrice") int unitPrice,
             @RequestParam("quantity") int quantity,
             Model model) {
-        model.addAttribute("token", authHeader);
+
+        // "Bearer " 제거
+        String token = authHeader.replaceFirst("(?i)^Bearer ", "").trim();
+
+        model.addAttribute("token", token);
         model.addAttribute("clientKey", tossClientKey);
         model.addAttribute("unitPrice", unitPrice);
         model.addAttribute("quantity", quantity);
         return "TossPayment";
     }
+
+    @GetMapping("/test")
+    public String tossPayPage(
+            @RequestParam("unitPrice") int unitPrice,
+            @RequestParam("quantity") int quantity,
+            Model model
+    ) {
+
+        String hardcodedToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqeTgyOTRAZGF1bS5uZXQiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzU1MjQyMTgyLCJleHAiOjE3NTY1MzgxODJ9.COEn4ZxnzIonru2ItV50j_8eSQ9i8toMwBzfCkm91uI"; // 예시 토큰, 실제로는 유효한 토큰을 사용해야 합니다.
+        model.addAttribute("token", hardcodedToken);
+        model.addAttribute("clientKey", tossClientKey);
+        model.addAttribute("unitPrice", unitPrice);
+        model.addAttribute("quantity", quantity);
+        return "TossPayment";
+    }
+
 }
