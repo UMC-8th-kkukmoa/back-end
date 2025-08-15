@@ -30,9 +30,10 @@ public class OwnerRegisterCheckController {
                     연락처와 비밀번호를 통해 본인 인증 후,
                     PENDING 상태의 입점신청이 존재하면 pending=true, 아니면 false를 반환합니다.
                     """)
-    @PostMapping("/public/registrations/check-pending")
+    @GetMapping("/public/registrations/check-pending")
     public ApiResponse<OwnerRegisterCheckResponse> checkPending(
-            @Valid @RequestBody OwnerLoginRequest request) {
+            @Valid @RequestParam String email, @RequestParam String password) {
+        OwnerLoginRequest request = new OwnerLoginRequest(email, password);
         return ApiResponse.onSuccess(service.checkPending(request));
     }
 
