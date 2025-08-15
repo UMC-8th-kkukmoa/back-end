@@ -200,7 +200,7 @@
             widgets.renderPaymentMethods({selector: "#payment-method", variantKey: "DEFAULT"}),
             widgets.renderAgreement({selector: "#agreement", variantKey: "AGREEMENT"}),
         ]);
-
+        const formattedAmount = formatToKoreanWon(unitPrice);
         // 결제 요청
         button.addEventListener("click", async function () {
             const prepareRes = await fetch("https://kkukmoa.shop/v1/payments/prepare", {
@@ -210,7 +210,7 @@
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                        orderName: `꾹모아 금액권 ${formattedAmount}`,
+                    orderName: `꾹모아 금액권 ${formattedAmount}`,
                     amount: baseAmount,
                     voucherUnitPrice: unitPrice,
                     voucherQuantity: quantity
