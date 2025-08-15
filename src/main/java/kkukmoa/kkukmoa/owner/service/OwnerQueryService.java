@@ -62,6 +62,7 @@ public class OwnerQueryService {
         // QR 코드 생성하여 Dto 반환
         return OwnerQrResponseDto.QrDto.builder()
                 .qrCode(QrCodeUtil.qrCodeToBase64(qrSource))
+                .storeName(store.getName())
                 .build();
     }
 
