@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "관리자 API", description = "관리자 권한이 필요합니다.")
@@ -44,7 +43,7 @@ public class AdminController {
                 description = "잘못된 상태 전환 또는 이미 승인됨(STORE4101/STORE4004)")
     })
     @PostMapping("/stores/{storeId}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<String>> approve(@PathVariable Long storeId) {
         adminCommandService.approve(storeId);
         // HTTP 상태코드 200 OK + 바디에 메시지
@@ -53,7 +52,7 @@ public class AdminController {
 
     @GetMapping("/pending")
     @Operation(summary = "승인 대기 목록 조회", description = "입점 신청 상태가 PENDING인 항목을 9개/페이지로 조회")
-    @PreAuthorize("hasRole('ADMIN')") // 관리자만 접근
+    //    @PreAuthorize("hasAuthority('ADMIN')") // 관리자만 접근
     public ApiResponse<PageDto<PendingStoreSummary>> pending(
             @Parameter(description = "0부터 시작") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "기본 9, 최대 50") @RequestParam(defaultValue = "9") int size) {
@@ -63,6 +62,7 @@ public class AdminController {
 
     @Operation(summary = "입점신청 단건 상세(대기 중)", description = "PENDING 상태의 특정 신청을 상세 조회합니다.")
     @GetMapping("/pending/{storeId}")
+    //    @PreAuthorize("hasAuthority('ADMIN')") // 관리자만 접근
     public ApiResponse<OwnerRegisterResponse> getPendingDetail(
             @Parameter(description = "스토어 ID", example = "137") @PathVariable Long storeId) {
         OwnerRegisterResponse dto = adminQueryService.getPendingDetail(storeId);

@@ -22,4 +22,15 @@ public class PaymentConverter {
                 .user(user)
                 .build();
     }
+
+    public static PaymentRequestDto.PaymentConfirmRequestDto toConfirmDto(
+            String paymentKey, String orderId, int amount, Integer unitPrice, Integer quantity) {
+        return PaymentRequestDto.PaymentConfirmRequestDto.builder()
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .amount(amount)
+                .voucherUnitPrice(unitPrice)
+                .voucherQuantity(quantity)
+                .build();
+    }
 }

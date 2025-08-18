@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -25,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Value("${cors.allowed-origins}")
@@ -52,6 +54,8 @@ public class SecurityConfig {
                                 request.requestMatchers(
                                                 "/",
                                                 "/home",
+                                                "/payment/**",
+                                                "/v1/payments/toss/**",
                                                 "/swagger-ui/**",
                                                 "/v3/api-docs/**",
                                                 "/v3/api-docs/**",
@@ -64,6 +68,7 @@ public class SecurityConfig {
                                                 "/v1/users/login/local",
                                                 "/v1/users/verification/**",
                                                 "/v1/users/signup",
+                                                "/v1/users/nickname/exists",
                                                 "/v1/public/registrations/check-pending",
                                                 "/ws/**",
                                                 "/health", // 인프라 상태검사
@@ -90,6 +95,7 @@ public class SecurityConfig {
             configuration.addAllowedOriginPattern(origin.trim());
         }
         configuration.addAllowedOrigin("https://kkukmoa.shop");
+        configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:8081");
         configuration.addAllowedOrigin("kkukmoa://oauth");
         configuration.addAllowedMethod("*");

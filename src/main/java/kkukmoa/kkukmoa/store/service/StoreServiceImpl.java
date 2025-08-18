@@ -20,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
+    private final StoreLikeService storeLikeService;
     private final RegionService regionService;
     private final CategoryRepository categoryRepository;
     private final Random random = new Random();
@@ -83,13 +86,17 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StorePagingResponseDto<StoreListResponseDto> getStores(
-            double latitude, double longitude, int page, int size) {
+            double latitude, double longitude, int page, int size, Long userId) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        // 3km(= 3000m) 내에서만 조회
+        // 3km 내에서만 조회
         Page<Store> stores =
                 storeRepository.findWithinRadiusPoint(latitude, longitude, 3000, pageable);
+
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
+
+        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
 
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
@@ -100,7 +107,8 @@ public class StoreServiceImpl implements StoreService {
                                             longitude,
                                             store.getRegion().getLatitude(),
                                             store.getRegion().getLongitude());
-                            return storeConverter.toStoreListResponseDto(store, d);
+                            boolean liked = likedIds.contains(store.getId());
+                            return storeConverter.toStoreListResponseDto(store, d, liked);
                         }));
     }
 
@@ -138,7 +146,12 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
-            CategoryType categoryType, double latitude, double longitude, int page, int size) {
+            CategoryType categoryType,
+            double latitude,
+            double longitude,
+            int page,
+            int size,
+            Long userId) {
 
         Category category =
                 categoryRepository
@@ -151,6 +164,10 @@ public class StoreServiceImpl implements StoreService {
                 storeRepository.findWithinRadiusPointByCategory(
                         category.getId(), latitude, longitude, 3000, pageable);
 
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
+
+        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
+
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
                         store -> {
@@ -160,13 +177,14 @@ public class StoreServiceImpl implements StoreService {
                                             longitude,
                                             store.getRegion().getLatitude(),
                                             store.getRegion().getLongitude());
-                            return storeConverter.toStoreListResponseDto(store, d);
+                            boolean liked = likedIds.contains(store.getId());
+                            return storeConverter.toStoreListResponseDto(store, d, liked);
                         }));
     }
 
     @Override
     public StorePagingResponseDto<StoreListResponseDto> searchStoresByName(
-            String name, double latitude, double longitude, int page, int size) {
+            String name, double latitude, double longitude, int page, int size, Long userId) {
 
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("검색어를 입력하세요.");
@@ -178,6 +196,10 @@ public class StoreServiceImpl implements StoreService {
                 storeRepository.findWithinRadiusPointByName(
                         name, latitude, longitude, 3000, pageable);
 
+        List<Long> storeIds = stores.stream().map(Store::getId).toList();
+
+        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
+
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
                         store -> {
@@ -187,7 +209,8 @@ public class StoreServiceImpl implements StoreService {
                                             longitude,
                                             store.getRegion().getLatitude(),
                                             store.getRegion().getLongitude());
-                            return storeConverter.toStoreListResponseDto(store, d);
+                            boolean liked = likedIds.contains(store.getId());
+                            return storeConverter.toStoreListResponseDto(store, d, liked);
                         }));
     }
 }

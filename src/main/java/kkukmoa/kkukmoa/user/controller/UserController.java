@@ -2,14 +2,11 @@ package kkukmoa.kkukmoa.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-import kkukmoa.kkukmoa.apiPayload.code.ErrorReasonDto;
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
@@ -103,23 +100,7 @@ public class UserController {
             summary = "로그아웃 API",
             description =
                     "Access Token으로 인증 후 Refresh Token을 삭제하고 Access Token을 블랙리스트에 등록합니다.\n"
-                            + "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.",
-            responses = {
-                @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                        responseCode = "200",
-                        description = "성공적으로 로그아웃 처리됨",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ApiResponse.class))),
-                @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                        responseCode = "401",
-                        description = "인증 실패 (Access Token이 유효하지 않거나 Refresh Token 불일치)",
-                        content =
-                                @Content(
-                                        mediaType = "application/json",
-                                        schema = @Schema(implementation = ErrorReasonDto.class)))
-            })
+                            + "- 클라이언트는 호출 후 저장된 Access Token과 Refresh Token을 모두 제거해야 합니다.")
     @ApiErrorCodeExamples(value = {ErrorStatus.AUTHENTICATION_FAILED})
     public ApiResponse<String> logout(
             @Parameter(hidden = true) @AuthenticationPrincipal User user,
@@ -241,5 +222,14 @@ public class UserController {
     public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequestDto req) {
         registrationService.signup(req);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/nickname/exists")
+    @Operation(summary = "닉네임 중복 확인 API", description = "로컬 회원가입 시, 닉네임 중복 확인을 합니다.")
+    public ResponseEntity<ApiResponse<Boolean>> nicknameExists(
+            @Parameter(description = "중복 확인할 닉네임", required = true) @RequestParam("nickname")
+                    String nickname) {
+        boolean exists = userCommandService.isNicknameTaken(nickname);
+        return ResponseEntity.ok(ApiResponse.onSuccess(exists));
     }
 }

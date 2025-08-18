@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.payment.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class PaymentRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class PaymentConfirmRequestDto {
         private String paymentKey;
         private String orderId;

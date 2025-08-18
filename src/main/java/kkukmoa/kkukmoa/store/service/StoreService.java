@@ -8,13 +8,18 @@ public interface StoreService {
     StoreIdResponseDto createStore(StoreRequestDto request);
 
     StorePagingResponseDto<StoreListResponseDto> getStores(
-            double latitude, double longitude, int page, int size);
+            double latitude, double longitude, int page, int size, Long userId);
 
     StoreDetailResponseDto getStoreDetail(Long storeId);
 
     StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
-            CategoryType categoryType, double latitude, double longitude, int page, int size);
+            CategoryType categoryType,
+            double latitude,
+            double longitude,
+            int page,
+            int size,
+            Long userId);
 
     StorePagingResponseDto<StoreListResponseDto> searchStoresByName(
-            String name, double latitude, double longitude, int page, int size);
+            String name, double latitude, double longitude, int page, int size, Long userId);
 }

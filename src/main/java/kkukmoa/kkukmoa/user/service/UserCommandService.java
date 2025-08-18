@@ -1,7 +1,5 @@
 package kkukmoa.kkukmoa.user.service;
 
-import jakarta.transaction.Transactional;
-
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.common.util.AuthService;
@@ -23,12 +21,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -133,10 +133,12 @@ public class UserCommandService {
                         () -> {
                             log.info("신규 유저 회원가입: {}", email);
 
+                            String uniqueNickname = nickname + getRandomNumber(4);
+
                             User newUser =
                                     User.builder()
                                             .email(email)
-                                            .nickname(nickname)
+                                            .nickname(uniqueNickname)
                                             .socialType(SocialType.KAKAO)
                                             .agreeTerms(false)
                                             .agreePrivacy(false)
@@ -148,6 +150,12 @@ public class UserCommandService {
                             TokenResponseDto token = jwtTokenProvider.createToken(newUser);
                             return userConverter.toLoginDto(newUser, true, token);
                         });
+    }
+
+    private String getRandomNumber(int length) {
+        int max = (int) Math.pow(10, length);
+        int number = new Random().nextInt(max);
+        return String.format("%0" + length + "d", number);
     }
 
     @Transactional
@@ -170,6 +178,14 @@ public class UserCommandService {
         log.info("로그아웃 완료 - userId: {}, Access Token 블랙리스트 등록", user.getId());
     }
 
+    @Transactional(readOnly = true)
+    public boolean isNicknameTaken(String nickname) {
+        if (nickname == null || nickname.trim().isEmpty()) {
+            throw new UserHandler(ErrorStatus.INVALID_PARAMETER);
+        }
+        return userRepository.existsByNicknameIgnoreCase(nickname.trim());
+    }
+
     @Transactional
     public void registerLocalUser(LocalSignupRequestDto request) {
         // 이메일 중복 체크
@@ -177,20 +193,15 @@ public class UserCommandService {
             throw new UserHandler(ErrorStatus.DUPLICATION_DUPLICATION_EMAIL);
         }
 
-        // 닉네임 중복 체크
-        String nick = request.getNickname();
-        if (nick == null || nick.trim().isEmpty()) {
-            throw new UserHandler(ErrorStatus.INVALID_PARAMETER);
-        }
-        if (userRepository.existsByNicknameIgnoreCase(nick.trim())) {
-            throw new UserHandler(ErrorStatus.DUPLICATION_NICKNAME); // 전용 코드
+        if (isNicknameTaken(request.getNickname())) {
+            throw new UserHandler(ErrorStatus.DUPLICATION_NICKNAME);
         }
 
         // 사용자 생성 (시연용: 최소 필드만)
         User user =
                 User.builder()
                         .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword())) // 비밀번호는 반드시 해시
+                        .password(passwordEncoder.encode(request.getPassword()))
                         .nickname(request.getNickname())
                         .birthday(request.getBirthday())
                         .socialType(SocialType.LOCAL) // 로컬 가입 표시

@@ -97,6 +97,12 @@ public class OwnerCommandService {
      */
     @Transactional
     public void applyStoreRegistration(User user, OwnerRegisterRequest request) {
+
+        user =
+                userRepository
+                        .findById(user.getId())
+                        .orElseThrow(() -> new UserHandler(ErrorStatus.USER_NOT_FOUND));
+
         /* 1) 중복 신청 방지 정책
          */
         if (storeRepository.existsByOwner(user)) {
@@ -120,6 +126,7 @@ public class OwnerCommandService {
         Store store =
                 Store.builder()
                         .owner(user) // 신청자
+                        .merchantNumber(request.getMerchantNumber())
                         .name(request.getStoreName()) // 매장명
                         .number(request.getStorePhoneNumber()) // 대표 전화
                         .storeImage(request.getStoreImageUrl()) // 이미지 URL
@@ -135,8 +142,6 @@ public class OwnerCommandService {
 
         /* 5) 신청자 롤 갱신 (대기 상태를 표현)
          */
-        if (!user.getRoles().contains(UserType.PENDING_OWNER)) {
-            user.getRoles().add(UserType.PENDING_OWNER);
-        }
+        user.getRoles().add(UserType.PENDING_OWNER);
     }
 }

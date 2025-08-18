@@ -42,7 +42,6 @@ spring:
         default_batch_fetch_size: 1000
         jdbc:
           time_zone: Asia/Seoul
-
   jwt:
     secret: ${JWT_SECRET}
   data:
@@ -52,6 +51,7 @@ spring:
       port: 6379
   toss:
     secret-key: ${TOSS_SECRET_KEY}
+    client-key: ${TOSS_CLIENT_KEY}
   servlet:
     multipart:
       enabled: true
@@ -68,6 +68,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
 cors:
   allowed-origins: https://kkukmoa.shop,http://*.localhost:8080,http://*.localhost:8081
 
@@ -77,3 +78,5 @@ aws:
     secret-key: ${AWS_SECRET_KEY}
     region: ${AWS_REGION}
     bucket: ${AWS_S3_BUCKET}
+
+
