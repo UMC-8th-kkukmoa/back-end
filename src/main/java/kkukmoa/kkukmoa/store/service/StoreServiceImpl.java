@@ -6,7 +6,7 @@ import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
 import kkukmoa.kkukmoa.region.domain.Region;
-import kkukmoa.kkukmoa.region.service.RegionService;
+import kkukmoa.kkukmoa.region.service.RegionCommandService;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
@@ -31,7 +31,7 @@ public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
     private final StoreLikeService storeLikeService;
-    private final RegionService regionService;
+    private final RegionCommandService regionCommandService;
     private final CategoryRepository categoryRepository;
     private final Random random = new Random();
 
@@ -39,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
     public StoreIdResponseDto createStore(StoreRequestDto request) {
 
         Region region =
-                regionService.createRegion(
+                regionCommandService.createRegion(
                         request.getAddress(),
                         request.getDetailAddress(),
                         request.getLatitude(),
