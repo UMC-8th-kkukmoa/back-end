@@ -37,7 +37,7 @@ public class UserController {
     private final AuthExchangeRepository authExchangeRepository;
     private final AuthExchangeService authExchangeService;
     private final ReissueService reissueService;
-    private final VerificationService verificationService;
+    private final VerificationCommandService verificationCommandService;
     private final RegistrationCommandService registrationCommandService;
 
     @GetMapping("/oauth/kakao")
@@ -188,7 +188,7 @@ public class UserController {
                     - 클라이언트는 이후 /verification/confirm API로 코드를 검증해야 합니다.
                     """)
     public ResponseEntity<Void> request(@Valid @RequestBody VerificationRequestDto req) {
-        verificationService.requestOtp(req.email());
+        verificationCommandService.requestOtp(req.email());
         return ResponseEntity.ok().build();
     }
 
@@ -205,7 +205,7 @@ public class UserController {
                     """)
     public ResponseEntity<VerificationConfirmResponseDto> confirm(
             @Valid @RequestBody VerificationConfirmDto req) {
-        return ResponseEntity.ok(verificationService.confirm(req.email(), req.code()));
+        return ResponseEntity.ok(verificationCommandService.confirm(req.email(), req.code()));
     }
 
     @PostMapping("/signup")
