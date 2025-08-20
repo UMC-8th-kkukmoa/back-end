@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.store.service;
 
 import jakarta.persistence.EntityNotFoundException;
+
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
@@ -10,7 +11,9 @@ import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StorePagingResponseDto;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -77,9 +80,9 @@ public class StoreQueryService {
         double a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2)
                         + Math.cos(Math.toRadians(lat1))
-                        * Math.cos(Math.toRadians(lat2))
-                        * Math.sin(dLon / 2)
-                        * Math.sin(dLon / 2);
+                                * Math.cos(Math.toRadians(lat2))
+                                * Math.sin(dLon / 2)
+                                * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c; // km 단위
@@ -153,7 +156,6 @@ public class StoreQueryService {
                                             store.getRegion().getLongitude());
                             boolean liked = likedIds.contains(store.getId());
                             return storeConverter.toStoreListResponseDto(store, d, liked);
-
                         }));
     }
 }

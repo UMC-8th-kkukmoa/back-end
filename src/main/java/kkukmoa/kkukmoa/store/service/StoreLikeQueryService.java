@@ -1,6 +1,7 @@
 package kkukmoa.kkukmoa.store.service;
 
 import jakarta.annotation.Nullable;
+
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.StoreLike;
@@ -9,6 +10,7 @@ import kkukmoa.kkukmoa.store.dto.response.StorePagingResponseDto;
 import kkukmoa.kkukmoa.store.repository.StoreLikeRepository;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,9 +89,9 @@ public class StoreLikeQueryService {
         double a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2)
                         + Math.cos(Math.toRadians(lat1))
-                        * Math.cos(Math.toRadians(lat2))
-                        * Math.sin(dLon / 2)
-                        * Math.sin(dLon / 2);
+                                * Math.cos(Math.toRadians(lat2))
+                                * Math.sin(dLon / 2)
+                                * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double km = R * c;
         return Math.round(km * 100.0) / 100.0; // 소수점 2자리

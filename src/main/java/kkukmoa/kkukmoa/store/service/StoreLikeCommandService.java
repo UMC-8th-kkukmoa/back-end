@@ -1,6 +1,5 @@
 package kkukmoa.kkukmoa.store.service;
 
-
 import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.UserHandler;
 import kkukmoa.kkukmoa.store.domain.Store;
@@ -8,7 +7,9 @@ import kkukmoa.kkukmoa.store.domain.StoreLike;
 import kkukmoa.kkukmoa.store.repository.StoreLikeRepository;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "가게 API", description = "가게 등록, 조회 관련 API")
 @RequestMapping("/v1/stores")
 public class StoreController {
-//    private final StoreCommandService storeCommandService;
+    //    private final StoreCommandService storeCommandService;
     private final StoreQueryService storeQueryService;
 
     @GetMapping
@@ -111,7 +111,8 @@ public class StoreController {
         Long userId = (user == null) ? null : user.getUserId();
 
         return ApiResponse.onSuccess(
-                storeQueryService.searchStoresByName(name, latitude, longitude, page, size, userId));
+                storeQueryService.searchStoresByName(
+                        name, latitude, longitude, page, size, userId));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

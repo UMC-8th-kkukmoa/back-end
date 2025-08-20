@@ -37,9 +37,9 @@ public class Region extends BaseEntity {
     @Column(columnDefinition = "POINT SRID 4326")
     private Point location;
 
-//    public void setLocationFromLatLon() {
-//        this.location = GeometryUtils.createPoint(longitude, latitude);
-//    }
+    //    public void setLocationFromLatLon() {
+    //        this.location = GeometryUtils.createPoint(longitude, latitude);
+    //    }
 
     @PrePersist
     @PreUpdate
