@@ -27,17 +27,4 @@ public class StoreRequestDto {
     private String category;
 
     private String storeImage;
-
-    //    @Schema(example = "09002000", description = "오픈HHmm+클로즈HHmm 붙인 값")
-    //    private String timeRange;
-    //
-    //    public void parseTimes() {
-    //        if (timeRange != null && timeRange.length() == 8) {
-    //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-    //            this.openingHours = LocalTime.parse(timeRange.substring(0, 4), formatter);
-    //            this.closingHours = LocalTime.parse(timeRange.substring(4), formatter);
-    //        } else {
-    //            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다. (예: 09002000)");
-    //        }
-    //    }
 }
