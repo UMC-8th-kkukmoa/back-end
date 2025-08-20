@@ -43,11 +43,14 @@ public class VoucherUsage extends BaseEntity {
     @Column(length = 200, nullable = true)
     private String storeName;
 
+    private String storeImage;
+
     public static VoucherUsage of(Voucher voucher, User user, Store store, int usedAmount) {
         VoucherUsage usage = new VoucherUsage();
         usage.voucher = voucher;
         usage.user = user;
         usage.store = store;
+        usage.storeImage = (store != null) ? store.getStoreImage() : null;
         usage.usedAmount = usedAmount;
         usage.usedAt = LocalDateTime.now();
         usage.storeName = (store != null) ? store.getName() : null;

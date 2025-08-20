@@ -28,6 +28,7 @@ public class VoucherUsageQdslRepositoryImpl implements VoucherUsageQdslRepositor
     ) {
         QVoucherUsage vu = QVoucherUsage.voucherUsage;
 
+
         BooleanBuilder where = new BooleanBuilder()
                 .and(vu.user.id.eq(userId));
 
@@ -54,8 +55,10 @@ public class VoucherUsageQdslRepositoryImpl implements VoucherUsageQdslRepositor
                         vu.voucher.id,
                         vu.store.id,
                         vu.storeName,
+                        vu.storeImage,
                         vu.usedAmount,
                         vu.usedAt
+
                 ))
                 .from(vu)
                 .where(where)

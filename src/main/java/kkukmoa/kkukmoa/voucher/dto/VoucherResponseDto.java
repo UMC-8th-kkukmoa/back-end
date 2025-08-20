@@ -97,6 +97,7 @@ public class VoucherResponseDto {
         private Long voucherId;
         private String storeName;
         private Long storeId;
+        private String storeImage;
         private int usedAmount;
 
         @JsonIgnore

@@ -14,6 +14,7 @@ public class VoucherUsageRow {
     private Long voucherId;
     private Long storeId;
     private String storeName;
+    private String storeImage;
     private Integer usedAmount;
     @JsonIgnore
     private LocalDateTime usedAt;
