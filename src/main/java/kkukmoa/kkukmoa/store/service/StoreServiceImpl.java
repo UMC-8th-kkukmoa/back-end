@@ -30,7 +30,8 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
-    private final StoreLikeService storeLikeService;
+    private final StoreLikeCommandService storeLikeCommandService;
+    private final StoreLikeQueryService storeLikeQueryService;
     private final RegionCommandService regionCommandService;
     private final CategoryRepository categoryRepository;
     private final Random random = new Random();
@@ -96,7 +97,7 @@ public class StoreServiceImpl implements StoreService {
 
         List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
-        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
+        Set<Long> likedIds = storeLikeQueryService.likedStoreIdsIn(userId, storeIds);
 
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
@@ -166,7 +167,7 @@ public class StoreServiceImpl implements StoreService {
 
         List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
-        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
+        Set<Long> likedIds = storeLikeQueryService.likedStoreIdsIn(userId, storeIds);
 
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
@@ -198,7 +199,7 @@ public class StoreServiceImpl implements StoreService {
 
         List<Long> storeIds = stores.stream().map(Store::getId).toList();
 
-        Set<Long> likedIds = storeLikeService.likedStoreIdsIn(userId, storeIds);
+        Set<Long> likedIds = storeLikeQueryService.likedStoreIdsIn(userId, storeIds);
 
         return storeConverter.toStorePagingResponseDto(
                 stores.map(
