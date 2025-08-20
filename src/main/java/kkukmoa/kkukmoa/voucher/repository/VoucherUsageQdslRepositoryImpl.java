@@ -54,6 +54,7 @@ public class VoucherUsageQdslRepositoryImpl implements VoucherUsageQdslRepositor
                                 vu.voucher.id,
                                 vu.store.id,
                                 vu.storeName,
+                                vu.storeImage,
                                 vu.usedAmount,
                                 vu.usedAt))
                 .from(vu)
