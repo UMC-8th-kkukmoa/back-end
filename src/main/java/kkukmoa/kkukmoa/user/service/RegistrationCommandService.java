@@ -1,32 +1,27 @@
 package kkukmoa.kkukmoa.user.service;
 
-import jakarta.transaction.Transactional;
-
 import kkukmoa.kkukmoa.config.security.JwtTokenProvider;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.user.dto.SignupRequestDto;
 import kkukmoa.kkukmoa.user.enums.SocialType;
 import kkukmoa.kkukmoa.user.enums.UserType;
 import kkukmoa.kkukmoa.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class RegistrationServiceImpl implements RegistrationService {
+public class RegistrationCommandService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
-    @Transactional
     public void signup(SignupRequestDto req) {
         final String email = normalize(req.email());
 

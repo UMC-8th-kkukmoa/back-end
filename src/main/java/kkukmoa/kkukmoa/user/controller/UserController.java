@@ -38,7 +38,7 @@ public class UserController {
     private final AuthExchangeService authExchangeService;
     private final ReissueService reissueService;
     private final VerificationService verificationService;
-    private final RegistrationService registrationService;
+    private final RegistrationCommandService registrationCommandService;
 
     @GetMapping("/oauth/kakao")
     @Operation(
@@ -220,7 +220,7 @@ public class UserController {
                     - 성공 시 200 OK를 반환합니다.
                     """)
     public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequestDto req) {
-        registrationService.signup(req);
+        registrationCommandService.signup(req);
         return ResponseEntity.ok().build();
     }
 
