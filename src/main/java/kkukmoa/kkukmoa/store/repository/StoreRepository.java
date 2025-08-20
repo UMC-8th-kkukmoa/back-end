@@ -147,4 +147,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Page<PendingStoreSummary> findByStatus(@Param("status") StoreStatus status, Pageable pageable);
 
     Optional<Store> findByIdAndStatus(Long id, StoreStatus status);
+
+    Optional<Store> findByOwnerId(Long ownerId);
 }

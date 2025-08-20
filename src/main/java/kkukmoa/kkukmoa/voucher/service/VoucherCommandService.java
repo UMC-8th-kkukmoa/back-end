@@ -4,16 +4,21 @@ import kkukmoa.kkukmoa.apiPayload.code.status.ErrorStatus;
 import kkukmoa.kkukmoa.apiPayload.exception.GeneralException;
 import kkukmoa.kkukmoa.apiPayload.exception.handler.VoucherHandler;
 import kkukmoa.kkukmoa.common.enums.QrCodeType;
+import kkukmoa.kkukmoa.common.util.AuthService;
 import kkukmoa.kkukmoa.common.util.QrCodeUtil;
 import kkukmoa.kkukmoa.config.websocket.handler.QrWebSocketHandler;
 import kkukmoa.kkukmoa.owner.dto.QrMessageDto.QrOwnerScanDto;
 import kkukmoa.kkukmoa.payment.domain.Payment;
 import kkukmoa.kkukmoa.stamp.enums.CouponStatus;
+import kkukmoa.kkukmoa.store.domain.Store;
+import kkukmoa.kkukmoa.store.repository.StoreRepository;
 import kkukmoa.kkukmoa.user.domain.User;
 import kkukmoa.kkukmoa.voucher.converter.VoucherConverter;
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
+import kkukmoa.kkukmoa.voucher.domain.VoucherUsage;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
+import kkukmoa.kkukmoa.voucher.repository.VoucherUsageRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +37,11 @@ import java.util.List;
 public class VoucherCommandService {
 
     private final VoucherRepository voucherRepository;
+    private final VoucherUsageRepository voucherUsageRepository;
+    private final StoreRepository storeRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final QrWebSocketHandler qrWebSocketHandler;
+    private final AuthService authService;
 
     /**
      * 결제 정보와 사용자 정보를 바탕으로 단가와 수량에 따라 금액권(QR 기반)을 분할 발급합니다.
@@ -115,6 +123,17 @@ public class VoucherCommandService {
 
         voucher.deductValue(useAmount); // 금액권 사용
         voucherRepository.save(voucher); // 금액권의 바뀐 정보 저장
+
+        // 사장님 권한 검증 (사장님 인당 가게 1개 가정)
+        Long ownerId = authService.getCurrentUser().getId();
+        Store store =
+                storeRepository
+                        .findByOwnerId(ownerId)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.OWNER_STORE_NOT_FOUND));
+
+        // 금액권 사용 내역 저장
+        VoucherUsage usage = VoucherUsage.of(voucher, voucher.getUser(), store, useAmount);
+        voucherUsageRepository.save(usage);
 
         // Web Socket 메시지 Dto 생성
         QrOwnerScanDto messageDto =
