@@ -52,6 +52,7 @@ public class VoucherConverter {
                 .remainingValue(voucher.getRemainingValue())
                 .build();
     }
+
     public static VoucherResponseDto.VoucherUsageDto toUsage(VoucherUsage u) {
         return VoucherResponseDto.VoucherUsageDto.builder()
                 .usageId(u.getId())

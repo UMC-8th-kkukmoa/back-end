@@ -9,7 +9,6 @@ import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.common.util.swagger.ApiErrorCodeExamples;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 import kkukmoa.kkukmoa.voucher.dto.VoucherUsageRow;
-import kkukmoa.kkukmoa.voucher.service.VoucherCommandService;
 import kkukmoa.kkukmoa.voucher.service.VoucherQueryService;
 
 import lombok.RequiredArgsConstructor;
@@ -78,52 +77,55 @@ public class VoucherController {
         return "toss"; // templates/toss.html (Thymeleaf 등)
     }
 
-
     /**
-     * 내 금액권 사용내역 조회 (커서 기반 무한스크롤)
-     * - 최신 사용내역부터 정렬 (usedAt DESC, id DESC)
-     * - 커서: base64url("epochMillis:id") 형식
+     * 내 금액권 사용내역 조회 (커서 기반 무한스크롤) - 최신 사용내역부터 정렬 (usedAt DESC, id DESC) - 커서:
+     * base64url("epochMillis:id") 형식
      */
     @Operation(
             summary = "내 금액권 사용내역 조회 (커서 기반 무한스크롤)",
-            description = """
-        로그인한 사용자의 금액권 사용내역을 **커서 기반 무한스크롤** 방식으로 조회합니다.
+            description =
+                    """
+                     로그인한 사용자의 금액권 사용내역을 **커서 기반 무한스크롤** 방식으로 조회합니다.
 
-        🔹 정렬 기준: `usedAt DESC`, `id DESC` \s
-        🔹 기본 조회: 최신 순부터 10개 조회 \s
-        🔹 커서(cursor): 서버 응답의 `nextCursor` 값을 그대로 다음 요청에 사용 \s
-            - 커서 형식: base64url("epochMillis:id") \s
-            - 클라이언트가 직접 만들 필요 없음 (서버 응답값 사용)
+                     🔹 정렬 기준: `usedAt DESC`, `id DESC` \s
+                     🔹 기본 조회: 최신 순부터 10개 조회 \s
+                     🔹 커서(cursor): 서버 응답의 `nextCursor` 값을 그대로 다음 요청에 사용 \s
+                         - 커서 형식: base64url("epochMillis:id") \s
+                         - 클라이언트가 직접 만들 필요 없음 (서버 응답값 사용)
 
-        🔹 날짜 필터링: 선택적으로 사용 가능 \s
-            - `from`: 조회 시작일 (포함), 형식 `yyyy-MM-dd` \s
-            - `to`: 조회 종료일 (포함), 형식 `yyyy-MM-dd` \s
-            - 미입력 시 전체 기간에서 최신순으로 조회
+                     🔹 날짜 필터링: 선택적으로 사용 가능 \s
+                         - `from`: 조회 시작일 (포함), 형식 `yyyy-MM-dd` \s
+                         - `to`: 조회 종료일 (포함), 형식 `yyyy-MM-dd` \s
+                         - 미입력 시 전체 기간에서 최신순으로 조회
 
-        🔹 limit:
-            - 요청당 최대 조회 개수 지정 (기본 10개, 최대 100개)
-            - ex) `?limit=20` → 20개 조회
+                     🔹 limit:
+                         - 요청당 최대 조회 개수 지정 (기본 10개, 최대 100개)
+                         - ex) `?limit=20` → 20개 조회
 
-        ✨ 예시 요청:
-        - `/v1/vouchers/usage` (최신순 10개)
-        - `/v1/vouchers/usage?cursor=MT7255...:123&from=2025-08-01&to=2025-08-31&limit=10`
-       \s"""
-    )
-
+                     ✨ 예시 요청:
+                     - `/v1/vouchers/usage` (최신순 10개)
+                     - `/v1/vouchers/usage?cursor=MT7255...:123&from=2025-08-01&to=2025-08-31&limit=10`
+                    \s\
+                    """)
     @GetMapping("/usage")
-    public ResponseEntity<ApiResponse<VoucherResponseDto.CursorPageResponse<VoucherUsageRow>>> getMyUsage(
-            @Parameter(description = "페이지당 조회 개수 (최대 100)", example = "5")
-            @RequestParam(required = false) Integer limit,
-
-            @Parameter(description = "커서 (base64url(\"epochMillis:id\") 형식)", example = "MT725500000000:123")
-            @RequestParam(required = false) String cursor,
-
-            @Parameter(description = "조회 시작 날짜 (yyyy-MM-dd)", example = "2025-08-01")
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-
-            @Parameter(description = "조회 종료 날짜 (yyyy-MM-dd)", example = "2025-08-20")
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
-    ){
+    public ResponseEntity<ApiResponse<VoucherResponseDto.CursorPageResponse<VoucherUsageRow>>>
+            getMyUsage(
+                    @Parameter(description = "페이지당 조회 개수 (최대 100)", example = "5")
+                            @RequestParam(required = false)
+                            Integer limit,
+                    @Parameter(
+                                    description = "커서 (base64url(\"epochMillis:id\") 형식)",
+                                    example = "MT725500000000:123")
+                            @RequestParam(required = false)
+                            String cursor,
+                    @Parameter(description = "조회 시작 날짜 (yyyy-MM-dd)", example = "2025-08-01")
+                            @RequestParam(required = false)
+                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                            LocalDate from,
+                    @Parameter(description = "조회 종료 날짜 (yyyy-MM-dd)", example = "2025-08-20")
+                            @RequestParam(required = false)
+                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                            LocalDate to) {
         var data = voucherQueryService.getMyUsagesByCursor(limit, cursor, from, to);
         return ResponseEntity.ok(ApiResponse.onSuccess(data));
     }

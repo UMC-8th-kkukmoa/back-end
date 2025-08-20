@@ -5,11 +5,11 @@ import jakarta.persistence.*;
 import kkukmoa.kkukmoa.common.BaseEntity;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.user.domain.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 import java.time.LocalDateTime;
 
@@ -54,4 +54,3 @@ public class VoucherUsage extends BaseEntity {
         return usage;
     }
 }
-

@@ -12,6 +12,7 @@ public class DateUtil {
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
     private static final DateTimeFormatter KOREAN_DATE_WITH_DAY_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy년 M월 d일 (E)", Locale.KOREAN);
+
     /**
      * 남은 일수를 계산하여 "D-xx" 형식으로 반환 오늘 + 유효일수로 만료일 계산
      *
@@ -36,9 +37,8 @@ public class DateUtil {
             return -1; // 형식이 잘못된 경우 또는 파싱 오류는 -1로 처리
         }
     }
-    /**
-     * LocalDateTime → "2025년 8월 8일 (금)" 형식으로 포맷
-     */
+
+    /** LocalDateTime → "2025년 8월 8일 (금)" 형식으로 포맷 */
     public static String formatKoreanFullDateWithDay(LocalDateTime dateTime) {
         return dateTime.atZone(KOREA_ZONE).format(KOREAN_DATE_WITH_DAY_FORMATTER);
     }
