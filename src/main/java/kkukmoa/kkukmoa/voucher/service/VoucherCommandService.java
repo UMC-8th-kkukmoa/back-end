@@ -18,8 +18,8 @@ import kkukmoa.kkukmoa.voucher.domain.Voucher;
 import kkukmoa.kkukmoa.voucher.domain.VoucherUsage;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 import kkukmoa.kkukmoa.voucher.repository.VoucherRepository;
-
 import kkukmoa.kkukmoa.voucher.repository.VoucherUsageRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +42,7 @@ public class VoucherCommandService {
     private final RedisTemplate<String, String> redisTemplate;
     private final QrWebSocketHandler qrWebSocketHandler;
     private final AuthService authService;
+
     /**
      * 결제 정보와 사용자 정보를 바탕으로 단가와 수량에 따라 금액권(QR 기반)을 분할 발급합니다.
      *
@@ -123,10 +124,12 @@ public class VoucherCommandService {
         voucher.deductValue(useAmount); // 금액권 사용
         voucherRepository.save(voucher); // 금액권의 바뀐 정보 저장
 
-        //사장님 권한 검증 (사장님 인당 가게 1개 가정)
+        // 사장님 권한 검증 (사장님 인당 가게 1개 가정)
         Long ownerId = authService.getCurrentUser().getId();
-        Store store = storeRepository.findByOwnerId(ownerId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.OWNER_STORE_NOT_FOUND));
+        Store store =
+                storeRepository
+                        .findByOwnerId(ownerId)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.OWNER_STORE_NOT_FOUND));
 
         // 금액권 사용 내역 저장
         VoucherUsage usage = VoucherUsage.of(voucher, voucher.getUser(), store, useAmount);

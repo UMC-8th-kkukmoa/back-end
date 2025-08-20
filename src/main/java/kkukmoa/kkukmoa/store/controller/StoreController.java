@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.response.*;
-import kkukmoa.kkukmoa.store.service.StoreService;
+import kkukmoa.kkukmoa.store.service.StoreQueryService;
 import kkukmoa.kkukmoa.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "가게 API", description = "가게 등록, 조회 관련 API")
 @RequestMapping("/v1/stores")
 public class StoreController {
-    private final StoreService storeService;
-
-    //    @PostMapping
-    //    @Operation(summary = "가게 등록 API", description = "가게 정보를 등록하고 가게 ID를 반환합니다.")
-    //    public ApiResponse<StoreIdResponseDto> createStore(
-    //            @RequestBody @Valid StoreRequestDto request) {
-    //        return ApiResponse.onSuccess(storeService.createStore(request));
-    //    }
+    //    private final StoreCommandService storeCommandService;
+    private final StoreQueryService storeQueryService;
 
     @GetMapping
     @Operation(
@@ -63,13 +57,13 @@ public class StoreController {
         Long userId = (user == null) ? null : user.getUserId();
 
         return ApiResponse.onSuccess(
-                storeService.getStores(latitude, longitude, page, size, userId));
+                storeQueryService.getStores(latitude, longitude, page, size, userId));
     }
 
     @GetMapping("/{storeId}")
     @Operation(summary = "가게 상세 조회 API", description = "storeId로 특정 가게의 상세 정보를 조회합니다.")
     public ApiResponse<StoreDetailResponseDto> getStoreDetail(@PathVariable Long storeId) {
-        return ApiResponse.onSuccess(storeService.getStoreDetail(storeId));
+        return ApiResponse.onSuccess(storeQueryService.getStoreDetail(storeId));
     }
 
     @GetMapping("/category")
@@ -92,7 +86,7 @@ public class StoreController {
         Long userId = (user == null) ? null : user.getUserId();
 
         return ApiResponse.onSuccess(
-                storeService.getStoresByCategory(
+                storeQueryService.getStoresByCategory(
                         categoryType, latitude, longitude, page, size, userId));
     }
 
@@ -117,7 +111,8 @@ public class StoreController {
         Long userId = (user == null) ? null : user.getUserId();
 
         return ApiResponse.onSuccess(
-                storeService.searchStoresByName(name, latitude, longitude, page, size, userId));
+                storeQueryService.searchStoresByName(
+                        name, latitude, longitude, page, size, userId));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

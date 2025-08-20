@@ -1,9 +1,11 @@
 package kkukmoa.kkukmoa.voucher.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import kkukmoa.kkukmoa.common.util.DateUtil;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -100,14 +102,12 @@ public class VoucherResponseDto {
         private String storeImage;
         private int usedAmount;
 
-        @JsonIgnore
-        private LocalDateTime usedAt;
+        @JsonIgnore private LocalDateTime usedAt;
 
         @Schema(description = "사용 일시 (예: 2025년 8월 8일 (금))", example = "2025년 8월 8일 (금)")
         public String getUsedAtFormatted() {
             return DateUtil.formatKoreanFullDateWithDay(this.usedAt);
         }
-
     }
 
     @Getter
@@ -117,6 +117,4 @@ public class VoucherResponseDto {
         private String nextCursor; // null이면 다음 페이지 없음
         private boolean hasNext;
     }
-
-
 }
