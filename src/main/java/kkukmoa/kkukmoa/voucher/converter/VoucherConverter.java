@@ -4,6 +4,7 @@ import kkukmoa.kkukmoa.common.enums.QrCodeType;
 import kkukmoa.kkukmoa.common.util.DateUtil;
 import kkukmoa.kkukmoa.common.util.QrCodeUtil;
 import kkukmoa.kkukmoa.voucher.domain.Voucher;
+import kkukmoa.kkukmoa.voucher.domain.VoucherUsage;
 import kkukmoa.kkukmoa.voucher.dto.VoucherResponseDto;
 
 import lombok.AccessLevel;
@@ -49,6 +50,17 @@ public class VoucherConverter {
                 .usedAmount(useAmount)
                 .validDays(voucher.getValidDays())
                 .remainingValue(voucher.getRemainingValue())
+                .build();
+    }
+
+    public static VoucherResponseDto.VoucherUsageDto toUsage(VoucherUsage u) {
+        return VoucherResponseDto.VoucherUsageDto.builder()
+                .usageId(u.getId())
+                .voucherId(u.getVoucher().getId())
+                .storeId(u.getStore() != null ? u.getStore().getId() : null)
+                .storeName(u.getStore() != null ? u.getStore().getName() : null)
+                .usedAmount(u.getUsedAmount())
+                .usedAt(u.getUsedAt())
                 .build();
     }
 }
