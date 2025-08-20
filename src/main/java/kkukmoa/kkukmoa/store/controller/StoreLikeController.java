@@ -7,7 +7,8 @@ import kkukmoa.kkukmoa.apiPayload.exception.ApiResponse;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
 import kkukmoa.kkukmoa.store.dto.response.StorePagingResponseDto;
-import kkukmoa.kkukmoa.store.service.StoreLikeService;
+import kkukmoa.kkukmoa.store.service.StoreLikeCommandService;
+import kkukmoa.kkukmoa.store.service.StoreLikeQueryService;
 import kkukmoa.kkukmoa.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/stores/like")
 public class StoreLikeController {
 
-    private final StoreLikeService storeLikeService;
+    private final StoreLikeCommandService storeLikeCommandService;
+    private final StoreLikeQueryService storeLikeQueryService;
 
     @PostMapping("/{storeId}")
     @Operation(summary = "가게 찜", description = "해당 가게를 찜합니다. 이미 찜 상태여도 성공으로 처리합니다.")
     public ResponseEntity<ApiResponse<Boolean>> like(
             @AuthenticationPrincipal User user, @PathVariable Long storeId) {
-        boolean liked = storeLikeService.like(user.getUserId(), storeId);
+        boolean liked = storeLikeCommandService.like(user.getUserId(), storeId);
         return ResponseEntity.ok(ApiResponse.onSuccess(liked));
     }
 
@@ -38,21 +40,21 @@ public class StoreLikeController {
     @Operation(summary = "가게 찜 해제", description = "해당 가게의 찜을 해제합니다. 존재하지 않아도 성공으로 처리합니다.")
     public ResponseEntity<ApiResponse<Boolean>> unlike(
             @AuthenticationPrincipal User user, @PathVariable Long storeId) {
-        boolean liked = storeLikeService.unlike(user.getUserId(), storeId);
+        boolean liked = storeLikeCommandService.unlike(user.getUserId(), storeId);
         return ResponseEntity.ok(ApiResponse.onSuccess(liked));
     }
 
     @GetMapping("/{storeId}/count")
     @Operation(summary = "가게 찜 수", description = "특정 가게가 받은 찜 개수를 반환합니다.")
     public ResponseEntity<ApiResponse<Long>> likeCount(@PathVariable Long storeId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(storeLikeService.likeCount(storeId)));
+        return ResponseEntity.ok(ApiResponse.onSuccess(storeLikeQueryService.likeCount(storeId)));
     }
 
     @GetMapping("/{storeId}/me")
     @Operation(summary = "내가 이 가게를 찜했는지 여부", description = "true/false 반환")
     public ResponseEntity<ApiResponse<Boolean>> isMyLike(
             @AuthenticationPrincipal User user, @PathVariable Long storeId) {
-        boolean liked = storeLikeService.isLiked(user.getUserId(), storeId);
+        boolean liked = storeLikeQueryService.isLiked(user.getUserId(), storeId);
         return ResponseEntity.ok(ApiResponse.onSuccess(liked));
     }
 
@@ -68,7 +70,7 @@ public class StoreLikeController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) CategoryType categoryType) {
         var res =
-                storeLikeService.getMyLikedStores(
+                storeLikeQueryService.getMyLikedStores(
                         user.getUserId(), latitude, longitude, page, size, categoryType);
         return ResponseEntity.ok(ApiResponse.onSuccess(res));
     }

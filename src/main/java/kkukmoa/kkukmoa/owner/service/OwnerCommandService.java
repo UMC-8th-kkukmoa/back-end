@@ -9,7 +9,7 @@ import kkukmoa.kkukmoa.owner.dto.request.OwnerLoginRequest;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerRegisterRequest;
 import kkukmoa.kkukmoa.owner.dto.request.OwnerSignupRequest;
 import kkukmoa.kkukmoa.region.domain.Region;
-import kkukmoa.kkukmoa.region.service.RegionService;
+import kkukmoa.kkukmoa.region.service.RegionCommandService;
 import kkukmoa.kkukmoa.store.domain.Store;
 import kkukmoa.kkukmoa.store.enums.StoreStatus;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
@@ -33,7 +33,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class OwnerCommandService {
 
-    private final RegionService regionService;
+    private final RegionCommandService regionCommandService;
 
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
@@ -117,7 +117,7 @@ public class OwnerCommandService {
 
         /* 3) Region 연동 */
         Region region =
-                regionService.createRegion(
+                regionCommandService.createRegion(
                         request.getStoreAddress(),
                         request.getStoreAddressDetail(),
                         request.getLatitude(),
