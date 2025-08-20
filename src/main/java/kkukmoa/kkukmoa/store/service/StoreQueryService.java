@@ -1,91 +1,35 @@
 package kkukmoa.kkukmoa.store.service;
 
 import jakarta.persistence.EntityNotFoundException;
-
 import kkukmoa.kkukmoa.category.domain.Category;
 import kkukmoa.kkukmoa.category.domain.CategoryType;
 import kkukmoa.kkukmoa.category.repository.CategoryRepository;
-import kkukmoa.kkukmoa.region.domain.Region;
-import kkukmoa.kkukmoa.region.service.RegionCommandService;
 import kkukmoa.kkukmoa.store.converter.StoreConverter;
 import kkukmoa.kkukmoa.store.domain.Store;
-import kkukmoa.kkukmoa.store.dto.request.StoreRequestDto;
-import kkukmoa.kkukmoa.store.dto.response.*;
+import kkukmoa.kkukmoa.store.dto.response.StoreDetailResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StoreListResponseDto;
+import kkukmoa.kkukmoa.store.dto.response.StorePagingResponseDto;
 import kkukmoa.kkukmoa.store.repository.StoreRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class StoreServiceImpl implements StoreService {
+@Transactional(readOnly = true)
+public class StoreQueryService {
 
     private final StoreRepository storeRepository;
     private final StoreConverter storeConverter;
-    private final StoreLikeCommandService storeLikeCommandService;
     private final StoreLikeQueryService storeLikeQueryService;
-    private final RegionCommandService regionCommandService;
     private final CategoryRepository categoryRepository;
-    private final Random random = new Random();
 
-    @Override
-    public StoreIdResponseDto createStore(StoreRequestDto request) {
-
-        Region region =
-                regionCommandService.createRegion(
-                        request.getAddress(),
-                        request.getDetailAddress(),
-                        request.getLatitude(),
-                        request.getLongitude());
-
-        CategoryType categoryType = CategoryType.fromDisplayName(request.getCategory());
-        Category category =
-                categoryRepository
-                        .findByType(categoryType)
-                        .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다."));
-
-        Store store = createAndSaveStore(request, region, category, request.getStoreImage());
-
-        return new StoreIdResponseDto(store.getId());
-    }
-
-    private Store createAndSaveStore(
-            StoreRequestDto request, Region region, Category category, String storeImageUrl) {
-
-        Store newStore = storeConverter.toStore(request, region, category);
-
-        Store storeWithMerchantNumber =
-                newStore.toBuilder()
-                        .merchantNumber(createMerchantNumber())
-                        .storeImage(storeImageUrl)
-                        .build();
-
-        return storeRepository.save(storeWithMerchantNumber);
-    }
-
-    private String createMerchantNumber() {
-
-        String merchantNumber;
-        int attempts = 0;
-        final int MAX_ATTEMPTS = 100;
-        do {
-            if (attempts++ >= MAX_ATTEMPTS) {
-                throw new IllegalStateException("가맹점 번호 생성 실패: 최대 시도 횟수 초과");
-            }
-            merchantNumber = String.format("%010d", random.nextLong(1_000_000_0000L));
-        } while (storeRepository.findByMerchantNumber(merchantNumber).isPresent());
-        return merchantNumber;
-    }
-
-    @Override
     public StorePagingResponseDto<StoreListResponseDto> getStores(
             double latitude, double longitude, int page, int size, Long userId) {
 
@@ -113,7 +57,6 @@ public class StoreServiceImpl implements StoreService {
                         }));
     }
 
-    @Override
     public StoreDetailResponseDto getStoreDetail(Long storeId) {
 
         Store store =
@@ -134,9 +77,9 @@ public class StoreServiceImpl implements StoreService {
         double a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2)
                         + Math.cos(Math.toRadians(lat1))
-                                * Math.cos(Math.toRadians(lat2))
-                                * Math.sin(dLon / 2)
-                                * Math.sin(dLon / 2);
+                        * Math.cos(Math.toRadians(lat2))
+                        * Math.sin(dLon / 2)
+                        * Math.sin(dLon / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = R * c; // km 단위
@@ -145,7 +88,6 @@ public class StoreServiceImpl implements StoreService {
         return Math.round(distance * 100.0) / 100.0;
     }
 
-    @Override
     public StorePagingResponseDto<StoreListResponseDto> getStoresByCategory(
             CategoryType categoryType,
             double latitude,
@@ -183,7 +125,6 @@ public class StoreServiceImpl implements StoreService {
                         }));
     }
 
-    @Override
     public StorePagingResponseDto<StoreListResponseDto> searchStoresByName(
             String name, double latitude, double longitude, int page, int size, Long userId) {
 
@@ -212,6 +153,7 @@ public class StoreServiceImpl implements StoreService {
                                             store.getRegion().getLongitude());
                             boolean liked = likedIds.contains(store.getId());
                             return storeConverter.toStoreListResponseDto(store, d, liked);
+
                         }));
     }
 }
