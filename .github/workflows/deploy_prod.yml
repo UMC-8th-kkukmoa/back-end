@@ -6,8 +6,9 @@ on:
   workflow_dispatch:      # 수동 실행 버튼 추가
 
 jobs:
-  배포:
-    runs-on: ubuntu-latest   # GitHub Actions 실행 환경
+  deploy:
+    name: 배포
+    runs-on: ubuntu-latest
 
     steps:
       - name: 레포지토리 코드 가져오기
