@@ -95,5 +95,11 @@ jobs:
 
             # 서버 기동 확인
             echo "서버 기동 대기 중..."
-            sleep 20
-            curl -I http://localhost:8080 || (echo "서버 기동 실패" && cat output.log && exit 1)
+            sleep 35
+            if curl -k -I https://kkukmoa.shop 2>/dev/null | grep -q "200 OK"; then
+              echo "서버 기동 성공 (HTTPS 응답 정상)"
+            else
+              echo "서버 기동 실패 - 로그 출력"
+              cat output.log | tail -n 100
+              exit 1
+            fi
