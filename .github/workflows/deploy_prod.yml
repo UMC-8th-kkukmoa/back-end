@@ -1,28 +1,29 @@
-name: Deploy To EC2 (Production)
+name: EC2에 배포 (운영 서버)
 
 on:
   pull_request:
-    branches: [ main ]   # 서버 배포는 main 브랜치 PR에서만 실행
-  workflow_dispatch:
+    branches: [ main ]   # main 브랜치에 PR이 생성될 때 실행
+  workflow_dispatch:      # 수동 실행 버튼 추가
 
 jobs:
   deploy:
+    name: 배포
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 레포지토리 코드 가져오기
         uses: actions/checkout@v4
 
-      - name: JDK 17 설치 (GitHub Actions 환경)
+      - name: JDK 17 설치
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: gradlew 권한 부여
+      - name: gradlew 실행 권한 부여
         run: chmod +x ./gradlew
 
-      - name: .env 파일 생성 (운영용)
+      - name: 운영용 .env 파일 생성
         run: |
           printf '%s\n' 'RDS_URL=${{ secrets.RDS_URL_PROD }}' >> .env
           printf '%s\n' 'RDS_USERNAME=${{ secrets.RDS_USERNAME }}' >> .env
@@ -41,76 +42,64 @@ jobs:
           printf '%s\n' 'MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> .env
           printf '%s\n' 'TOSS_CLIENT_KEY=${{ secrets.TOSS_CLIENT_KEY }}' >> .env
 
-
-      - name: 빌드 (bootJar만 수행)
+      - name: JAR 빌드
         run: ./gradlew clean bootJar -x test
 
-      - name : 빌드 확인
-        run: ls -al ./build/libs
-
-      - name: JAR 이름 변경
+      - name: 빌드된 JAR 이름 변경
         run: |
           JAR_PATH=$(ls ./build/libs/*SNAPSHOT.jar | head -n 1)
           mv "$JAR_PATH" ./project.jar
 
-      # 1️) Bastion Host를 통해 Private EC2에 JAR 전송
-      - name: JAR 전송 (운영 EC2 via Bastion)
+      - name: EC2로 project.jar 전송
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_PRIVATE_IP_PROD }}              # 운영 서버 Private IP
+          host: ${{ secrets.EC2_PUBLIC_IP_PROD }}
           username: ${{ secrets.EC2_USERNAME_PROD }}
           key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
-          proxy_host: ${{ secrets.BASTION_HOST_IP }}           # Bastion Host Public IP
-          proxy_username: ${{ secrets.BASTION_USERNAME }}
-          proxy_key: ${{ secrets.BASTION_KEY }}
           source: project.jar
           target: /home/ubuntu/back-end/tobe
 
-      - name: project.jar 존재 확인
-        run: ls -al ./project.jar
-
-      - name: .env 전송 (운영 EC2 via Bastion)
+      - name: EC2로 .env 전송
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_PRIVATE_IP_PROD }}
+          host: ${{ secrets.EC2_PUBLIC_IP_PROD }}
           username: ${{ secrets.EC2_USERNAME_PROD }}
           key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
-          proxy_host: ${{ secrets.BASTION_HOST_IP }}
-          proxy_username: ${{ secrets.BASTION_USERNAME }}
-          proxy_key: ${{ secrets.BASTION_KEY }}
           source: .env
           target: /home/ubuntu/back-end/tobe
 
-      # 2️) Bastion Host를 통해 Private EC2에서 앱 실행
-      - name: SSH via Bastion to Private EC2
+      - name: EC2 접속 후 애플리케이션 실행
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_PRIVATE_IP_PROD }}
+          host: ${{ secrets.EC2_PUBLIC_IP_PROD }}
           username: ${{ secrets.EC2_USERNAME_PROD }}
           key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
-          proxy_host: ${{ secrets.BASTION_HOST_IP }}
-          proxy_username: ${{ secrets.BASTION_USERNAME }}
-          proxy_key: ${{ secrets.BASTION_KEY }}
           script_stop: true
           script: |
+            # 이전 배포 폴더 삭제 및 재생성
             rm -rf /home/ubuntu/back-end/current
-            mkdir /home/ubuntu/back-end/current
+            mkdir -p /home/ubuntu/back-end/current
+
+            # 새로운 JAR 및 .env 이동
             mv /home/ubuntu/back-end/tobe/project.jar /home/ubuntu/back-end/current/project.jar
             mv /home/ubuntu/back-end/tobe/.env /home/ubuntu/back-end/current/.env
+
+            # 실행 디렉토리 이동
             cd /home/ubuntu/back-end/current
 
+            # 기존 8080 프로세스 종료
             sudo fuser -k -n tcp 8080 || true
+
+            # 환경변수 로드 후 Spring Boot 실행 (백그라운드)
             env $(cat .env | xargs) nohup java -jar project.jar > output.log 2>&1 &
 
+            # 서버 기동 확인
             echo "서버 기동 대기 중..."
-            sleep 30
-
-            if [ "$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)" = "200" ]; then
-              echo "서버 기동 성공"
+            sleep 35
+            if curl -k -I https://kkukmoa.shop 2>/dev/null | grep -q "200 OK"; then
+              echo "서버 기동 성공 (HTTPS 응답 정상)"
             else
-              echo "서버 기동 실패"
-              cat output.log
+              echo "서버 기동 실패 - 로그 출력"
+              cat output.log | tail -n 100
               exit 1
             fi
-
-            rm -rf /home/ubuntu/back-end/tobe
