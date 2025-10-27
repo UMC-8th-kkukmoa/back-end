@@ -45,8 +45,6 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/kkukmoa:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/kkukmoa:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/kkukmoa:buildcache,mode=max
 
       - name: EC2로 .env 전송
         uses: appleboy/scp-action@v0.1.7
