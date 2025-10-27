@@ -26,8 +26,8 @@ jobs:
           printf '%s\n' 'AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}' >> .env
           printf '%s\n' 'Client_ID=${{ secrets.KAKAO_CLIENT_ID }}' >> .env
           printf '%s\n' 'TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}' >> .env
-          printf '%s\n' 'REDIS_HOST=${{ secrets.REDIS_HOST }}' >> .env
-          printf '%s\n' 'REDIS_PORT=${{ secrets.REDIS_PORT }}' >> .env
+          printf '%s\n' 'SPRING_REDIS_HOST=${{ secrets.REDIS_HOST }}' >> .env
+          printf '%s\n' 'SPRING_REDIS_PORT=${{ secrets.REDIS_PORT }}' >> .env
           printf '%s\n' 'REDIRECT_URI=${{ secrets.REDIRECT_URI }}' >> .env
           printf '%s\n' 'MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' >> .env
           printf '%s\n' 'MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> .env
