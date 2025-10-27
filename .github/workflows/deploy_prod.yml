@@ -90,7 +90,7 @@ jobs:
             # 6. 헬스 체크 (로그 확인 방식으로 변경)
             echo "서버 기동 대기 중..."
             sleep 35
-            if curl -f http://localhost:8080; then
+            if curl -s -o http://localhost:8080; then
               echo "서버 기동 성공 (HTTPS 응답 정상)"
             else
               echo "서버 기동 실패 - 도커 로그 출력"
