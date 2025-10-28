@@ -2,11 +2,21 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>토스 결제</title>
     <!-- 토스페이먼츠 결제창 SDK (v2 / 위젯) -->
     <script src="https://js.tosspayments.com/v2/standard"></script>
 </head>
 <style>
+    body {
+    margin: 0;
+    padding: 0;
+    }
+
+    * {
+    box-sizing: border-box;
+    }
+
     .w-100 {
         width: 100%;
     }
@@ -140,16 +150,20 @@
         color: #b0b8c1;
     }
 </style>
-<body>
-<!-- 할인 쿠폰 -->
+<body class="w-100 h-100">
+<div class="wrapper w-100"> 
+        
+        <div class="max-w-540 w-100" style="padding: 0 24px;">
+            
+            <div id="payment-method"></div>
+            <div id="agreement"></div>
 
-
-<!-- 결제 UI -->
-<div id="payment-method"></div>
-<div id="agreement"></div>
-
-<!-- 결제하기 버튼 -->
-<button class="btn primary w-100" id="payment-button" style="margin-top: 30px;">결제하기</button>
+            <button class="btn primary w-100" id="payment-button" style="margin-top: 30px;">결제하기</button>
+        </div>
+        
+    </div>
+    
+</body>
 
 <script th:inline="javascript">
 
@@ -245,5 +259,4 @@
 
 </script>
 
-</body>
 </html>
