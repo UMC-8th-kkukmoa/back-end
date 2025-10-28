@@ -1,0 +1,30 @@
+<!-- success-bridge.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 완료</title>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const paymentKey = params.get("paymentKey");
+      const orderId = params.get("orderId");
+      const amount = params.get("amount");
+
+      const message = {
+        type: "PAYMENT_SUCCESS",
+        paymentKey,
+        orderId,
+        amount
+      };
+
+      if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+      }
+    })();
+  </script>
+</head>
+<body>
+<p>결제 처리 중입니다...</p>
+</body>
+</html>

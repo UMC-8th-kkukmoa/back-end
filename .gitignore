@@ -37,3 +37,5 @@ replay_pid*
 .gradle/
 build/
 /build/
+
+/src/main/generated/

@@ -7,13 +7,16 @@ import kkukmoa.kkukmoa.user.dto.VerificationConfirmResponseDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class VerificationServiceImpl implements VerificationService {
+@Transactional
+public class VerificationCommandService {
+
     private static final Duration OTP_TTL = Duration.ofMinutes(5);
     private static final Duration OTP_RATE = Duration.ofSeconds(60);
     private static final Duration TRIES_TTL = Duration.ofMinutes(10);
@@ -24,7 +27,6 @@ public class VerificationServiceImpl implements VerificationService {
     private final MailService mail;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
     public void requestOtp(String email) {
         if (!redis.acquireSendCooldown(email, OTP_RATE)) return;
         String code = redis.generateNumericOtp();
@@ -34,7 +36,6 @@ public class VerificationServiceImpl implements VerificationService {
         mail.sendOtp(email, code);
     }
 
-    @Override
     public VerificationConfirmResponseDto confirm(String email, String inputCode) {
         String saved = redis.getEmailOtp(email);
         if (saved == null) throw new IllegalArgumentException("인증번호가 만료되었습니다.");
