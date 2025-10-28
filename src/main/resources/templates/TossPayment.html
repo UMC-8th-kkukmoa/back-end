@@ -2,11 +2,21 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>토스 결제</title>
     <!-- 토스페이먼츠 결제창 SDK (v2 / 위젯) -->
     <script src="https://js.tosspayments.com/v2/standard"></script>
 </head>
 <style>
+    body {
+    margin: 0;
+    padding: 0;
+    }
+
+    * {
+    box-sizing: border-box;
+    }
+
     .w-100 {
         width: 100%;
     }
@@ -140,18 +150,31 @@
         color: #b0b8c1;
     }
 </style>
-<body>
-<!-- 할인 쿠폰 -->
+<body class="w-100 h-100">
+<div class="wrapper w-100"> 
+        
+        <div class="max-w-540 w-100" style="padding: 0 24px;">
+            
+            <div id="payment-method"></div>
+            <div id="agreement"></div>
 
-
-<!-- 결제 UI -->
-<div id="payment-method"></div>
-<div id="agreement"></div>
-
-<!-- 결제하기 버튼 -->
-<button class="btn primary w-100" id="payment-button" style="margin-top: 30px;">결제하기</button>
+            <button class="btn primary w-100" id="payment-button" style="margin-top: 30px;">결제하기</button>
+        </div>
+        
+    </div>
+    
+</body>
 
 <script th:inline="javascript">
+
+    function formatToKoreanWon(amount) {
+        if (amount >= 10000) {
+            return `${Math.floor(amount / 10000)}만원`;
+        }
+        return `${amount.toLocaleString()}원`;
+    }
+
+
     const token = /*[[${token}]]*/ "";
     const unitPrice = /*[[${unitPrice}]]*/ 0;
     const quantity  = /*[[${quantity}]]*/ 0;
@@ -172,7 +195,7 @@
         // customerKey 생성
         const customerKey = await fetch("https://kkukmoa.shop/v1/users/uuid", {
             method: "GET",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: {"Authorization": `Bearer ${token}`}
         })
             .then(res => res.json())
             .then(data => "user_" + data.result)
@@ -184,15 +207,15 @@
 
         if (!customerKey) return;
 
-        const widgets = tossPayments.widgets({ customerKey });
+        const widgets = tossPayments.widgets({customerKey});
 
-        await widgets.setAmount({ currency: "KRW", value: baseAmount });
+        await widgets.setAmount({currency: "KRW", value: baseAmount});
 
         await Promise.all([
-            widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
-            widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
+            widgets.renderPaymentMethods({selector: "#payment-method", variantKey: "DEFAULT"}),
+            widgets.renderAgreement({selector: "#agreement", variantKey: "AGREEMENT"}),
         ]);
-
+        const formattedAmount = formatToKoreanWon(unitPrice);
         // 결제 요청
         button.addEventListener("click", async function () {
             const prepareRes = await fetch("https://kkukmoa.shop/v1/payments/prepare", {
@@ -202,7 +225,7 @@
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    orderName: `꾹모아 금액권 ${unitPrice}원권`,
+                    orderName: `${formattedAmount}`,
                     amount: baseAmount,
                     voucherUnitPrice: unitPrice,
                     voucherQuantity: quantity
@@ -216,57 +239,24 @@
 
             const prepareData = await prepareRes.json();
 
-            await widgets.setAmount({ currency: "KRW", value: prepareData.amount ?? baseAmount });
-
+            await widgets.setAmount({ currency: "KRW", value: prepareData.amount });
             await widgets.requestPayment({
                 orderId: prepareData.orderId,
                 orderName: prepareData.orderName,
-                successUrl: `${window.location.origin}${window.location.pathname}?orderId=${prepareData.orderId}&amount=${prepareData.amount}&token=${encodeURIComponent(token)}&unitPrice=${unitPrice}&quantity=${quantity}`,
-                failUrl: `${window.location.href}?fail=true`
+                successUrl: `https://kkukmoa.shop/v1/payments/toss/success?token=${encodeURIComponent(token)}&unitPrice=${unitPrice}&quantity=${quantity}`,
+                failUrl: `https://kkukmoa.shop/v1/payments/toss/fail`,
             });
 
-        });
 
-        // 결제 승인 처리
-        const params = new URLSearchParams(window.location.search);
-        const paymentKey = params.get("paymentKey");
-        const orderId = params.get("orderId");
-        const amount = parseInt(params.get("amount") || "0", 10);
-        const unitPriceParam = parseInt(params.get("unitPrice") || "0", 10);
-        const quantityParam = parseInt(params.get("quantity") || "1", 10);
-        const tokenParam = params.get("token");
-        const tokenToUse = tokenParam || localStorage.getItem("kkukmoa_token");
 
-        if (paymentKey && orderId && amount && tokenToUse) {
-            console.log("결제 승인 요청:", tokenToUse);
 
-            const confirmRes = await fetch("https://kkukmoa.shop/v1/payments/confirm", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${tokenToUse}`
-                },
-                body: JSON.stringify({
-                    paymentKey,
-                    orderId,
-                    amount,
-                    voucherUnitPrice: unitPriceParam,
-                    voucherQuantity: quantityParam
-                })
-            });
 
-            const confirmJson = await confirmRes.json();
+        })
 
-            if (!confirmRes.ok) {
-                console.error("결제 승인 실패:", confirmJson.message);
-                return;
-            }
-
-            console.log("결제 승인 성공:", confirmJson);
-            window.location.href = "kkukmoa://app/myGiftCard/MyGiftCardList";
-        }
     }
+
+
+
 </script>
 
-</body>
 </html>
