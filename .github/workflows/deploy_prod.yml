@@ -26,8 +26,8 @@ jobs:
           printf '%s\n' 'AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}' >> .env
           printf '%s\n' 'Client_ID=${{ secrets.KAKAO_CLIENT_ID }}' >> .env
           printf '%s\n' 'TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}' >> .env
-          printf '%s\n' 'REDIS_HOST=${{ secrets.REDIS_HOST }}' >> .env
-          printf '%s\n' 'REDIS_PORT=${{ secrets.REDIS_PORT }}' >> .env
+          printf '%s\n' 'SPRING_REDIS_HOST=${{ secrets.REDIS_HOST }}' >> .env
+          printf '%s\n' 'SPRING_REDIS_PORT=${{ secrets.REDIS_PORT }}' >> .env
           printf '%s\n' 'REDIRECT_URI=${{ secrets.REDIRECT_URI }}' >> .env
           printf '%s\n' 'MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}' >> .env
           printf '%s\n' 'MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}' >> .env
@@ -82,6 +82,8 @@ jobs:
               --env-file .env \
               --restart=always \
               --name kkukmoa-app \
+              --log-opt max-size=100m \
+              --log-opt max-file=3 \
               ${{ secrets.DOCKERHUB_USERNAME }}/kkukmoa:latest
 
             # 5. (선택) 사용하지 않는 오래된 Docker 이미지 정리
