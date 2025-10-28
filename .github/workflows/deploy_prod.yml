@@ -82,6 +82,8 @@ jobs:
               --env-file .env \
               --restart=always \
               --name kkukmoa-app \
+              --log-opt max-size=100m \
+              --log-opt max-file=3 \
               ${{ secrets.DOCKERHUB_USERNAME }}/kkukmoa:latest
 
             # 5. (선택) 사용하지 않는 오래된 Docker 이미지 정리
