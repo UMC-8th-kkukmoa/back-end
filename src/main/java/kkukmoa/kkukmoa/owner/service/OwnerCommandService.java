@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -70,7 +71,7 @@ public class OwnerCommandService {
                         .socialType(SocialType.LOCAL)
                         .agreeTerms(request.isAgreeTerms())
                         .agreePrivacy(request.isAgreePrivacy())
-                        .roles(Set.of(UserType.PENDING_OWNER)) // owner 승인 대기 role 부여
+                        .roles(new HashSet<>(Set.of(UserType.PENDING_OWNER))) // owner 승인 대기 role 부여
                         .build();
 
         userRepository.save(user);

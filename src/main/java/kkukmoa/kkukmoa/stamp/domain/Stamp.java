@@ -51,4 +51,9 @@ public class Stamp extends BaseEntity {
     public void saveStamp() {
         this.count++;
     }
+
+    public void changeCount(int count) {
+        this.count = count;
+    }
+
 }

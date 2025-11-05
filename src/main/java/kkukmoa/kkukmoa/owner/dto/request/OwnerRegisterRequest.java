@@ -54,6 +54,6 @@ public class OwnerRegisterRequest {
     @Schema(description = "카테고리", example = "CAFE")
     private CategoryType category;
 
-    @Schema(description = "가맹점 번호", hidden = true)
+    @Schema(description = "가맹점 번호", hidden = false)
     private String merchantNumber;
 }
