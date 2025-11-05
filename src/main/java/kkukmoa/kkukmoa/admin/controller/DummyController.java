@@ -54,8 +54,6 @@ public class DummyController {
 
         }
 
-
-        return "성공?";
     }
 
     @Getter
