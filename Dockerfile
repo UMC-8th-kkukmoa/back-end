@@ -14,7 +14,7 @@ RUN ./gradlew clean bootJar -x test
 
 # 2. 실행(Runtime) 스테이지
 # 실제 서버에서 실행될 가벼운 이미지
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 
 # 작업 디렉토리 설정
 WORKDIR /app
